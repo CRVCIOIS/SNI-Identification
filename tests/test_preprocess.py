@@ -2,137 +2,92 @@ import os
 import unittest
 from input.preprocess import InputPreprocess
 from collections import defaultdict
+from smart_open import open
+from gensim.corpora import MmCorpus
+from gensim.test.utils import datapath
+from gensim import corpora
+from pprint import pprint
 
 class PreprocessTest(unittest.TestCase):
     def setUp(self):
-        self.preprocessor = InputPreprocess()
-        self.corpus_filename = "corpus.txt"
+
+        #define a sample corpus
+        self.corpus = [
+            ["This", "is", "a", "sample", "document"],
+            ["Another", "sample", "document"],
+            ["Yet", "another", "sample", "document"]
+        ]
+        self.corpus_filename = "test.corpus"
+
+        self.preprocessor = InputPreprocess(self.corpus_filename)
 
 
-    """"
-    Test the get_preprocessed_corpus method with an existing file, an empty file and no file.
-    """
-    def test_get_preprocessed_corpus_with_existing_file(self):
-        # Create a preprocessed corpus file with some content
-        preprocessed_corpus_filename = f"preprocessed_{self.corpus_filename}"
-        with open(preprocessed_corpus_filename, "w") as file:
-            file.write("This is a preprocessed corpus")
 
-        # Call the get_preprocessed_corpus method
-        preprocessed_corpus = self.preprocessor.get_preprocessed_corpus(self.corpus_filename)
+    def test_write_tokenized_corpus_as_vectorized_corpus_to_file(self):
 
-        # Assert that the returned preprocessed_corpus is the same as the content in the file
-        self.assertEqual(preprocessed_corpus, ["This is a preprocessed corpus"])
+        vectorized_text = [[(0,1), (1,1)]]
+        tokenized_text = [["test", "test2"]]
 
-    def test_get_preprocessed_corpus_with_empty_file(self):
-        # Create an empty preprocessed corpus file
-        preprocessed_corpus_filename = f"preprocessed_{self.corpus_filename}"
-        open(preprocessed_corpus_filename, "w").close()
-
-        # Mock the execute method to return a preprocessed corpus
-        self.preprocessor.execute = lambda filename: ["This is a preprocessed corpus"]
-
-        # Call the get_preprocessed_corpus method
-        preprocessed_corpus = self.preprocessor.get_preprocessed_corpus(self.corpus_filename)
-
-        # Assert that the returned preprocessed_corpus is the same as the mocked result
-        self.assertEqual(preprocessed_corpus, ["This is a preprocessed corpus"])
-
-    def test_get_preprocessed_corpus_with_no_file(self):
-        # Mock the execute method to return a preprocessed corpus
-        self.preprocessor.execute = lambda filename: ["This is a preprocessed corpus"]
-
-        # Call the get_preprocessed_corpus method without specifying a file
-        preprocessed_corpus = self.preprocessor.get_preprocessed_corpus()
-
-        # Assert that the returned preprocessed_corpus is the same as the mocked result
-        self.assertEqual(preprocessed_corpus, ["This is a preprocessed corpus"])
+        self.preprocessor.write_tokenized_corpus_as_vectorized_corpus_to_file(tokenized_text, self.corpus_filename)
+        self.assertTrue(os.path.exists(f"{self.corpus_filename}.mm"), "File does not exist")
 
 
-    """"
-    Test the write_corpus_to_file method.
-    """
-    def test_write_corpus_to_file(self):
-        # Define a sample corpus
-        corpus = ["This is line 1", "This is line 2", "This is line 3"]
+        corpus = MmCorpus(datapath(f"{self.corpus_filename}.mm"))
 
-        # Define a sample filename
-        corpus_filename = "test_corpus.txt"
+        for (vector, corpus_vector) in zip(vectorized_text, corpus):
+            self.assertEqual(vector, corpus_vector, "Vectors are not equal")
 
-        # Call the write_corpus_to_file method
-        self.preprocessor.write_corpus_to_file(corpus, corpus_filename)
+        #clean up
+        os.remove(f"{self.corpus_filename}.mm")
+        os.remove(f"{self.corpus_filename}.mm.index")
 
-        # Read the contents of the file
-        with open(corpus_filename, "r") as file:
-            file_contents = file.readlines()
+      
 
-        # Assert that the file contents match the original corpus
-        self.assertEqual(file_contents, ["This is line 1\n", "This is line 2\n", "This is line 3\n"])
+    def test_read_vectorized_corpus_from_file(self):
+        vectorized_text = [[(0,1), (1,1)]]
+        tokenized_text = [["test", "test2"]]
 
-        # Clean up the test file
-        os.remove(corpus_filename)
+        self.preprocessor.write_tokenized_corpus_as_vectorized_corpus_to_file(tokenized_text, self.corpus_filename)
+        corpus = self.preprocessor.read_vectorized_corpus_from_file(self.corpus_filename)
 
-    def test_read_corpus_from_file(self):
-        # Define a sample corpus file
-        corpus_filename = "test_corpus.txt"
-        with open(corpus_filename, "w") as file:
-            file.write("This is line 1\nThis is line 2\nThis is line 3\n")
+        for (vector, corpus_vector) in zip(vectorized_text, corpus):
+            self.assertEqual(vector, corpus_vector, "Vectors are not equal")
 
-        # Set the corpus filename in the preprocessor
-        self.preprocessor.corpus_filename = corpus_filename
+        #clean up
+        os.remove(f"{self.corpus_filename}.mm")
+        os.remove(f"{self.corpus_filename}.mm.index")
+            
 
-        # Call the read_corpus_from_file method
-        corpus = self.preprocessor.read_corpus_from_file()
 
-        # Assert that the returned corpus is the same as the contents of the file
-        self.assertEqual(corpus, ["This is line 1\n", "This is line 2\n", "This is line 3\n"])
-
-        # Clean up the test file
-        os.remove(corpus_filename)
 
 
     def test_execute(self):
         # Define a sample corpus
         corpus = [
-            ["This", "is", "a", "sample", "document"],
-            ["Another", "sample", "document"],
-            ["Yet", "another", "sample", "document"]
+            "Better late than never, but better never late.",
+            "<i>Hel 9lo</i> <b>Wo9 rld</b>! Th3     weather_is really g00d today, isn't it?",
+            "test test2 test1 test3 test2"
         ]
-
-        # Mock the read_corpus_from_file method to return the sample corpus
-        self.preprocessor.read_corpus_from_file = lambda: corpus
-
-        # Mock the remove_stopwords method
-        self.preprocessor.remove_stopwords = lambda corpus: [
-            ["This", "sample", "document"],
-            ["Another", "sample", "document"],
-            ["Yet", "another", "sample", "document"]
-        ]
-
-        # Mock the preprocess_documents method
-        self.preprocessor.preprocess_documents = lambda corpus: [
-            ["This", "sample", "document"],
-            ["Another", "sample", "document"],
-            ["Yet", "another", "sample", "document"]
-        ]
-
-         
-
-        # Mock the write_corpus_to_file method
-        self.preprocessor.write_corpus_to_file = lambda corpus, filename: None
 
         # Call the execute method
-        result = self.preprocessor.execute(self.corpus_filename)
+        result = self.preprocessor.execute(corpus)
+
+        
 
         # Assert that the result is the preprocessed corpus
-        self.assertEqual(result, [
-            ["This", "sample", "document"],
-            ["Another", "sample", "document"],
-            ["Yet", "another", "sample", "document"]
-        ])
+        expected_tokenized_corpus = [
+            ["better", "late", "better", "late"],
+            [],
+            ["test", "test", "test", "test", "test"]
+        ]
+        expected_dictionary_corpus = corpora.Dictionary(expected_tokenized_corpus)
+
+        self.assertEqual(result, (expected_tokenized_corpus, expected_dictionary_corpus))
     
 
 
 if __name__ == '__main__':
     unittest.main()
 
+
+  

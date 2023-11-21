@@ -1,51 +1,70 @@
 from collections import defaultdict
+from pprint import pprint
 from gensim.parsing.preprocessing import remove_stopwords, preprocess_documents
+from gensim import corpora
+from gensim.corpora import MmCorpus
+from gensim.test.utils import datapath
+
+
 
 class InputPreprocess:
-    def __init__(self, corpus: list[str], corpus_filename="corpus.txt") -> None:
+    def __init__(self, corpus_filename="corpus") -> None:
         #write corpus to file
         self.corpus_filename = corpus_filename
-        self.write_corpus_to_file(corpus, self.corpus_filename)
+        #self.write_corpus_to_file(corpus, self.corpus_filename)
 
 
 
-    def write_corpus_to_file(self, corpus: list[str], corpus_filename="") -> None:
+   
+    def write_tokenized_corpus_as_vectorized_corpus_to_file(self, corpus: list[list[tuple[int, float]]], corpus_filename="") -> None:
         """
-        Write the corpus to a file.
+        Write the tokenized corpus to a file.
 
         Args:
-            corpus (list[str]): A list of strings that represent the corpus.
+            corpus (list[list[str]]): A list of list of strings that represent a tokenized corpus.
         """
-        filename= self.corpus_filename
-        if(corpus_filename != ""):
+        filename = self.corpus_filename
+        if corpus_filename != "":
             filename = corpus_filename
-        file = open(corpus_filename, "w")
-        for line in corpus:
-            file.write(line + "\n")
-        file.close()
+        corpus = self.doc2bow(corpus, corpora.Dictionary(corpus))
+        MmCorpus.serialize(f'{filename}.mm', corpus)
+        
+        
 
-    def read_corpus_from_file(self) -> list[str]:
+    def read_vectorized_corpus_from_file(self, filename=""):
         """
         Read the corpus from a file.
 
         Returns:
-            corpus (list[str]): A list of strings that represent the corpus.
+            corpus: Returns a list of vectors, each vector represents a line in the corpus
         """
-        file = open(self.corpus_filename, "r")
-        corpus = file.readlines()
-        file.close()
+        if filename == "":
+            filename = self.corpus_filename
+
+
+        corpus = MmCorpus(f'{self.corpus_filename}.mm')
+
         return corpus
+       
+    
 
 
-    def execute(self, corpus_filename) -> list[str]:
+    def execute(self, corpus: list[str]):
+        """
+        Preprocesses the given corpus by removing stop words, preprocessing documents,
+        removing words that appear only once.
 
-        corpus = self.read_corpus_from_file()
+        Args:
+            corpus (list): The input corpus to be preprocessed.
 
-        #remove stop words
-        corpus = remove_stopwords(corpus)
+        Returns:
+            tuple: A tuple containing the preprocessed tokenized corpus and the dictionary corpus.
+        """
+      
 
         #preprocess documents
         corpus = preprocess_documents(corpus)
+
 
         #remove words that only appear once
         frequency = defaultdict(int)
@@ -53,32 +72,23 @@ class InputPreprocess:
             for token in doc:
                 frequency[token] += 1
 
-        corpus =[
+        tokenized_corpus =[
             [token for token in doc if frequency[token] > 1]
             for doc in corpus
         ]
 
-        self.write_corpus_to_file(corpus, f"preprocessed_{corpus_filename}")
 
-        return corpus
+        dictionary_corpus = corpora.Dictionary(tokenized_corpus)
+ 
+
+        return (tokenized_corpus, dictionary_corpus)
     
 
-
-    def get_preprocessed_corpus(self, corpus_filename = "") -> list[str]:
-        if(corpus_filename == ""):
-            corpus_filename = self.corpus_filename
-        
-        #check if preprocessed corpus file exists and is not empty
-        preprocessed_corpus_filename = f"preprocessed_{corpus_filename}"
-        file = open(preprocessed_corpus_filename, "r")
-        preprocessed_corpus = file.readlines()
-        file.close()
-
-        if(len(preprocessed_corpus) == 0): #if preprocessed corpus file is empty
-            preprocessed_corpus = self.execute(corpus_filename)
-        return preprocessed_corpus
-
-
+    def doc2bow(self, tokenized_corpus: list[list[str]], dictionary_corpus: corpora.Dictionary):
+        """
+        Returns a list of vectors, each vector represents a line in the corpus
+        """
+        return [dictionary_corpus.doc2bow(token) for token in tokenized_corpus]
 
     
     
