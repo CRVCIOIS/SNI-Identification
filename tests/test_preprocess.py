@@ -32,7 +32,7 @@ class PreprocessTest(unittest.TestCase):
         self.assertTrue(os.path.exists(f"{self.corpus_filename}.mm"), "File does not exist")
 
 
-        corpus = MmCorpus(datapath(f"{self.corpus_filename}.mm"))
+        corpus = MmCorpus(f"{self.corpus_filename}.mm")
 
         for (vector, corpus_vector) in zip(vectorized_text, corpus):
             self.assertEqual(vector, corpus_vector, "Vectors are not equal")
@@ -84,7 +84,25 @@ class PreprocessTest(unittest.TestCase):
 
         self.assertEqual(result, (expected_tokenized_corpus, expected_dictionary_corpus))
     
+    def test_doc2bow(self):
+        # Define a sample corpus
+        corpus = [
+            ["better", "late", "better", "late"],
+            [],
+            ["test", "test", "test", "test", "test"]
+        ]
 
+        # Call the doc2bow method
+        result = self.preprocessor.doc2bow(corpus, corpora.Dictionary(corpus))
+
+        # Assert that the result is the preprocessed corpus
+        expected = [
+            [(0, 2), (1, 2)], 
+            [],
+            [(2, 5)]
+        ]
+
+        self.assertEqual(result, expected)
 
 if __name__ == '__main__':
     unittest.main()

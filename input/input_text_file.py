@@ -1,62 +1,46 @@
-import pprint
-from input_file_class import InputFileReader
-
-
-class TextFileReader(InputFileReader):
-    """
-    A class for reading text files and retrieving the corpus.
-
-    Attributes:
-        file_path (str): The path to the input text file.
-        lines (list[str]): The lines of the text file.
-
-    Methods:
-        get_corpus(): Reads the text file and returns the lines as a corpus
-        print_corpus(): Prints the corpus
-    """
-
-    def __init__(self, file_path):
-        self.file_path = file_path
-
-    def get_corpus(self) -> list[str]:
-        """
-        Reads the text file and returns each line as a document in a corpus.
-
-        Returns:
-            list[str]: Corpus
-        """
-        try:
-            with open(self.file_path, 'r') as file:
-                lines = file.readlines()
-                return lines
-        except FileNotFoundError:
-            print(f"File '{self.file_path}' not found.")
-
-    def print_corpus(self):
-        """
-        Prints the corpus
-        """
-        corpus = self.get_corpus()
-        pprint(corpus)
-            
-            
-    def stringToVector(self):
-        """
-        Returns a list of vectors, each vector represents a line in the corpus
-        """
-        vector = []
-        for line in self.lines:
-            line = line.strip()
-            vector.append(line)
-        return vector
-
-
-    def corpus_streaming(self):
-        """
-        Returns a generator object that yields each line of the corpus.
-        """
-        for line in self.lines:
-            yield line.doc2bow(line.lower().split())
-
-
+import os
+import tempfile
+from smart_open import open
+from gensim.corpora.textcorpus import TextCorpus
+from gensim import utils
+from gensim.parsing.preprocessing import strip_tags, strip_punctuation, strip_multiple_whitespaces, strip_numeric, remove_stopwords, strip_short, stem_text, preprocess_string
+from gensim.utils import simple_tokenize
+class FileInputCorpus(TextCorpus):
+    stopwords = set('for a of the and to in on'.split())
     
+    def get_texts(self):
+        for doc in self.getstream():
+            doc = utils.to_unicode(doc).lower().strip()
+            yield self.preprocess_text(doc)
+            
+                
+    def __len__(self):
+        """
+        Returns the number of documents in the corpus.
+        Returns:
+            int: Number of documents.
+        """
+        self.length = sum(1 for line in open(self.input))
+        return self.length
+    
+    def preprocess_text(self, text):
+        """
+        Preprocess a single document.
+        Args:
+            text (str): Text to preprocess.
+        Returns:
+            list[str]: Preprocessed text and tokenzied.
+        """
+        #TODO: add more preprocessing steps to the pipeline. Should take a string and return a string.
+        
+        return super().preprocess_text(text)
+    
+    
+        
+
+            
+ 
+
+                
+  
+        
