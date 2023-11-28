@@ -1,0 +1,54 @@
+<diagram program="umletino" version="15.1"><zoom_level>7</zoom_level><help_text>Inpufe</help_text><element><id>UMLActor</id><coordinates><x>1134</x><y>791</y><w>42</w><h>77</h></coordinates><panel_attributes>Actor</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLUseCase</id><coordinates><x>574</x><y>812</y><w>84</w><h>28</h></coordinates><panel_attributes>Scraping</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>609</x><y>728</y><w>21</w><h>91</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;110;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>672</x><y>819</y><w>98</w><h>21</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>120;10;10;10</additional_attributes></element><element><id>UMLUseCase</id><coordinates><x>763</x><y>812</y><w>84</w><h>28</h></coordinates><panel_attributes>NLP</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLUseCase</id><coordinates><x>924</x><y>798</y><w>119</w><h>63</h></coordinates><panel_attributes>Database of companies
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1036</x><y>812</y><w>112</w><h>21</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;140;10</additional_attributes></element><element><id>Text</id><coordinates><x>588</x><y>693</y><w>70</w><h>49</h></coordinates><panel_attributes>Automated</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1043</x><y>833</y><w>105</w><h>21</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>130;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1295</x><y>525</y><w>203</w><h>91</h></coordinates><panel_attributes>Output:  NLP Codes, company names, etc.</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>406</y><w>133</w><h>70</h></coordinates><panel_attributes>Input: Web-scraped data</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>224</x><y>392</y><w>252</w><h>133</h></coordinates><panel_attributes>FileReader
+--
+- data: Datapath
+--
+
+--
+Responsibilities
+-- Read input file and output all relevant data for training/query. </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>224</x><y>273</y><w>154</w><h>35</h></coordinates><panel_attributes>/InputFileReader/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>294</x><y>301</y><w>21</w><h>105</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>UMLClass</id><coordinates><x>553</x><y>112</y><w>280</w><h>140</h></coordinates><panel_attributes>NLPModel
+--
+_-model: gensim.models.[model]_
+--
+/+train_model()/
+/+save_model()/
+/+load_model()/
+/+download_pre_trained_model()/
+--
+Responsibilities
+-- Abstract gensim implementation of specific models.</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1113</x><y>532</y><w>91</w><h>35</h></coordinates><panel_attributes>/Output Processing/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>637</x><y>0</y><w>70</w><h>21</h></coordinates><panel_attributes>/models/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>714</x><y>308</y><w>350</w><h>140</h></coordinates><panel_attributes>&lt;&lt;NLPModel[Func]Wrapper&gt;&gt;
+--
+--
+/+[Func]()/
+--
+Responsibilities
+-- Implement specific functionality for evaluations.</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>826</x><y>182</y><w>112</w><h>21</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>140;10;10;10</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>203</x><y>357</y><w>280</w><h>217</h></coordinates><panel_attributes>Input
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>525</x><y>84</y><w>798</w><h>392</h></coordinates><panel_attributes>NLPModels
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>693</x><y>518</y><w>308</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Main&gt;&gt;
+Package::main
+--
+- reader: FileReader
+- nlp: NLPModelWrapper
+--
+/+query(fileWithQuery : FilePath): Nace Codes, Company Name, etc./
+--
+Responsibilities
+-- Evaluate input data using models and other.</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>301</x><y>518</y><w>406</w><h>77</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>560;90;10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>833</x><y>441</y><w>63</w><h>91</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;110;70;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>924</x><y>119</y><w>350</w><h>140</h></coordinates><panel_attributes>&lt;&lt;NLPModelBaseWrapper&gt;&gt;
+--
+-model: NLPModel
+- reader: FileReader
+--
+__init__(modelType: gensim.models.model || "name for pretrained", )
++transform_vector()/
+--
+Responsibilities
+- Interface with model
+- For example, transform normal vectors into a specific model space. 
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>924</x><y>252</y><w>77</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>90;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>994</x><y>560</y><w>175</w><h>49</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;50;230;50;230;10</additional_attributes></element><element><id>Relation</id><coordinates><x>665</x><y>14</y><w>21</w><h>112</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;140;10;80;10;10</additional_attributes></element><element><id>UMLNote</id><coordinates><x>238</x><y>161</y><w>203</w><h>49</h></coordinates><panel_attributes>*Each class has their own set of unittests, which the writer of the function makes.*
+bg=blue
+style=wordwrap</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>840</x><y>819</y><w>98</w><h>21</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>120;10;10;10</additional_attributes></element></diagram>
