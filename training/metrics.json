@@ -1,0 +1,26 @@
+{
+  "token_acc":1.0,
+  "token_p":1.0,
+  "token_r":1.0,
+  "token_f":1.0,
+  "cats_score":0.0,
+  "cats_score_desc":"macro AUC",
+  "cats_micro_p":1.0,
+  "cats_micro_r":1.0,
+  "cats_micro_f":1.0,
+  "cats_macro_p":1.0,
+  "cats_macro_r":1.0,
+  "cats_macro_f":1.0,
+  "cats_macro_auc":0.0,
+  "cats_f_per_type":{
+    "01.110":{
+      "p":1.0,
+      "r":1.0,
+      "f":1.0
+    }
+  },
+  "cats_auc_per_type":{
+    "01.110":null
+  },
+  "speed":27621.0723707651
+}

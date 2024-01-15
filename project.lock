@@ -1,0 +1,43 @@
+preprocess:
+  cmd: python -m weasel run preprocess
+  script:
+    - 'python scripts/preprocess.py assets/docs_nace_training.json corpus/docs_nace_training.spacy '
+    - 'python scripts/preprocess.py assets/docs_nace_eval.json corpus/docs_nace_eval.spacy '
+  deps:
+    - path: assets/docs_nace_training.json
+      md5: 799df50e3c13a21b2448d539a69bc28f
+    - path: scripts/preprocess.py
+      md5: cf447a4998e7cd992e4602853b381a5a
+    - path: assets/sni.json
+      md5: db1f30ee47aa586814dc90cea745eb43
+  outs:
+    - path: corpus/docs_nace_training.spacy
+      md5: 04fe3f82eb6af0b8adb7ac272ff9a111
+train:
+  cmd: python -m weasel run train
+  script:
+    - python -m spacy train configs/config.cfg --output training/ --paths.train corpus/docs_nace_training.spacy
+      --paths.dev corpus/docs_nace_eval.spacy --gpu-id -1
+  deps:
+    - path: corpus/docs_nace_training.spacy
+      md5: 04fe3f82eb6af0b8adb7ac272ff9a111
+    - path: corpus/docs_nace_eval.spacy
+      md5: 04fe3f82eb6af0b8adb7ac272ff9a111
+    - path: configs/config.cfg
+      md5: ca153c406cd712f1ab053ab2163d780d
+  outs:
+    - path: training/model-best
+      md5: 75f82301fab9e93d7aedea61d66d5d2d
+evaluate:
+  cmd: python -m weasel run evaluate
+  script:
+    - python -m spacy evaluate training/model-best corpus/docs_nace_eval.spacy --output
+      training/metrics.json --gpu-id -1
+  deps:
+    - path: corpus/docs_nace_eval.spacy
+      md5: 04fe3f82eb6af0b8adb7ac272ff9a111
+    - path: training/model-best
+      md5: 75f82301fab9e93d7aedea61d66d5d2d
+  outs:
+    - path: training/metrics.json
+      md5: 9ce7e6385df9ad609cec6846ad360518
