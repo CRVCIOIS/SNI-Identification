@@ -7,7 +7,7 @@ preprocess:
     - path: assets/docs_nace_training.json
       md5: 799df50e3c13a21b2448d539a69bc28f
     - path: scripts/preprocess.py
-      md5: cf447a4998e7cd992e4602853b381a5a
+      md5: 06d2be42c505f3df07d00f01c94991ac
     - path: assets/sni.json
       md5: db1f30ee47aa586814dc90cea745eb43
   outs:
