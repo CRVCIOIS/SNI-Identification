@@ -24,36 +24,42 @@ def extract_meta(soup):
 
 def extract_body(soup):
     """
-    Extracts all useful parts from the body (mainly <p> tags)
+    Extracts all text from the body of a soup object
     :param soup: a soup object
     :returns: a list of strings
     """
-    lst = [''.join(s.findAll(string=True))for s in soup.findAll('p')]
-    # TODO: find all <span> inside <pageBuilder(.*?)Text>
-    #pagebuilder_tags = soup.find_all(class_=re.compile(r'pagebuilder(.*?)Text'))
-    return lst
+    # TODO: dynamic regex based tag filtering
+    body_text_lst = []
 
-def remove_history_description(lst):
-    """
-    Removes strings that include 4 digits in a row, 
-    in order to clean texts describing the history of the company.
-    :param lst: a list of strings
-    """
-    year_regex = re.compile(r'\d\d\d\d')
-    for index,value in enumerate(lst):
-        if year_regex.search(value) is not None:
-            lst.pop(index)
+    queue = [([], soup.body)]
+    while queue:
+        path, element = queue.pop(0)
+        if hasattr(element, 'children'): 
+            for child in element.children:
+                queue.append((path + [child.name if child.name is not None else type(child)],
+                            child))
+        else:
+            text = element.get_text(separator=' ', strip=True)
+            if text != '':
+                body_text_lst.append(text)
 
-if __name__ == "__main__": 
-    FILE_PATH = "examples/folder/file.html"
+    return body_text_lst
+
+def extract_header(soup):
+    pass
+
+
+if __name__ == "__main__":
+    FILE_PATH = "examples/bdx/bdx.html"
 
     with open(FILE_PATH, encoding='utf-8') as fp:
         soup = BeautifulSoup(fp, 'html.parser')
     
     metadata = extract_meta(soup)
     for key, value in metadata.items():
-        print(f"{key}: {value}")
+        for s in ['title', 'description']:
+            if s in key:
+                print(f"{key}: {value}")
 
     body = extract_body(soup)
-    remove_history_description(body)
     print(body)
