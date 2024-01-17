@@ -1,3 +1,10 @@
 venv
 .vscode
 __pycache__
+
+#ignore Spacy stuff
+# assets/** # assets folder will be allowed to live in the repo until production data is needed.
+training/
+corpus/
+models/
+project.lock
