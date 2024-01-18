@@ -1,0 +1,78 @@
+
+# 
+# This YAML file represents the project configuration for the NLP project.
+# It contains settings and parameters that are used to configure and run the project.
+# 
+title: "Test"
+description: "Lorem Lipsum"
+# Variables can be referenced across the project.yml using ${vars.var_name}
+vars:
+  config: "config.cfg"
+  name: "NACE"
+  version: "0.0.0"
+  train: "docs_nace_training"
+  dev: "docs_nace_eval"
+  sni: "sni"
+  gpu_id: -1
+
+# These are the directories that the project needs. The project CLI will make
+# sure that they always exist.
+directories: ["assets", "training", "configs", "scripts", "corpus"]
+
+# Assets that should be downloaded or available in the directory. We're shipping
+# them with the project, so they won't have to be downloaded. But the
+# 'project assets' command still lets you verify that the checksums match.
+assets:
+  - dest: "assets/${vars.train}.json"
+    description: "JSONL-formatted training data exported, annotated with `DOCUMENTATION`"
+  - dest: "assets/${vars.sni}.json"
+    description: "JSON-formatted SNI codes"
+  - dest: "assets/${vars.dev}.json"
+    description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
+
+# Workflows are sequences of commands (see below) executed in order. You can
+# run them via "spacy project run [workflow]". If a commands's inputs/outputs
+# haven't changed, it won't be re-run.
+workflows:
+  all:
+    - preprocess
+    - train
+    - evaluate
+
+# Project commands, specified in a style similar to CI config files (e.g. Azure
+# pipelines). The name is the command name that lets you trigger the command
+# via "spacy project run [command] [path]". The help message is optional and
+# shown when executing "spacy project run [optional command] [path] --help".
+commands:
+  - name: "preprocess"
+    help: "Convert the data to spaCy's binary format"
+    script:
+      - "python scripts/preprocess.py assets/${vars.train}.json corpus/${vars.train}.spacy "
+      - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
+    deps:
+      - "assets/${vars.train}.json"
+      - "scripts/preprocess.py"
+      - "assets/${vars.sni}.json"
+    outputs:
+      - "corpus/${vars.train}.spacy"
+
+  - name: "train"
+    help: "Train a text classification model"
+    script:
+      - "python -m spacy train configs/${vars.config} --output training/ --paths.train corpus/${vars.train}.spacy --paths.dev corpus/${vars.dev}.spacy --gpu-id ${vars.gpu_id}"
+    deps:
+      - "corpus/${vars.train}.spacy"
+      - "corpus/${vars.dev}.spacy"
+      - "configs/config.cfg"
+    outputs:
+      - "training/model-best"
+
+  - name: "evaluate"
+    help: "Evaluate the model and export metrics"
+    script:
+      - "python -m spacy evaluate training/model-best corpus/${vars.dev}.spacy --output training/metrics.json --gpu-id ${vars.gpu_id}"
+    deps:
+      - "corpus/${vars.dev}.spacy"
+      - "training/model-best"
+    outputs:
+      - "training/metrics.json"

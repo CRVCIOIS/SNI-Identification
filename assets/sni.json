@@ -1,0 +1,4107 @@
+[
+ {
+  "SNI": "01.110",
+  "SNI_unofficial": "01110",
+  "description": "Odling av spannmål (utom ris), baljväxter och oljeväxter"
+ },
+ {
+  "SNI": "01.120",
+  "SNI_unofficial": "01120",
+  "description": "Odling av ris"
+ },
+ {
+  "SNI": "01.131",
+  "SNI_unofficial": "01131",
+  "description": "Potatisodling"
+ },
+ {
+  "SNI": "01.132",
+  "SNI_unofficial": "01132",
+  "description": "Sockerbetsodling"
+ },
+ {
+  "SNI": "01.133",
+  "SNI_unofficial": "01133",
+  "description": "Odling av grönsaker (köksväxter) på friland"
+ },
+ {
+  "SNI": "01.134",
+  "SNI_unofficial": "01134",
+  "description": "Odling av grönsaker (köksväxter) i växthus"
+ },
+ {
+  "SNI": "01.135",
+  "SNI_unofficial": "01135",
+  "description": "Svampodling m.m."
+ },
+ {
+  "SNI": "01.140",
+  "SNI_unofficial": "01140",
+  "description": "Odling av sockerrör"
+ },
+ {
+  "SNI": "01.150",
+  "SNI_unofficial": "01150",
+  "description": "Odling av tobak"
+ },
+ {
+  "SNI": "01.160",
+  "SNI_unofficial": "01160",
+  "description": "Odling av fiberväxter"
+ },
+ {
+  "SNI": "01.191",
+  "SNI_unofficial": "01191",
+  "description": "Odling av prydnadsväxter i växthus"
+ },
+ {
+  "SNI": "01.199",
+  "SNI_unofficial": "01199",
+  "description": "Odling av övriga ett- och tvååriga växter"
+ },
+ {
+  "SNI": "01.210",
+  "SNI_unofficial": "01210",
+  "description": "Odling av druvor"
+ },
+ {
+  "SNI": "01.220",
+  "SNI_unofficial": "01220",
+  "description": "Odling av tropiska och subtropiska frukter"
+ },
+ {
+  "SNI": "01.230",
+  "SNI_unofficial": "01230",
+  "description": "Odling av citrusfrukter"
+ },
+ {
+  "SNI": "01.240",
+  "SNI_unofficial": "01240",
+  "description": "Odling av kärnfrukter och stenfrukter"
+ },
+ {
+  "SNI": "01.250",
+  "SNI_unofficial": "01250",
+  "description": "Odling av andra frukter och bär samt nötter"
+ },
+ {
+  "SNI": "01.260",
+  "SNI_unofficial": "01260",
+  "description": "Odling av oljehaltiga frukter"
+ },
+ {
+  "SNI": "01.270",
+  "SNI_unofficial": "01270",
+  "description": "Odling av växter för dryckesframställning"
+ },
+ {
+  "SNI": "01.280",
+  "SNI_unofficial": "01280",
+  "description": "Odling av kryddväxter, drog- och medicinalväxter"
+ },
+ {
+  "SNI": "01.290",
+  "SNI_unofficial": "01290",
+  "description": "Odling av andra fleråriga växter"
+ },
+ {
+  "SNI": "01.301",
+  "SNI_unofficial": "01301",
+  "description": "Odling av plantskoleväxter i växthus"
+ },
+ {
+  "SNI": "01.302",
+  "SNI_unofficial": "01302",
+  "description": "Odling av plantskoleväxter m.m. på friland"
+ },
+ {
+  "SNI": "01.410",
+  "SNI_unofficial": "01410",
+  "description": "Mjölkproduktion och uppfödning av nötkreatur av mjölkras"
+ },
+ {
+  "SNI": "01.420",
+  "SNI_unofficial": "01420",
+  "description": "Uppfödning av andra nötkreatur och bufflar"
+ },
+ {
+  "SNI": "01.430",
+  "SNI_unofficial": "01430",
+  "description": "Uppfödning av hästar och andra hästdjur"
+ },
+ {
+  "SNI": "01.440",
+  "SNI_unofficial": "01440",
+  "description": "Uppfödning av kameler och kameldjur"
+ },
+ {
+  "SNI": "01.450",
+  "SNI_unofficial": "01450",
+  "description": "Uppfödning av får och getter"
+ },
+ {
+  "SNI": "01.461",
+  "SNI_unofficial": "01461",
+  "description": "Uppfödning av smågrisar"
+ },
+ {
+  "SNI": "01.462",
+  "SNI_unofficial": "01462",
+  "description": "Uppfödning av slaktsvin"
+ },
+ {
+  "SNI": "01.471",
+  "SNI_unofficial": "01471",
+  "description": "Äggproduktion (för försäljning)"
+ },
+ {
+  "SNI": "01.472",
+  "SNI_unofficial": "01472",
+  "description": "Uppfödning av fjäderfä, ej äggproduktion"
+ },
+ {
+  "SNI": "01.491",
+  "SNI_unofficial": "01491",
+  "description": "Renskötsel"
+ },
+ {
+  "SNI": "01.492",
+  "SNI_unofficial": "01492",
+  "description": "Uppfödning av sällskapsdjur"
+ },
+ {
+  "SNI": "01.499",
+  "SNI_unofficial": "01499",
+  "description": "Övrig uppfödning av andra djur"
+ },
+ {
+  "SNI": "01.500",
+  "SNI_unofficial": "01500",
+  "description": "Blandat jordbruk"
+ },
+ {
+  "SNI": "01.610",
+  "SNI_unofficial": "01610",
+  "description": "Service till växtodling"
+ },
+ {
+  "SNI": "01.620",
+  "SNI_unofficial": "01620",
+  "description": "Service till husdjursskötsel"
+ },
+ {
+  "SNI": "01.630",
+  "SNI_unofficial": "01630",
+  "description": "Bearbetning av skördade växter"
+ },
+ {
+  "SNI": "01.640",
+  "SNI_unofficial": "01640",
+  "description": "Bearbetning av utsäde"
+ },
+ {
+  "SNI": "01.700",
+  "SNI_unofficial": "01700",
+  "description": "Jakt och service i anslutning härtill"
+ },
+ {
+  "SNI": "02.101",
+  "SNI_unofficial": "02101",
+  "description": "Skogsförvaltning"
+ },
+ {
+  "SNI": "02.102",
+  "SNI_unofficial": "02102",
+  "description": "Skogsskötsel"
+ },
+ {
+  "SNI": "02.109",
+  "SNI_unofficial": "02109",
+  "description": "Övrig skoglig verksamhet"
+ },
+ {
+  "SNI": "02.200",
+  "SNI_unofficial": "02200",
+  "description": "Drivning"
+ },
+ {
+  "SNI": "02.300",
+  "SNI_unofficial": "02300",
+  "description": "Insamling av annat vilt växande skogsmaterial än trä"
+ },
+ {
+  "SNI": "02.401",
+  "SNI_unofficial": "02401",
+  "description": "Virkesmätning"
+ },
+ {
+  "SNI": "02.409",
+  "SNI_unofficial": "02409",
+  "description": "Övrig service till skogsbruk"
+ },
+ {
+  "SNI": "03.111",
+  "SNI_unofficial": "03111",
+  "description": "Trålfiske i saltvatten"
+ },
+ {
+  "SNI": "03.119",
+  "SNI_unofficial": "03119",
+  "description": "Övrigt saltvattensfiske"
+ },
+ {
+  "SNI": "03.120",
+  "SNI_unofficial": "03120",
+  "description": "Sötvattensfiske"
+ },
+ {
+  "SNI": "03.210",
+  "SNI_unofficial": "03210",
+  "description": "Fiskodling i saltvatten"
+ },
+ {
+  "SNI": "03.220",
+  "SNI_unofficial": "03220",
+  "description": "Fiskodling i sötvatten"
+ },
+ {
+  "SNI": "05.100",
+  "SNI_unofficial": "05100",
+  "description": "Stenkolsutvinning"
+ },
+ {
+  "SNI": "05.200",
+  "SNI_unofficial": "05200",
+  "description": "Brunkolsutvinning"
+ },
+ {
+  "SNI": "06.100",
+  "SNI_unofficial": "06100",
+  "description": "Utvinning av råpetroleum"
+ },
+ {
+  "SNI": "06.200",
+  "SNI_unofficial": "06200",
+  "description": "Utvinning av naturgas"
+ },
+ {
+  "SNI": "07.100",
+  "SNI_unofficial": "07100",
+  "description": "Järnmalmsutvinning"
+ },
+ {
+  "SNI": "07.210",
+  "SNI_unofficial": "07210",
+  "description": "Utvinning av uran- och toriummalm"
+ },
+ {
+  "SNI": "07.290",
+  "SNI_unofficial": "07290",
+  "description": "Utvinning av annan malm"
+ },
+ {
+  "SNI": "08.110",
+  "SNI_unofficial": "08110",
+  "description": "Brytning av natursten, kalk- och gipssten, krita och skiffer"
+ },
+ {
+  "SNI": "08.120",
+  "SNI_unofficial": "08120",
+  "description": "Utvinning av sand, grus och berg; utvinning av lera och kaolin"
+ },
+ {
+  "SNI": "08.910",
+  "SNI_unofficial": "08910",
+  "description": "Brytning av kemiska mineral"
+ },
+ {
+  "SNI": "08.920",
+  "SNI_unofficial": "08920",
+  "description": "Torvutvinning"
+ },
+ {
+  "SNI": "08.930",
+  "SNI_unofficial": "08930",
+  "description": "Saltutvinning"
+ },
+ {
+  "SNI": "08.990",
+  "SNI_unofficial": "08990",
+  "description": "Diverse övrig utvinning av mineral"
+ },
+ {
+  "SNI": "09.100",
+  "SNI_unofficial": "09100",
+  "description": "Stödtjänster till råpetroleum- och naturgasutvinning"
+ },
+ {
+  "SNI": "09.900",
+  "SNI_unofficial": "09900",
+  "description": "Stödtjänster till annan utvinning"
+ },
+ {
+  "SNI": "10.111",
+  "SNI_unofficial": "10111",
+  "description": "Kreatursslakt"
+ },
+ {
+  "SNI": "10.112",
+  "SNI_unofficial": "10112",
+  "description": "Styckning av kött"
+ },
+ {
+  "SNI": "10.120",
+  "SNI_unofficial": "10120",
+  "description": "Beredning och hållbarhetsbehandling av fjäderfäkött"
+ },
+ {
+  "SNI": "10.130",
+  "SNI_unofficial": "10130",
+  "description": "Charkuteri- och annan köttvarutillverkning"
+ },
+ {
+  "SNI": "10.200",
+  "SNI_unofficial": "10200",
+  "description": "Beredning och hållbarhetsbehandling av fisk samt skal- och blötdjur"
+ },
+ {
+  "SNI": "10.310",
+  "SNI_unofficial": "10310",
+  "description": "Beredning och hållbarhetsbehandling av potatis"
+ },
+ {
+  "SNI": "10.320",
+  "SNI_unofficial": "10320",
+  "description": "Juice- och safttillverkning"
+ },
+ {
+  "SNI": "10.390",
+  "SNI_unofficial": "10390",
+  "description": "Annan beredning och hållbarhetsbehandling av frukt, bär och grönsaker"
+ },
+ {
+  "SNI": "10.410",
+  "SNI_unofficial": "10410",
+  "description": "Framställning av oljor och fetter"
+ },
+ {
+  "SNI": "10.420",
+  "SNI_unofficial": "10420",
+  "description": "Matfettstillverkning"
+ },
+ {
+  "SNI": "10.511",
+  "SNI_unofficial": "10511",
+  "description": "Osttillverkning"
+ },
+ {
+  "SNI": "10.519",
+  "SNI_unofficial": "10519",
+  "description": "Annan mejerivarutillverkning"
+ },
+ {
+  "SNI": "10.520",
+  "SNI_unofficial": "10520",
+  "description": "Glasstillverkning"
+ },
+ {
+  "SNI": "10.611",
+  "SNI_unofficial": "10611",
+  "description": "Mjöltillverkning"
+ },
+ {
+  "SNI": "10.612",
+  "SNI_unofficial": "10612",
+  "description": "Tillverkning av frukostflingor, mixer och andra livsmedelsberedningar av kvarnprodukter"
+ },
+ {
+  "SNI": "10.620",
+  "SNI_unofficial": "10620",
+  "description": "Stärkelsetillverkning"
+ },
+ {
+  "SNI": "10.710",
+  "SNI_unofficial": "10710",
+  "description": "Tillverkning av mjukt matbröd och färska bakverk"
+ },
+ {
+  "SNI": "10.721",
+  "SNI_unofficial": "10721",
+  "description": "Knäckebrödstillverkning"
+ },
+ {
+  "SNI": "10.722",
+  "SNI_unofficial": "10722",
+  "description": "Tillverkning av kex och konserverade bakverk"
+ },
+ {
+  "SNI": "10.730",
+  "SNI_unofficial": "10730",
+  "description": "Tillverkning av pastaprodukter"
+ },
+ {
+  "SNI": "10.810",
+  "SNI_unofficial": "10810",
+  "description": "Sockertillverkning"
+ },
+ {
+  "SNI": "10.821",
+  "SNI_unofficial": "10821",
+  "description": "Tillverkning av sockerkonfektyrer"
+ },
+ {
+  "SNI": "10.822",
+  "SNI_unofficial": "10822",
+  "description": "Tillverkning av choklad och chokladkonfektyrer"
+ },
+ {
+  "SNI": "10.830",
+  "SNI_unofficial": "10830",
+  "description": "Framställning av te och kaffe"
+ },
+ {
+  "SNI": "10.840",
+  "SNI_unofficial": "10840",
+  "description": "Tillverkning av senap, ketchup, kryddor och andra smaksättningsmedel"
+ },
+ {
+  "SNI": "10.850",
+  "SNI_unofficial": "10850",
+  "description": "Tillverkning av lagad mat och färdigrätter"
+ },
+ {
+  "SNI": "10.860",
+  "SNI_unofficial": "10860",
+  "description": "Tillverkning av homogeniserade livsmedelspreparat inklusive dietmat"
+ },
+ {
+  "SNI": "10.890",
+  "SNI_unofficial": "10890",
+  "description": "Framställning av andra livsmedel"
+ },
+ {
+  "SNI": "10.910",
+  "SNI_unofficial": "10910",
+  "description": "Framställning av beredda fodermedel"
+ },
+ {
+  "SNI": "10.920",
+  "SNI_unofficial": "10920",
+  "description": "Framställning av mat till sällskapsdjur"
+ },
+ {
+  "SNI": "11.010",
+  "SNI_unofficial": "11010",
+  "description": "Destillering, rening och tillblandning av spritdrycker"
+ },
+ {
+  "SNI": "11.020",
+  "SNI_unofficial": "11020",
+  "description": "Framställning av vin från druvor"
+ },
+ {
+  "SNI": "11.030",
+  "SNI_unofficial": "11030",
+  "description": "Framställning av cider och andra fruktviner"
+ },
+ {
+  "SNI": "11.040",
+  "SNI_unofficial": "11040",
+  "description": "Framställning av andra icke-destillerade jästa drycker"
+ },
+ {
+  "SNI": "11.050",
+  "SNI_unofficial": "11050",
+  "description": "Framställning av öl"
+ },
+ {
+  "SNI": "11.060",
+  "SNI_unofficial": "11060",
+  "description": "Framställning av malt"
+ },
+ {
+  "SNI": "11.070",
+  "SNI_unofficial": "11070",
+  "description": "Framställning av läskedrycker, mineralvatten och annat vatten på flaska"
+ },
+ {
+  "SNI": "12.000",
+  "SNI_unofficial": "12000",
+  "description": "Tobaksvarutillverkning"
+ },
+ {
+  "SNI": "13.100",
+  "SNI_unofficial": "13100",
+  "description": "Garntillverkning"
+ },
+ {
+  "SNI": "13.200",
+  "SNI_unofficial": "13200",
+  "description": "Vävnadstillverkning"
+ },
+ {
+  "SNI": "13.300",
+  "SNI_unofficial": "13300",
+  "description": "Blekning, färgning och annan textilberedning"
+ },
+ {
+  "SNI": "13.910",
+  "SNI_unofficial": "13910",
+  "description": "Tillverkning av trikåväv"
+ },
+ {
+  "SNI": "13.921",
+  "SNI_unofficial": "13921",
+  "description": "Sömnad av gardiner, sängkläder och linnevaror"
+ },
+ {
+  "SNI": "13.922",
+  "SNI_unofficial": "13922",
+  "description": "Tillverkning av presenningar, tält, segel o.d."
+ },
+ {
+  "SNI": "13.930",
+  "SNI_unofficial": "13930",
+  "description": "Tillverkning av mattor"
+ },
+ {
+  "SNI": "13.940",
+  "SNI_unofficial": "13940",
+  "description": "Tågvirkes- och bindgarnstillverkning"
+ },
+ {
+  "SNI": "13.950",
+  "SNI_unofficial": "13950",
+  "description": "Tillverkning av bondad duk"
+ },
+ {
+  "SNI": "13.960",
+  "SNI_unofficial": "13960",
+  "description": "Tillverkning av andra tekniska textilier och industritextilier"
+ },
+ {
+  "SNI": "13.990",
+  "SNI_unofficial": "13990",
+  "description": "Övrig textilietillverkning"
+ },
+ {
+  "SNI": "14.110",
+  "SNI_unofficial": "14110",
+  "description": "Tillverkning av läder- och skinnkläder"
+ },
+ {
+  "SNI": "14.120",
+  "SNI_unofficial": "14120",
+  "description": "Tillverkning av arbets-, skydds- och överdragskläder"
+ },
+ {
+  "SNI": "14.130",
+  "SNI_unofficial": "14130",
+  "description": "Tillverkning av andra gång- och ytterkläder"
+ },
+ {
+  "SNI": "14.140",
+  "SNI_unofficial": "14140",
+  "description": "Tillverkning av underkläder, skjortor och blusar"
+ },
+ {
+  "SNI": "14.190",
+  "SNI_unofficial": "14190",
+  "description": "Tillverkning av andra beklädnadsvaror och tillbehör"
+ },
+ {
+  "SNI": "14.200",
+  "SNI_unofficial": "14200",
+  "description": "Tillverkning av pälsvaror"
+ },
+ {
+  "SNI": "14.310",
+  "SNI_unofficial": "14310",
+  "description": "Tillverkning av strumpor"
+ },
+ {
+  "SNI": "14.390",
+  "SNI_unofficial": "14390",
+  "description": "Tillverkning av andra trikåvaror"
+ },
+ {
+  "SNI": "15.110",
+  "SNI_unofficial": "15110",
+  "description": "Garvning och annan läderberedning; pälsberedning"
+ },
+ {
+  "SNI": "15.120",
+  "SNI_unofficial": "15120",
+  "description": "Tillverkning av reseffekter, handväskor, sadel- och seldon m. m."
+ },
+ {
+  "SNI": "15.200",
+  "SNI_unofficial": "15200",
+  "description": "Tillverkning av skodon"
+ },
+ {
+  "SNI": "16.101",
+  "SNI_unofficial": "16101",
+  "description": "Sågning av trä"
+ },
+ {
+  "SNI": "16.102",
+  "SNI_unofficial": "16102",
+  "description": "Hyvling av trä"
+ },
+ {
+  "SNI": "16.103",
+  "SNI_unofficial": "16103",
+  "description": "Träimpregnering"
+ },
+ {
+  "SNI": "16.210",
+  "SNI_unofficial": "16210",
+  "description": "Tillverkning av fanér och träbaserade skivor"
+ },
+ {
+  "SNI": "16.220",
+  "SNI_unofficial": "16220",
+  "description": "Tillverkning av sammansatta parkettgolv"
+ },
+ {
+  "SNI": "16.231",
+  "SNI_unofficial": "16231",
+  "description": "Tillverkning av monteringsfärdiga trähus"
+ },
+ {
+  "SNI": "16.232",
+  "SNI_unofficial": "16232",
+  "description": "Tillverkning av dörrar av trä"
+ },
+ {
+  "SNI": "16.233",
+  "SNI_unofficial": "16233",
+  "description": "Tillverkning av fönster av trä"
+ },
+ {
+  "SNI": "16.239",
+  "SNI_unofficial": "16239",
+  "description": "Tillverkning av övriga byggnads- och inredningssnickerier"
+ },
+ {
+  "SNI": "16.240",
+  "SNI_unofficial": "16240",
+  "description": "Träförpackningstillverkning"
+ },
+ {
+  "SNI": "16.291",
+  "SNI_unofficial": "16291",
+  "description": "Tillverkning av förädlade trädbränslen"
+ },
+ {
+  "SNI": "16.292",
+  "SNI_unofficial": "16292",
+  "description": "Övrig trävarutillverkning"
+ },
+ {
+  "SNI": "16.293",
+  "SNI_unofficial": "16293",
+  "description": "Tillverkning av varor av kork, halm, rotting o.d."
+ },
+ {
+  "SNI": "17.111",
+  "SNI_unofficial": "17111",
+  "description": "Tillverkning av mekanisk eller halvkemisk massa"
+ },
+ {
+  "SNI": "17.112",
+  "SNI_unofficial": "17112",
+  "description": "Sulfatmassatillverkning"
+ },
+ {
+  "SNI": "17.113",
+  "SNI_unofficial": "17113",
+  "description": "Sulfitmassatillverkning"
+ },
+ {
+  "SNI": "17.121",
+  "SNI_unofficial": "17121",
+  "description": "Tillverkning av tidnings- och journalpapper"
+ },
+ {
+  "SNI": "17.122",
+  "SNI_unofficial": "17122",
+  "description": "Tryckpapperstillverkning, ej tidnings- och journalpapper"
+ },
+ {
+  "SNI": "17.123",
+  "SNI_unofficial": "17123",
+  "description": "Tillverkning av kraftpapper och kraftpapp"
+ },
+ {
+  "SNI": "17.129",
+  "SNI_unofficial": "17129",
+  "description": "Övrig tillverkning av papper och papp"
+ },
+ {
+  "SNI": "17.211",
+  "SNI_unofficial": "17211",
+  "description": "Tillverkning av wellpapp och wellpappförpackningar"
+ },
+ {
+  "SNI": "17.219",
+  "SNI_unofficial": "17219",
+  "description": "Övrig tillverkning av pappers- och pappförpackningar"
+ },
+ {
+  "SNI": "17.220",
+  "SNI_unofficial": "17220",
+  "description": "Tillverkning av hushålls- och hygienartiklar av papper"
+ },
+ {
+  "SNI": "17.230",
+  "SNI_unofficial": "17230",
+  "description": "Tillverkning av skrivpapper, kuvert o.d."
+ },
+ {
+  "SNI": "17.240",
+  "SNI_unofficial": "17240",
+  "description": "Tapettillverkning"
+ },
+ {
+  "SNI": "17.290",
+  "SNI_unofficial": "17290",
+  "description": "Tillverkning av andra pappers- och pappvaror"
+ },
+ {
+  "SNI": "18.110",
+  "SNI_unofficial": "18110",
+  "description": "Tryckning av dagstidningar"
+ },
+ {
+  "SNI": "18.121",
+  "SNI_unofficial": "18121",
+  "description": "Tryckning av tidskrifter"
+ },
+ {
+  "SNI": "18.122",
+  "SNI_unofficial": "18122",
+  "description": "Tryckning av böcker och övriga trycksaker"
+ },
+ {
+  "SNI": "18.130",
+  "SNI_unofficial": "18130",
+  "description": "Grafiska tjänster före tryckning (prepress\/premedia)"
+ },
+ {
+  "SNI": "18.140",
+  "SNI_unofficial": "18140",
+  "description": "Bokbindning och andra tjänster i samband med tryckning"
+ },
+ {
+  "SNI": "18.200",
+  "SNI_unofficial": "18200",
+  "description": "Reproduktion av inspelningar"
+ },
+ {
+  "SNI": "19.100",
+  "SNI_unofficial": "19100",
+  "description": "Tillverkning av stenkolsprodukter"
+ },
+ {
+  "SNI": "19.200",
+  "SNI_unofficial": "19200",
+  "description": "Petroleumraffinering"
+ },
+ {
+  "SNI": "20.110",
+  "SNI_unofficial": "20110",
+  "description": "Industrigasframställning"
+ },
+ {
+  "SNI": "20.120",
+  "SNI_unofficial": "20120",
+  "description": "Tillverkning av färgämnen"
+ },
+ {
+  "SNI": "20.130",
+  "SNI_unofficial": "20130",
+  "description": "Tillverkning av andra oorganiska baskemikalier"
+ },
+ {
+  "SNI": "20.140",
+  "SNI_unofficial": "20140",
+  "description": "Tillverkning av andra organiska baskemikalier"
+ },
+ {
+  "SNI": "20.150",
+  "SNI_unofficial": "20150",
+  "description": "Tillverkning av gödselmedel och kväveprodukter"
+ },
+ {
+  "SNI": "20.160",
+  "SNI_unofficial": "20160",
+  "description": "Basplastframställning"
+ },
+ {
+  "SNI": "20.170",
+  "SNI_unofficial": "20170",
+  "description": "Tillverkning av syntetiskt basgummi"
+ },
+ {
+  "SNI": "20.200",
+  "SNI_unofficial": "20200",
+  "description": "Tillverkning av bekämpningsmedel och andra lantbrukskemiska produkter"
+ },
+ {
+  "SNI": "20.300",
+  "SNI_unofficial": "20300",
+  "description": "Tillverkning av färg, lack, tryckfärg m.m."
+ },
+ {
+  "SNI": "20.410",
+  "SNI_unofficial": "20410",
+  "description": "Tillverkning av tvål, såpa, tvättmedel och polermedel"
+ },
+ {
+  "SNI": "20.420",
+  "SNI_unofficial": "20420",
+  "description": "Tillverkning av parfymer och toalettartiklar"
+ },
+ {
+  "SNI": "20.510",
+  "SNI_unofficial": "20510",
+  "description": "Sprängämnestillverkning"
+ },
+ {
+  "SNI": "20.520",
+  "SNI_unofficial": "20520",
+  "description": "Tillverkning av lim"
+ },
+ {
+  "SNI": "20.530",
+  "SNI_unofficial": "20530",
+  "description": "Tillverkning av eteriska oljor"
+ },
+ {
+  "SNI": "20.590",
+  "SNI_unofficial": "20590",
+  "description": "Tillverkning av övriga kemiska produkter"
+ },
+ {
+  "SNI": "20.600",
+  "SNI_unofficial": "20600",
+  "description": "Konstfibertillverkning"
+ },
+ {
+  "SNI": "21.100",
+  "SNI_unofficial": "21100",
+  "description": "Tillverkning av farmaceutiska basprodukter"
+ },
+ {
+  "SNI": "21.200",
+  "SNI_unofficial": "21200",
+  "description": "Tillverkning av läkemedel"
+ },
+ {
+  "SNI": "22.110",
+  "SNI_unofficial": "22110",
+  "description": "Tillverkning av däck och slangar; regummering"
+ },
+ {
+  "SNI": "22.190",
+  "SNI_unofficial": "22190",
+  "description": "Annan gummivarutillverkning"
+ },
+ {
+  "SNI": "22.210",
+  "SNI_unofficial": "22210",
+  "description": "Tillverkning av plasthalvfabrikat"
+ },
+ {
+  "SNI": "22.220",
+  "SNI_unofficial": "22220",
+  "description": "Plastförpackningstillverkning"
+ },
+ {
+  "SNI": "22.230",
+  "SNI_unofficial": "22230",
+  "description": "Byggplastvarutillverkning"
+ },
+ {
+  "SNI": "22.290",
+  "SNI_unofficial": "22290",
+  "description": "Annan plastvarutillverkning"
+ },
+ {
+  "SNI": "23.110",
+  "SNI_unofficial": "23110",
+  "description": "Framställning av planglas"
+ },
+ {
+  "SNI": "23.120",
+  "SNI_unofficial": "23120",
+  "description": "Bearbetning av planglas"
+ },
+ {
+  "SNI": "23.130",
+  "SNI_unofficial": "23130",
+  "description": "Tillverkning av buteljer, glasförpackningar och husgeråd av glas"
+ },
+ {
+  "SNI": "23.140",
+  "SNI_unofficial": "23140",
+  "description": "Tillverkning av glasfiber"
+ },
+ {
+  "SNI": "23.190",
+  "SNI_unofficial": "23190",
+  "description": "Tillverkning av andra glasvaror inklusive tekniska glasvaror"
+ },
+ {
+  "SNI": "23.200",
+  "SNI_unofficial": "23200",
+  "description": "Tillverkning av eldfasta produkter"
+ },
+ {
+  "SNI": "23.310",
+  "SNI_unofficial": "23310",
+  "description": "Tillverkning av keramiska golv- och väggplattor"
+ },
+ {
+  "SNI": "23.320",
+  "SNI_unofficial": "23320",
+  "description": "Tillverkning av murtegel, takpannor och andra byggvaror av tegel"
+ },
+ {
+  "SNI": "23.410",
+  "SNI_unofficial": "23410",
+  "description": "Tillverkning av keramiska hushålls- och prydnadsartiklar"
+ },
+ {
+  "SNI": "23.420",
+  "SNI_unofficial": "23420",
+  "description": "Tillverkning av keramiska sanitetsartiklar"
+ },
+ {
+  "SNI": "23.430",
+  "SNI_unofficial": "23430",
+  "description": "Tillverkning av keramiska isolatorer o.d."
+ },
+ {
+  "SNI": "23.440",
+  "SNI_unofficial": "23440",
+  "description": "Tillverkning av andra tekniska keramiska produkter"
+ },
+ {
+  "SNI": "23.490",
+  "SNI_unofficial": "23490",
+  "description": "Tillverkning av andra keramiska produkter"
+ },
+ {
+  "SNI": "23.510",
+  "SNI_unofficial": "23510",
+  "description": "Tillverkning av cement"
+ },
+ {
+  "SNI": "23.520",
+  "SNI_unofficial": "23520",
+  "description": "Tillverkning av kalk och gips"
+ },
+ {
+  "SNI": "23.610",
+  "SNI_unofficial": "23610",
+  "description": "Tillverkning av betongvaror  för byggändamål"
+ },
+ {
+  "SNI": "23.620",
+  "SNI_unofficial": "23620",
+  "description": "Tillverkning av gipsvaror  för byggändamål"
+ },
+ {
+  "SNI": "23.630",
+  "SNI_unofficial": "23630",
+  "description": "Tillverkning av fabriksblandad betong"
+ },
+ {
+  "SNI": "23.640",
+  "SNI_unofficial": "23640",
+  "description": "Tillverkning av murbruk"
+ },
+ {
+  "SNI": "23.650",
+  "SNI_unofficial": "23650",
+  "description": "Tillverkning av fibercementvaror"
+ },
+ {
+  "SNI": "23.690",
+  "SNI_unofficial": "23690",
+  "description": "Tillverkning av andra varor av betong, cement och gips"
+ },
+ {
+  "SNI": "23.701",
+  "SNI_unofficial": "23701",
+  "description": "Huggning, formning och slutlig bearbetning av sten för byggnadsändamål"
+ },
+ {
+  "SNI": "23.709",
+  "SNI_unofficial": "23709",
+  "description": "Huggning, formning och slutlig bearbetning av sten för prydnadsändamål"
+ },
+ {
+  "SNI": "23.910",
+  "SNI_unofficial": "23910",
+  "description": "Slipmedelstillverkning"
+ },
+ {
+  "SNI": "23.991",
+  "SNI_unofficial": "23991",
+  "description": "Tillverkning av varor av sten- och mineralull"
+ },
+ {
+  "SNI": "23.999",
+  "SNI_unofficial": "23999",
+  "description": "Diverse övrig tillverkning av icke-metalliska mineraliska produkter"
+ },
+ {
+  "SNI": "24.100",
+  "SNI_unofficial": "24100",
+  "description": "Framställning av järn och stål samt ferrolegeringar"
+ },
+ {
+  "SNI": "24.200",
+  "SNI_unofficial": "24200",
+  "description": "Tillverkning av rör, ledningar, ihåliga profiler och tillbehör av stål"
+ },
+ {
+  "SNI": "24.310",
+  "SNI_unofficial": "24310",
+  "description": "Tillverkning av kalldragen stålstång"
+ },
+ {
+  "SNI": "24.320",
+  "SNI_unofficial": "24320",
+  "description": "Tillverkning av kallvalsade stålband"
+ },
+ {
+  "SNI": "24.330",
+  "SNI_unofficial": "24330",
+  "description": "Tillverkning av andra kallformade produkter av stål"
+ },
+ {
+  "SNI": "24.340",
+  "SNI_unofficial": "24340",
+  "description": "Tillverkning av kalldragen ståltråd"
+ },
+ {
+  "SNI": "24.410",
+  "SNI_unofficial": "24410",
+  "description": "Framställning av ädla metaller"
+ },
+ {
+  "SNI": "24.420",
+  "SNI_unofficial": "24420",
+  "description": "Framställning av aluminium"
+ },
+ {
+  "SNI": "24.430",
+  "SNI_unofficial": "24430",
+  "description": "Framställning av bly, zink och tenn"
+ },
+ {
+  "SNI": "24.440",
+  "SNI_unofficial": "24440",
+  "description": "Framställning av koppar"
+ },
+ {
+  "SNI": "24.450",
+  "SNI_unofficial": "24450",
+  "description": "Framställning av andra metaller"
+ },
+ {
+  "SNI": "24.460",
+  "SNI_unofficial": "24460",
+  "description": "Tillverkning av kärnbränsle"
+ },
+ {
+  "SNI": "24.510",
+  "SNI_unofficial": "24510",
+  "description": "Gjutning av järn"
+ },
+ {
+  "SNI": "24.520",
+  "SNI_unofficial": "24520",
+  "description": "Gjutning av stål"
+ },
+ {
+  "SNI": "24.530",
+  "SNI_unofficial": "24530",
+  "description": "Gjutning av lättmetall"
+ },
+ {
+  "SNI": "24.540",
+  "SNI_unofficial": "24540",
+  "description": "Gjutning av andra metaller"
+ },
+ {
+  "SNI": "25.110",
+  "SNI_unofficial": "25110",
+  "description": "Tillverkning av metallstommar och delar därav"
+ },
+ {
+  "SNI": "25.120",
+  "SNI_unofficial": "25120",
+  "description": "Tillverkning av dörrar och fönster av metall"
+ },
+ {
+  "SNI": "25.210",
+  "SNI_unofficial": "25210",
+  "description": "Tillverkning av radiatorer och pannor för centraluppvärmning"
+ },
+ {
+  "SNI": "25.290",
+  "SNI_unofficial": "25290",
+  "description": "Tillverkning av andra cisterner, tankar, kar och andra behållare av metall"
+ },
+ {
+  "SNI": "25.300",
+  "SNI_unofficial": "25300",
+  "description": "Tillverkning av ånggeneratorer utom varmvattenpannor för centraluppvärmning"
+ },
+ {
+  "SNI": "25.400",
+  "SNI_unofficial": "25400",
+  "description": "Tillverkning av vapen och ammunition"
+ },
+ {
+  "SNI": "25.500",
+  "SNI_unofficial": "25500",
+  "description": "Smidning, pressning, prägling och valsning av metall; pulvermetallurgi"
+ },
+ {
+  "SNI": "25.610",
+  "SNI_unofficial": "25610",
+  "description": "Beläggning och överdragning av metall"
+ },
+ {
+  "SNI": "25.620",
+  "SNI_unofficial": "25620",
+  "description": "Metallegoarbeten"
+ },
+ {
+  "SNI": "25.710",
+  "SNI_unofficial": "25710",
+  "description": "Tillverkning av bestick"
+ },
+ {
+  "SNI": "25.720",
+  "SNI_unofficial": "25720",
+  "description": "Tillverkning av lås och gångjärn"
+ },
+ {
+  "SNI": "25.730",
+  "SNI_unofficial": "25730",
+  "description": "Tillverkning av verktyg och redskap"
+ },
+ {
+  "SNI": "25.910",
+  "SNI_unofficial": "25910",
+  "description": "Tillverkning av stålfat o.d. behållare"
+ },
+ {
+  "SNI": "25.920",
+  "SNI_unofficial": "25920",
+  "description": "Tillverkning av lättmetallförpackningar"
+ },
+ {
+  "SNI": "25.930",
+  "SNI_unofficial": "25930",
+  "description": "Tillverkning av metalltrådvaror, kedjor och fjädrar"
+ },
+ {
+  "SNI": "25.940",
+  "SNI_unofficial": "25940",
+  "description": "Tillverkning av nitar och skruvar"
+ },
+ {
+  "SNI": "25.991",
+  "SNI_unofficial": "25991",
+  "description": "Tillverkning av diskbänkar, sanitetsgods m. m. av metall för byggändamål"
+ },
+ {
+  "SNI": "25.999",
+  "SNI_unofficial": "25999",
+  "description": "Diverse övrig metallvarutillverkning"
+ },
+ {
+  "SNI": "26.110",
+  "SNI_unofficial": "26110",
+  "description": "Tillverkning av elektroniska komponenter"
+ },
+ {
+  "SNI": "26.120",
+  "SNI_unofficial": "26120",
+  "description": "Tillverkning av kretskort"
+ },
+ {
+  "SNI": "26.200",
+  "SNI_unofficial": "26200",
+  "description": "Tillverkning av datorer och kringutrustning"
+ },
+ {
+  "SNI": "26.300",
+  "SNI_unofficial": "26300",
+  "description": "Tillverkning av kommunikationsutrustning"
+ },
+ {
+  "SNI": "26.400",
+  "SNI_unofficial": "26400",
+  "description": "Tillverkning av hemelektronik"
+ },
+ {
+  "SNI": "26.510",
+  "SNI_unofficial": "26510",
+  "description": "Tillverkning av instrument och apparater för mätning, provning och navigering"
+ },
+ {
+  "SNI": "26.520",
+  "SNI_unofficial": "26520",
+  "description": "Urtillverkning"
+ },
+ {
+  "SNI": "26.600",
+  "SNI_unofficial": "26600",
+  "description": "Tillverkning av strålningsutrustning samt elektromedicinsk och elektroterapeutisk utrustning"
+ },
+ {
+  "SNI": "26.700",
+  "SNI_unofficial": "26700",
+  "description": "Tillverkning av optiska instrument och fotoutrustning"
+ },
+ {
+  "SNI": "26.800",
+  "SNI_unofficial": "26800",
+  "description": "Tillverkning av magnetiska och optiska medier"
+ },
+ {
+  "SNI": "27.110",
+  "SNI_unofficial": "27110",
+  "description": "Tillverkning av elmotorer, generatorer och transformatorer"
+ },
+ {
+  "SNI": "27.120",
+  "SNI_unofficial": "27120",
+  "description": "Tillverkning av eldistributions- och elkontrollapparater"
+ },
+ {
+  "SNI": "27.200",
+  "SNI_unofficial": "27200",
+  "description": "Batteri- och ackumulatortillverkning"
+ },
+ {
+  "SNI": "27.310",
+  "SNI_unofficial": "27310",
+  "description": "Tillverkning av optiska fiberkablar"
+ },
+ {
+  "SNI": "27.320",
+  "SNI_unofficial": "27320",
+  "description": "Tillverkning av andra elektroniska och elektriska ledningar och kablar"
+ },
+ {
+  "SNI": "27.330",
+  "SNI_unofficial": "27330",
+  "description": "Tillverkning av kabeltillbehör"
+ },
+ {
+  "SNI": "27.400",
+  "SNI_unofficial": "27400",
+  "description": "Tillverkning av belysningsarmatur"
+ },
+ {
+  "SNI": "27.510",
+  "SNI_unofficial": "27510",
+  "description": "Tillverkning av elektriska hushållsmaskiner och hushållsapparater"
+ },
+ {
+  "SNI": "27.520",
+  "SNI_unofficial": "27520",
+  "description": "Tillverkning av icke-elektriska hushållsmaskiner och hushållsapparater"
+ },
+ {
+  "SNI": "27.900",
+  "SNI_unofficial": "27900",
+  "description": "Tillverkning av annan elapparatur"
+ },
+ {
+  "SNI": "28.110",
+  "SNI_unofficial": "28110",
+  "description": "Tillverkning av motorer och turbiner utom för luftfartyg och fordon"
+ },
+ {
+  "SNI": "28.120",
+  "SNI_unofficial": "28120",
+  "description": "Tillverkning av fluidteknisk utrustning"
+ },
+ {
+  "SNI": "28.130",
+  "SNI_unofficial": "28130",
+  "description": "Tillverkning av andra pumpar och kompressorer"
+ },
+ {
+  "SNI": "28.140",
+  "SNI_unofficial": "28140",
+  "description": "Tillverkning av andra kranar och ventiler"
+ },
+ {
+  "SNI": "28.150",
+  "SNI_unofficial": "28150",
+  "description": "Tillverkning av lager, kugghjul och andra delar för kraftöverföring"
+ },
+ {
+  "SNI": "28.210",
+  "SNI_unofficial": "28210",
+  "description": "Tillverkning av ugnar och brännare"
+ },
+ {
+  "SNI": "28.220",
+  "SNI_unofficial": "28220",
+  "description": "Tillverkning av lyft- och godshanteringsanordningar"
+ },
+ {
+  "SNI": "28.230",
+  "SNI_unofficial": "28230",
+  "description": "Tillverkning av kontorsmaskiner och kontorsutrustning (utom datorer och kringutrustning)"
+ },
+ {
+  "SNI": "28.240",
+  "SNI_unofficial": "28240",
+  "description": "Tillverkning av motordrivna handverktyg"
+ },
+ {
+  "SNI": "28.250",
+  "SNI_unofficial": "28250",
+  "description": "Tillverkning av maskiner och apparater för kyla och ventilation utom för hushåll"
+ },
+ {
+  "SNI": "28.290",
+  "SNI_unofficial": "28290",
+  "description": "Övrig tillverkning av maskiner för allmänt ändamål"
+ },
+ {
+  "SNI": "28.300",
+  "SNI_unofficial": "28300",
+  "description": "Tillverkning av jord- och skogsbruksmaskiner"
+ },
+ {
+  "SNI": "28.410",
+  "SNI_unofficial": "28410",
+  "description": "Tillverkning av verktygsmaskiner för metallbearbetning"
+ },
+ {
+  "SNI": "28.490",
+  "SNI_unofficial": "28490",
+  "description": "Tillverkning av övriga verktygsmaskiner"
+ },
+ {
+  "SNI": "28.910",
+  "SNI_unofficial": "28910",
+  "description": "Tillverkning av maskiner för metallurgi"
+ },
+ {
+  "SNI": "28.920",
+  "SNI_unofficial": "28920",
+  "description": "Tillverkning av gruv-, bergbrytnings- och byggmaskiner"
+ },
+ {
+  "SNI": "28.930",
+  "SNI_unofficial": "28930",
+  "description": "Tillverkning av maskiner för framställning av livsmedel, drycker och tobaksvaror"
+ },
+ {
+  "SNI": "28.940",
+  "SNI_unofficial": "28940",
+  "description": "Tillverkning av maskiner för produktion av textil-, beklädnads- och lädervaror"
+ },
+ {
+  "SNI": "28.950",
+  "SNI_unofficial": "28950",
+  "description": "Tillverkning av maskiner för produktion av massa, papper och papp"
+ },
+ {
+  "SNI": "28.960",
+  "SNI_unofficial": "28960",
+  "description": "Tillverkning av maskiner för gummi och plast"
+ },
+ {
+  "SNI": "28.990",
+  "SNI_unofficial": "28990",
+  "description": "Tillverkning av övriga specialmaskiner"
+ },
+ {
+  "SNI": "29.101",
+  "SNI_unofficial": "29101",
+  "description": "Tillverkning av personbilar och andra lätta motorfordon"
+ },
+ {
+  "SNI": "29.102",
+  "SNI_unofficial": "29102",
+  "description": "Tillverkning av lastbilar och andra tunga motorfordon"
+ },
+ {
+  "SNI": "29.200",
+  "SNI_unofficial": "29200",
+  "description": "Tillverkning av karosserier för motorfordon; tillverkning av släpfordon och påhängsvagnar"
+ },
+ {
+  "SNI": "29.310",
+  "SNI_unofficial": "29310",
+  "description": "Tillverkning av elektrisk och elektronisk utrustning för motorfordon"
+ },
+ {
+  "SNI": "29.320",
+  "SNI_unofficial": "29320",
+  "description": "Tillverkning av andra delar och tillbehör till motorfordon"
+ },
+ {
+  "SNI": "30.110",
+  "SNI_unofficial": "30110",
+  "description": "Byggande av fartyg och flytande materiel"
+ },
+ {
+  "SNI": "30.120",
+  "SNI_unofficial": "30120",
+  "description": "Byggande av fritidsbåtar"
+ },
+ {
+  "SNI": "30.200",
+  "SNI_unofficial": "30200",
+  "description": "Tillverkning av rälsfordon"
+ },
+ {
+  "SNI": "30.300",
+  "SNI_unofficial": "30300",
+  "description": "Tillverkning av luftfartyg, rymdfarkoster o.d."
+ },
+ {
+  "SNI": "30.400",
+  "SNI_unofficial": "30400",
+  "description": "Tillverkning av militära stridsfordon"
+ },
+ {
+  "SNI": "30.910",
+  "SNI_unofficial": "30910",
+  "description": "Tillverkning av motorcyklar"
+ },
+ {
+  "SNI": "30.920",
+  "SNI_unofficial": "30920",
+  "description": "Tillverkning av cyklar och invalidfordon"
+ },
+ {
+  "SNI": "30.990",
+  "SNI_unofficial": "30990",
+  "description": "Diverse övrig transportmedelstillverkning"
+ },
+ {
+  "SNI": "31.011",
+  "SNI_unofficial": "31011",
+  "description": "Tillverkning av kontors- och butiksmöbler"
+ },
+ {
+  "SNI": "31.012",
+  "SNI_unofficial": "31012",
+  "description": "Tillverkning av kontors- och butiksinredningar"
+ },
+ {
+  "SNI": "31.021",
+  "SNI_unofficial": "31021",
+  "description": "Tillverkning av köksmöbler"
+ },
+ {
+  "SNI": "31.022",
+  "SNI_unofficial": "31022",
+  "description": "Tillverkning av köksinredningar"
+ },
+ {
+  "SNI": "31.030",
+  "SNI_unofficial": "31030",
+  "description": "Tillverkning av madrasser"
+ },
+ {
+  "SNI": "31.090",
+  "SNI_unofficial": "31090",
+  "description": "Tillverkning av andra möbler"
+ },
+ {
+  "SNI": "32.110",
+  "SNI_unofficial": "32110",
+  "description": "Prägling av mynt"
+ },
+ {
+  "SNI": "32.120",
+  "SNI_unofficial": "32120",
+  "description": "Tillverkning av smycken, guld- och silversmedsvaror"
+ },
+ {
+  "SNI": "32.130",
+  "SNI_unofficial": "32130",
+  "description": "Tillverkning av bijouterier o.d."
+ },
+ {
+  "SNI": "32.200",
+  "SNI_unofficial": "32200",
+  "description": "Tillverkning av musikinstrument"
+ },
+ {
+  "SNI": "32.300",
+  "SNI_unofficial": "32300",
+  "description": "Tillverkning av sportartiklar"
+ },
+ {
+  "SNI": "32.400",
+  "SNI_unofficial": "32400",
+  "description": "Tillverkning av spel och leksaker"
+ },
+ {
+  "SNI": "32.501",
+  "SNI_unofficial": "32501",
+  "description": "Tillverkning av medicinska och dentala instrument och tillbehör"
+ },
+ {
+  "SNI": "32.502",
+  "SNI_unofficial": "32502",
+  "description": "Tillverkning av tandproteser"
+ },
+ {
+  "SNI": "32.910",
+  "SNI_unofficial": "32910",
+  "description": "Tillverkning av borstbinderiarbeten"
+ },
+ {
+  "SNI": "32.990",
+  "SNI_unofficial": "32990",
+  "description": "Diverse övrig tillverkning"
+ },
+ {
+  "SNI": "33.110",
+  "SNI_unofficial": "33110",
+  "description": "Reparation av metallvaror"
+ },
+ {
+  "SNI": "33.120",
+  "SNI_unofficial": "33120",
+  "description": "Reparation av maskiner"
+ },
+ {
+  "SNI": "33.130",
+  "SNI_unofficial": "33130",
+  "description": "Reparation av elektronisk och optisk utrustning"
+ },
+ {
+  "SNI": "33.140",
+  "SNI_unofficial": "33140",
+  "description": "Reparation av elapparatur"
+ },
+ {
+  "SNI": "33.150",
+  "SNI_unofficial": "33150",
+  "description": "Reparation och underhåll av fartyg och båtar"
+ },
+ {
+  "SNI": "33.160",
+  "SNI_unofficial": "33160",
+  "description": "Reparation och underhåll av luftfartyg och rymdfarkoster"
+ },
+ {
+  "SNI": "33.170",
+  "SNI_unofficial": "33170",
+  "description": "Reparation och underhåll av andra transportmedel"
+ },
+ {
+  "SNI": "33.190",
+  "SNI_unofficial": "33190",
+  "description": "Reparation av annan utrustning"
+ },
+ {
+  "SNI": "33.200",
+  "SNI_unofficial": "33200",
+  "description": "Installation av industrimaskiner och -utrustning"
+ },
+ {
+  "SNI": "35.110",
+  "SNI_unofficial": "35110",
+  "description": "Generering av elektricitet"
+ },
+ {
+  "SNI": "35.120",
+  "SNI_unofficial": "35120",
+  "description": "Överföring av elektricitet"
+ },
+ {
+  "SNI": "35.130",
+  "SNI_unofficial": "35130",
+  "description": "Distribution av elektricitet"
+ },
+ {
+  "SNI": "35.140",
+  "SNI_unofficial": "35140",
+  "description": "Handel med elektricitet"
+ },
+ {
+  "SNI": "35.210",
+  "SNI_unofficial": "35210",
+  "description": "Framställning av gas"
+ },
+ {
+  "SNI": "35.220",
+  "SNI_unofficial": "35220",
+  "description": "Distribution av gasformiga bränslen via rörnät"
+ },
+ {
+  "SNI": "35.230",
+  "SNI_unofficial": "35230",
+  "description": "Handel med gas via rörnät"
+ },
+ {
+  "SNI": "35.300",
+  "SNI_unofficial": "35300",
+  "description": "Försörjning av värme och kyla"
+ },
+ {
+  "SNI": "36.001",
+  "SNI_unofficial": "36001",
+  "description": "Grundvattenförsörjning"
+ },
+ {
+  "SNI": "36.002",
+  "SNI_unofficial": "36002",
+  "description": "Ytvattenförsörjning"
+ },
+ {
+  "SNI": "37.000",
+  "SNI_unofficial": "37000",
+  "description": "Avloppsrening"
+ },
+ {
+  "SNI": "38.110",
+  "SNI_unofficial": "38110",
+  "description": "Insamling av icke-farligt avfall"
+ },
+ {
+  "SNI": "38.120",
+  "SNI_unofficial": "38120",
+  "description": "Insamling av farligt avfall"
+ },
+ {
+  "SNI": "38.210",
+  "SNI_unofficial": "38210",
+  "description": "Behandling och bortskaffande av icke-farligt avfall"
+ },
+ {
+  "SNI": "38.220",
+  "SNI_unofficial": "38220",
+  "description": "Behandling och bortskaffande av farligt avfall"
+ },
+ {
+  "SNI": "38.311",
+  "SNI_unofficial": "38311",
+  "description": "Demontering av uttjänta fordon"
+ },
+ {
+  "SNI": "38.312",
+  "SNI_unofficial": "38312",
+  "description": "Demontering av elektrisk och elektronisk utrustning"
+ },
+ {
+  "SNI": "38.319",
+  "SNI_unofficial": "38319",
+  "description": "Demontering av övrig kasserad utrustning"
+ },
+ {
+  "SNI": "38.320",
+  "SNI_unofficial": "38320",
+  "description": "Återvinning av källsorterat material"
+ },
+ {
+  "SNI": "39.000",
+  "SNI_unofficial": "39000",
+  "description": "Sanering, efterbehandling av jord och vatten samt annan verksamhet för föroreningsbekämpning"
+ },
+ {
+  "SNI": "41.100",
+  "SNI_unofficial": "41100",
+  "description": "Utformning av byggprojekt"
+ },
+ {
+  "SNI": "41.200",
+  "SNI_unofficial": "41200",
+  "description": "Byggande av bostadshus och andra byggnader"
+ },
+ {
+  "SNI": "42.110",
+  "SNI_unofficial": "42110",
+  "description": "Anläggning av vägar och motorvägar"
+ },
+ {
+  "SNI": "42.120",
+  "SNI_unofficial": "42120",
+  "description": "Anläggning av järnvägar och tunnelbanor"
+ },
+ {
+  "SNI": "42.130",
+  "SNI_unofficial": "42130",
+  "description": "Anläggning av broar och tunnlar"
+ },
+ {
+  "SNI": "42.210",
+  "SNI_unofficial": "42210",
+  "description": "Allmännyttiga anläggningsarbeten för värme, vatten och avlopp"
+ },
+ {
+  "SNI": "42.220",
+  "SNI_unofficial": "42220",
+  "description": "Anläggningsarbeten för el och telekommunikation"
+ },
+ {
+  "SNI": "42.910",
+  "SNI_unofficial": "42910",
+  "description": "Vattenbyggnad"
+ },
+ {
+  "SNI": "42.990",
+  "SNI_unofficial": "42990",
+  "description": "Övriga anläggningsarbeten"
+ },
+ {
+  "SNI": "43.110",
+  "SNI_unofficial": "43110",
+  "description": "Rivning av hus och byggnader"
+ },
+ {
+  "SNI": "43.120",
+  "SNI_unofficial": "43120",
+  "description": "Mark- och grundarbeten"
+ },
+ {
+  "SNI": "43.130",
+  "SNI_unofficial": "43130",
+  "description": "Markundersökning"
+ },
+ {
+  "SNI": "43.210",
+  "SNI_unofficial": "43210",
+  "description": "Elinstallationer"
+ },
+ {
+  "SNI": "43.221",
+  "SNI_unofficial": "43221",
+  "description": "Värme- och sanitetsarbeten"
+ },
+ {
+  "SNI": "43.222",
+  "SNI_unofficial": "43222",
+  "description": "Ventilationsarbeten"
+ },
+ {
+  "SNI": "43.223",
+  "SNI_unofficial": "43223",
+  "description": "Kyl- och frysinstallationsarbeten"
+ },
+ {
+  "SNI": "43.229",
+  "SNI_unofficial": "43229",
+  "description": "Övriga VVS-arbeten"
+ },
+ {
+  "SNI": "43.290",
+  "SNI_unofficial": "43290",
+  "description": "Andra bygginstallationer"
+ },
+ {
+  "SNI": "43.310",
+  "SNI_unofficial": "43310",
+  "description": "Puts-, fasad- och stuckatörsarbeten"
+ },
+ {
+  "SNI": "43.320",
+  "SNI_unofficial": "43320",
+  "description": "Byggnadssnickeriarbeten"
+ },
+ {
+  "SNI": "43.330",
+  "SNI_unofficial": "43330",
+  "description": "Golv- och väggbeläggningsarbeten"
+ },
+ {
+  "SNI": "43.341",
+  "SNI_unofficial": "43341",
+  "description": "Måleriarbeten"
+ },
+ {
+  "SNI": "43.342",
+  "SNI_unofficial": "43342",
+  "description": "Glasmästeriarbeten"
+ },
+ {
+  "SNI": "43.390",
+  "SNI_unofficial": "43390",
+  "description": "Annan slutbehandling av byggnader"
+ },
+ {
+  "SNI": "43.911",
+  "SNI_unofficial": "43911",
+  "description": "Takarbeten av plåt"
+ },
+ {
+  "SNI": "43.912",
+  "SNI_unofficial": "43912",
+  "description": "Takarbeten av andra material än plåt"
+ },
+ {
+  "SNI": "43.991",
+  "SNI_unofficial": "43991",
+  "description": "Uthyrning av bygg- och anläggningsmaskiner med förare"
+ },
+ {
+  "SNI": "43.999",
+  "SNI_unofficial": "43999",
+  "description": "Diverse övrig specialiserad bygg- och anläggningsverksamhet"
+ },
+ {
+  "SNI": "45.110",
+  "SNI_unofficial": "45110",
+  "description": "Handel med personbilar och lätta motorfordon"
+ },
+ {
+  "SNI": "45.191",
+  "SNI_unofficial": "45191",
+  "description": "Handel med lastbilar, bussar och specialfordon"
+ },
+ {
+  "SNI": "45.192",
+  "SNI_unofficial": "45192",
+  "description": "Handel med husvagnar, husbilar, släpfordon och påhängsvagnar"
+ },
+ {
+  "SNI": "45.201",
+  "SNI_unofficial": "45201",
+  "description": "Allmän service och reparation av motorfordon utom motorcyklar"
+ },
+ {
+  "SNI": "45.202",
+  "SNI_unofficial": "45202",
+  "description": "Plåt-, lack- och glasreparationer på motorfordon utom motorcyklar"
+ },
+ {
+  "SNI": "45.203",
+  "SNI_unofficial": "45203",
+  "description": "Installationer och reparationer av elsystem till motorfordon utom motorcyklar"
+ },
+ {
+  "SNI": "45.204",
+  "SNI_unofficial": "45204",
+  "description": "Däckservice"
+ },
+ {
+  "SNI": "45.310",
+  "SNI_unofficial": "45310",
+  "description": "Parti- och provisionshandel med reservdelar och tillbehör till motorfordon utom motorcyklar"
+ },
+ {
+  "SNI": "45.320",
+  "SNI_unofficial": "45320",
+  "description": "Detaljhandel med reservdelar och tillbehör till motorfordon utom motorcyklar"
+ },
+ {
+  "SNI": "45.400",
+  "SNI_unofficial": "45400",
+  "description": "Handel med och service av motorcyklar inklusive reservdelar och tillbehör"
+ },
+ {
+  "SNI": "46.110",
+  "SNI_unofficial": "46110",
+  "description": "Provisionshandel med jordbruksråvaror, levande djur, textilråvaror och textilhalvfabrikat"
+ },
+ {
+  "SNI": "46.120",
+  "SNI_unofficial": "46120",
+  "description": "Provisionshandel med bränsle, malm, metaller och industrikemikalier"
+ },
+ {
+  "SNI": "46.130",
+  "SNI_unofficial": "46130",
+  "description": "Provisionshandel med virke och byggmaterial"
+ },
+ {
+  "SNI": "46.141",
+  "SNI_unofficial": "46141",
+  "description": "Provisionshandel med maskiner, industriell utrustning, fartyg och luftfartyg utom kontorsutrustning och datorer"
+ },
+ {
+  "SNI": "46.142",
+  "SNI_unofficial": "46142",
+  "description": "Provisionshandel med kontorsutrustning och datorer"
+ },
+ {
+  "SNI": "46.150",
+  "SNI_unofficial": "46150",
+  "description": "Provisionshandel med möbler, hushålls- och järnhandelsvaror"
+ },
+ {
+  "SNI": "46.160",
+  "SNI_unofficial": "46160",
+  "description": "Provisionshandel med textilier, kläder, skodon och lädervaror"
+ },
+ {
+  "SNI": "46.170",
+  "SNI_unofficial": "46170",
+  "description": "Provisionshandel med livsmedel, drycker och tobak"
+ },
+ {
+  "SNI": "46.180",
+  "SNI_unofficial": "46180",
+  "description": "Provisionshandel med annat specialsortiment"
+ },
+ {
+  "SNI": "46.190",
+  "SNI_unofficial": "46190",
+  "description": "Provisionshandel med blandat sortiment"
+ },
+ {
+  "SNI": "46.210",
+  "SNI_unofficial": "46210",
+  "description": "Partihandel med spannmål, råtobak, utsäde och djurfoder"
+ },
+ {
+  "SNI": "46.220",
+  "SNI_unofficial": "46220",
+  "description": "Partihandel med blommor och växter"
+ },
+ {
+  "SNI": "46.230",
+  "SNI_unofficial": "46230",
+  "description": "Partihandel med levande djur"
+ },
+ {
+  "SNI": "46.240",
+  "SNI_unofficial": "46240",
+  "description": "Partihandel med hudar, skinn och läder"
+ },
+ {
+  "SNI": "46.310",
+  "SNI_unofficial": "46310",
+  "description": "Partihandel med frukt och grönsaker"
+ },
+ {
+  "SNI": "46.320",
+  "SNI_unofficial": "46320",
+  "description": "Partihandel med kött- och köttvaror"
+ },
+ {
+  "SNI": "46.330",
+  "SNI_unofficial": "46330",
+  "description": "Partihandel med mejeriprodukter, ägg, matolja och matfett"
+ },
+ {
+  "SNI": "46.340",
+  "SNI_unofficial": "46340",
+  "description": "Partihandel med drycker"
+ },
+ {
+  "SNI": "46.350",
+  "SNI_unofficial": "46350",
+  "description": "Partihandel med tobak"
+ },
+ {
+  "SNI": "46.360",
+  "SNI_unofficial": "46360",
+  "description": "Partihandel med socker, choklad och sockerkonfektyrer"
+ },
+ {
+  "SNI": "46.370",
+  "SNI_unofficial": "46370",
+  "description": "Partihandel med kaffe, te, kakao och kryddor"
+ },
+ {
+  "SNI": "46.380",
+  "SNI_unofficial": "46380",
+  "description": "Partihandel med andra livsmedel, bl.a. fisk samt skal- och blötdjur"
+ },
+ {
+  "SNI": "46.390",
+  "SNI_unofficial": "46390",
+  "description": "Icke specialiserad partihandel med livsmedel, drycker och tobak"
+ },
+ {
+  "SNI": "46.410",
+  "SNI_unofficial": "46410",
+  "description": "Partihandel med textilier"
+ },
+ {
+  "SNI": "46.420",
+  "SNI_unofficial": "46420",
+  "description": "Partihandel med kläder och skodon"
+ },
+ {
+  "SNI": "46.431",
+  "SNI_unofficial": "46431",
+  "description": "Partihandel med elektriska hushållsmaskiner och -apparater"
+ },
+ {
+  "SNI": "46.432",
+  "SNI_unofficial": "46432",
+  "description": "Partihandel med ljud- och bildanläggningar samt videoutrustning"
+ },
+ {
+  "SNI": "46.433",
+  "SNI_unofficial": "46433",
+  "description": "Partihandel med inspelade band och skivor för musik och bild"
+ },
+ {
+  "SNI": "46.434",
+  "SNI_unofficial": "46434",
+  "description": "Partihandel med elartiklar"
+ },
+ {
+  "SNI": "46.435",
+  "SNI_unofficial": "46435",
+  "description": "Partihandel med fotografiska och optiska produkter"
+ },
+ {
+  "SNI": "46.440",
+  "SNI_unofficial": "46440",
+  "description": "Partihandel med glas och porslin, rengöringsmedel"
+ },
+ {
+  "SNI": "46.450",
+  "SNI_unofficial": "46450",
+  "description": "Partihandel med parfym och kosmetika"
+ },
+ {
+  "SNI": "46.460",
+  "SNI_unofficial": "46460",
+  "description": "Partihandel med medicinsk utrustning och apoteksvaror"
+ },
+ {
+  "SNI": "46.470",
+  "SNI_unofficial": "46470",
+  "description": "Partihandel med möbler, mattor och belysningsartiklar"
+ },
+ {
+  "SNI": "46.480",
+  "SNI_unofficial": "46480",
+  "description": "Partihandel med ur och guldsmedsvaror"
+ },
+ {
+  "SNI": "46.491",
+  "SNI_unofficial": "46491",
+  "description": "Partihandel med sport- och fritidsartiklar"
+ },
+ {
+  "SNI": "46.492",
+  "SNI_unofficial": "46492",
+  "description": "Partihandel med kontorsförbrukningsvaror"
+ },
+ {
+  "SNI": "46.499",
+  "SNI_unofficial": "46499",
+  "description": "Partihandel med övriga hushållsvaror"
+ },
+ {
+  "SNI": "46.510",
+  "SNI_unofficial": "46510",
+  "description": "Partihandel med datorer och kringutrustning samt programvara"
+ },
+ {
+  "SNI": "46.521",
+  "SNI_unofficial": "46521",
+  "description": "Partihandel med elektronikkomponenter"
+ },
+ {
+  "SNI": "46.522",
+  "SNI_unofficial": "46522",
+  "description": "Partihandel med teleprodukter"
+ },
+ {
+  "SNI": "46.610",
+  "SNI_unofficial": "46610",
+  "description": "Partihandel med jordbruksmaskiner och -utrustning"
+ },
+ {
+  "SNI": "46.620",
+  "SNI_unofficial": "46620",
+  "description": "Partihandel med verktygsmaskiner"
+ },
+ {
+  "SNI": "46.630",
+  "SNI_unofficial": "46630",
+  "description": "Partihandel med gruv-, bygg- och anläggningsmaskiner"
+ },
+ {
+  "SNI": "46.640",
+  "SNI_unofficial": "46640",
+  "description": "Partihandel med textil-, sy- och stickmaskiner"
+ },
+ {
+  "SNI": "46.650",
+  "SNI_unofficial": "46650",
+  "description": "Partihandel med kontorsmöbler"
+ },
+ {
+  "SNI": "46.660",
+  "SNI_unofficial": "46660",
+  "description": "Partihandel med andra kontorsmaskiner och kontorsutrustning"
+ },
+ {
+  "SNI": "46.691",
+  "SNI_unofficial": "46691",
+  "description": "Partihandel med mät- och precisionsinstrument"
+ },
+ {
+  "SNI": "46.692",
+  "SNI_unofficial": "46692",
+  "description": "Partihandel med datoriserad materialhanteringsutrustning"
+ },
+ {
+  "SNI": "46.699",
+  "SNI_unofficial": "46699",
+  "description": "Partihandel med diverse övriga maskiner och utrustning"
+ },
+ {
+  "SNI": "46.710",
+  "SNI_unofficial": "46710",
+  "description": "Partihandel med bränslen"
+ },
+ {
+  "SNI": "46.720",
+  "SNI_unofficial": "46720",
+  "description": "Partihandel med metaller och metallmalmer"
+ },
+ {
+  "SNI": "46.731",
+  "SNI_unofficial": "46731",
+  "description": "Partihandel med virke och andra byggmaterial"
+ },
+ {
+  "SNI": "46.732",
+  "SNI_unofficial": "46732",
+  "description": "Partihandel med sanitetsgods"
+ },
+ {
+  "SNI": "46.741",
+  "SNI_unofficial": "46741",
+  "description": "Partihandel med järnhandelsvaror"
+ },
+ {
+  "SNI": "46.742",
+  "SNI_unofficial": "46742",
+  "description": "Partihandel med VVS-varor"
+ },
+ {
+  "SNI": "46.750",
+  "SNI_unofficial": "46750",
+  "description": "Partihandel med kemiska produkter"
+ },
+ {
+  "SNI": "46.761",
+  "SNI_unofficial": "46761",
+  "description": "Partihandel med industriförnödenheter"
+ },
+ {
+  "SNI": "46.762",
+  "SNI_unofficial": "46762",
+  "description": "Partihandel med emballage"
+ },
+ {
+  "SNI": "46.769",
+  "SNI_unofficial": "46769",
+  "description": "Partihandel med övriga insatsvaror"
+ },
+ {
+  "SNI": "46.771",
+  "SNI_unofficial": "46771",
+  "description": "Partihandel med uttjänta fordon"
+ },
+ {
+  "SNI": "46.772",
+  "SNI_unofficial": "46772",
+  "description": "Partihandel med metallavfall och metallskrot"
+ },
+ {
+  "SNI": "46.773",
+  "SNI_unofficial": "46773",
+  "description": "Partihandel med avfall och skrot av icke-metall"
+ },
+ {
+  "SNI": "46.900",
+  "SNI_unofficial": "46900",
+  "description": "Övrig partihandel"
+ },
+ {
+  "SNI": "47.111",
+  "SNI_unofficial": "47111",
+  "description": "Varuhus- och stormarknadshandel, mest livsmedel, drycker och tobak"
+ },
+ {
+  "SNI": "47.112",
+  "SNI_unofficial": "47112",
+  "description": "Livsmedelshandel med brett sortiment, ej varuhus eller stormarknad"
+ },
+ {
+  "SNI": "47.191",
+  "SNI_unofficial": "47191",
+  "description": "Annan varuhus- och stormarknadshandel"
+ },
+ {
+  "SNI": "47.199",
+  "SNI_unofficial": "47199",
+  "description": "Övrig detaljhandel med brett sortiment"
+ },
+ {
+  "SNI": "47.210",
+  "SNI_unofficial": "47210",
+  "description": "Specialiserad butikshandel med frukt och grönsaker"
+ },
+ {
+  "SNI": "47.220",
+  "SNI_unofficial": "47220",
+  "description": "Specialiserad butikshandel med kött och charkuterier"
+ },
+ {
+  "SNI": "47.230",
+  "SNI_unofficial": "47230",
+  "description": "Specialiserad butikshandel med fisk, skal- och blötdjur"
+ },
+ {
+  "SNI": "47.241",
+  "SNI_unofficial": "47241",
+  "description": "Specialiserad butikshandel med bröd och konditorivaror"
+ },
+ {
+  "SNI": "47.242",
+  "SNI_unofficial": "47242",
+  "description": "Specialiserad butikshandel med konfektyrer"
+ },
+ {
+  "SNI": "47.250",
+  "SNI_unofficial": "47250",
+  "description": "Specialiserad butikshandel med alkoholhaltiga och andra drycker"
+ },
+ {
+  "SNI": "47.260",
+  "SNI_unofficial": "47260",
+  "description": "Specialiserad butikshandel med tobaksvaror"
+ },
+ {
+  "SNI": "47.291",
+  "SNI_unofficial": "47291",
+  "description": "Specialiserad butikshandel med hälsokost"
+ },
+ {
+  "SNI": "47.299",
+  "SNI_unofficial": "47299",
+  "description": "Övrig specialiserad butikshandel med livsmedel"
+ },
+ {
+  "SNI": "47.300",
+  "SNI_unofficial": "47300",
+  "description": "Specialiserad detaljhandel med drivmedel"
+ },
+ {
+  "SNI": "47.410",
+  "SNI_unofficial": "47410",
+  "description": "Specialiserad butikshandel med datorer, programvara, data- och tv-spel"
+ },
+ {
+  "SNI": "47.420",
+  "SNI_unofficial": "47420",
+  "description": "Specialiserad butikshandel med telekommunikationsutrustning"
+ },
+ {
+  "SNI": "47.430",
+  "SNI_unofficial": "47430",
+  "description": "Specialiserad butikshandel med ljud- och bildanläggningar samt videoutrustning"
+ },
+ {
+  "SNI": "47.510",
+  "SNI_unofficial": "47510",
+  "description": "Specialiserad butikshandel med textilier"
+ },
+ {
+  "SNI": "47.521",
+  "SNI_unofficial": "47521",
+  "description": "Specialiserad butikshandel med virke och byggvaror"
+ },
+ {
+  "SNI": "47.522",
+  "SNI_unofficial": "47522",
+  "description": "Specialiserad butikshandel med järn- och VVS-varor"
+ },
+ {
+  "SNI": "47.523",
+  "SNI_unofficial": "47523",
+  "description": "Specialiserad butikshandel med färger, fernissor och lacker"
+ },
+ {
+  "SNI": "47.531",
+  "SNI_unofficial": "47531",
+  "description": "Specialiserad butikshandel med mattor och annan vägg- och golvbeklädnad"
+ },
+ {
+  "SNI": "47.532",
+  "SNI_unofficial": "47532",
+  "description": "Specialiserad butikshandel med inredningstextilier"
+ },
+ {
+  "SNI": "47.540",
+  "SNI_unofficial": "47540",
+  "description": "Specialiserad butikshandel med elektriska hushållsmaskiner och hushållsapparater"
+ },
+ {
+  "SNI": "47.591",
+  "SNI_unofficial": "47591",
+  "description": "Specialiserad butikshandel med möbler för hemmet"
+ },
+ {
+  "SNI": "47.592",
+  "SNI_unofficial": "47592",
+  "description": "Specialiserad butikshandel med kontorsmöbler"
+ },
+ {
+  "SNI": "47.593",
+  "SNI_unofficial": "47593",
+  "description": "Specialiserad butikshandel med glas, porslin och andra bosättningsvaror"
+ },
+ {
+  "SNI": "47.594",
+  "SNI_unofficial": "47594",
+  "description": "Specialiserad butikshandel med belysningsartiklar"
+ },
+ {
+  "SNI": "47.595",
+  "SNI_unofficial": "47595",
+  "description": "Specialiserad butikshandel med musikinstrument och noter"
+ },
+ {
+  "SNI": "47.610",
+  "SNI_unofficial": "47610",
+  "description": "Specialiserad butikshandel med böcker"
+ },
+ {
+  "SNI": "47.621",
+  "SNI_unofficial": "47621",
+  "description": "Specialiserad butikshandel med tidningar"
+ },
+ {
+  "SNI": "47.622",
+  "SNI_unofficial": "47622",
+  "description": "Specialiserad butikshandel med kontorsförbrukningsvaror"
+ },
+ {
+  "SNI": "47.630",
+  "SNI_unofficial": "47630",
+  "description": "Specialiserad butikshandel med inspelade och oinspelade band och skivor för musik och bild"
+ },
+ {
+  "SNI": "47.641",
+  "SNI_unofficial": "47641",
+  "description": "Specialiserad butikshandel med sport- och fritidsartiklar utom cyklar och båtar"
+ },
+ {
+  "SNI": "47.642",
+  "SNI_unofficial": "47642",
+  "description": "Specialiserad butikshandel med cyklar"
+ },
+ {
+  "SNI": "47.643",
+  "SNI_unofficial": "47643",
+  "description": "Specialiserad butikshandel med båtar"
+ },
+ {
+  "SNI": "47.650",
+  "SNI_unofficial": "47650",
+  "description": "Specialiserad butikshandel med spel och leksaker"
+ },
+ {
+  "SNI": "47.711",
+  "SNI_unofficial": "47711",
+  "description": "Specialiserad butikshandel med herr-, dam- och barnkläder, blandat"
+ },
+ {
+  "SNI": "47.712",
+  "SNI_unofficial": "47712",
+  "description": "Specialiserad butikshandel med herrkläder"
+ },
+ {
+  "SNI": "47.713",
+  "SNI_unofficial": "47713",
+  "description": "Specialiserad butikshandel med damkläder"
+ },
+ {
+  "SNI": "47.714",
+  "SNI_unofficial": "47714",
+  "description": "Specialiserad butikshandel med barnkläder"
+ },
+ {
+  "SNI": "47.715",
+  "SNI_unofficial": "47715",
+  "description": "Specialiserad butikshandel med pälsar"
+ },
+ {
+  "SNI": "47.721",
+  "SNI_unofficial": "47721",
+  "description": "Specialiserad butikshandel med skodon"
+ },
+ {
+  "SNI": "47.722",
+  "SNI_unofficial": "47722",
+  "description": "Specialiserad butikshandel med väskor, reseffekter och lädervaror"
+ },
+ {
+  "SNI": "47.730",
+  "SNI_unofficial": "47730",
+  "description": "Apotekshandel"
+ },
+ {
+  "SNI": "47.740",
+  "SNI_unofficial": "47740",
+  "description": "Specialiserad butikshandel med sjukvårdsartiklar"
+ },
+ {
+  "SNI": "47.750",
+  "SNI_unofficial": "47750",
+  "description": "Specialiserad butikshandel med kosmetika och hygienartiklar"
+ },
+ {
+  "SNI": "47.761",
+  "SNI_unofficial": "47761",
+  "description": "Specialiserad butikshandel med blommor och andra växter, frön och gödselmedel"
+ },
+ {
+  "SNI": "47.762",
+  "SNI_unofficial": "47762",
+  "description": "Specialiserad butikshandel med små sällskapsdjur"
+ },
+ {
+  "SNI": "47.771",
+  "SNI_unofficial": "47771",
+  "description": "Specialiserad butikshandel med ur"
+ },
+ {
+  "SNI": "47.772",
+  "SNI_unofficial": "47772",
+  "description": "Specialiserad butikshandel med guldsmedsvaror och smycken"
+ },
+ {
+  "SNI": "47.781",
+  "SNI_unofficial": "47781",
+  "description": "Specialiserad butikshandel med glasögon och andra optiska artiklar utom fotoutrustning"
+ },
+ {
+  "SNI": "47.782",
+  "SNI_unofficial": "47782",
+  "description": "Specialiserad butikshandel med fotoutrustning"
+ },
+ {
+  "SNI": "47.783",
+  "SNI_unofficial": "47783",
+  "description": "Specialiserad butikshandel med konst samt galleriverksamhet"
+ },
+ {
+  "SNI": "47.784",
+  "SNI_unofficial": "47784",
+  "description": "Specialiserad butikshandel med mynt och frimärken"
+ },
+ {
+  "SNI": "47.789",
+  "SNI_unofficial": "47789",
+  "description": "Övrig specialiserad butikshandel"
+ },
+ {
+  "SNI": "47.791",
+  "SNI_unofficial": "47791",
+  "description": "Specialiserad butikshandel med antikviteter och begagnade böcker"
+ },
+ {
+  "SNI": "47.792",
+  "SNI_unofficial": "47792",
+  "description": "Specialiserad butikshandel med övriga begagnade varor"
+ },
+ {
+  "SNI": "47.793",
+  "SNI_unofficial": "47793",
+  "description": "Auktioner i butik"
+ },
+ {
+  "SNI": "47.810",
+  "SNI_unofficial": "47810",
+  "description": "Torg- och marknadshandel med livsmedel, drycker och tobak"
+ },
+ {
+  "SNI": "47.820",
+  "SNI_unofficial": "47820",
+  "description": "Torg- och marknadshandel med textilier, kläder och skodon"
+ },
+ {
+  "SNI": "47.890",
+  "SNI_unofficial": "47890",
+  "description": "Torg- och marknadshandel med övriga varor"
+ },
+ {
+  "SNI": "47.911",
+  "SNI_unofficial": "47911",
+  "description": "Postorderhandel och detaljhandel på Internet med brett sortiment"
+ },
+ {
+  "SNI": "47.912",
+  "SNI_unofficial": "47912",
+  "description": "Postorderhandel och detaljhandel på Internet med beklädnadsvaror"
+ },
+ {
+  "SNI": "47.913",
+  "SNI_unofficial": "47913",
+  "description": "Postorderhandel och detaljhandel på Internet med böcker och andra mediavaror"
+ },
+ {
+  "SNI": "47.914",
+  "SNI_unofficial": "47914",
+  "description": "Postorderhandel och detaljhandel på Internet med datorer och annan elektronisk utrustning"
+ },
+ {
+  "SNI": "47.915",
+  "SNI_unofficial": "47915",
+  "description": "Postorderhandel och detaljhandel på Internet med sport- och fritidsutrustning"
+ },
+ {
+  "SNI": "47.916",
+  "SNI_unofficial": "47916",
+  "description": "Postorderhandel och detaljhandel på Internet med bosättningsvaror"
+ },
+ {
+  "SNI": "47.917",
+  "SNI_unofficial": "47917",
+  "description": "Auktioner på Internet"
+ },
+ {
+  "SNI": "47.919",
+  "SNI_unofficial": "47919",
+  "description": "Postorderhandel och detaljhandel på Internet med övriga varor"
+ },
+ {
+  "SNI": "47.991",
+  "SNI_unofficial": "47991",
+  "description": "Provisionsdetaljhandel (ej auktioner)"
+ },
+ {
+  "SNI": "47.992",
+  "SNI_unofficial": "47992",
+  "description": "Ambulerande och tillfällig handel med livsmedel"
+ },
+ {
+  "SNI": "47.993",
+  "SNI_unofficial": "47993",
+  "description": "Ambulerande och tillfällig handel med övriga varor"
+ },
+ {
+  "SNI": "47.994",
+  "SNI_unofficial": "47994",
+  "description": "Auktioner ej i butik eller på Internet"
+ },
+ {
+  "SNI": "47.999",
+  "SNI_unofficial": "47999",
+  "description": "Övrig detaljhandel ej i butik"
+ },
+ {
+  "SNI": "49.100",
+  "SNI_unofficial": "49100",
+  "description": "Järnvägstransport, passagerartrafik"
+ },
+ {
+  "SNI": "49.200",
+  "SNI_unofficial": "49200",
+  "description": "Järnvägstransport, godstrafik"
+ },
+ {
+  "SNI": "49.311",
+  "SNI_unofficial": "49311",
+  "description": "Linjebussverksamhet"
+ },
+ {
+  "SNI": "49.319",
+  "SNI_unofficial": "49319",
+  "description": "Övrig kollektivtrafik"
+ },
+ {
+  "SNI": "49.320",
+  "SNI_unofficial": "49320",
+  "description": "Taxitrafik"
+ },
+ {
+  "SNI": "49.390",
+  "SNI_unofficial": "49390",
+  "description": "Annan landtransport av passagerare"
+ },
+ {
+  "SNI": "49.410",
+  "SNI_unofficial": "49410",
+  "description": "Vägtransport, godstrafik"
+ },
+ {
+  "SNI": "49.420",
+  "SNI_unofficial": "49420",
+  "description": "Flyttjänster"
+ },
+ {
+  "SNI": "49.500",
+  "SNI_unofficial": "49500",
+  "description": "Transport i rörsystem"
+ },
+ {
+  "SNI": "50.101",
+  "SNI_unofficial": "50101",
+  "description": "Reguljär sjötrafik över hav och kust av passagerare"
+ },
+ {
+  "SNI": "50.102",
+  "SNI_unofficial": "50102",
+  "description": "Icke reguljär sjötrafik över hav och kust av passagerare"
+ },
+ {
+  "SNI": "50.201",
+  "SNI_unofficial": "50201",
+  "description": "Reguljär sjötrafik över hav och kust av gods"
+ },
+ {
+  "SNI": "50.202",
+  "SNI_unofficial": "50202",
+  "description": "Icke reguljär sjötrafik över hav och kust av gods"
+ },
+ {
+  "SNI": "50.301",
+  "SNI_unofficial": "50301",
+  "description": "Reguljär sjötrafik på inre vattenvägar av passagerare"
+ },
+ {
+  "SNI": "50.302",
+  "SNI_unofficial": "50302",
+  "description": "Icke reguljär sjötrafik på inre vattenvägar av passagerare"
+ },
+ {
+  "SNI": "50.401",
+  "SNI_unofficial": "50401",
+  "description": "Reguljär sjötrafik på inre vattenvägar av gods"
+ },
+ {
+  "SNI": "50.402",
+  "SNI_unofficial": "50402",
+  "description": "Icke reguljär sjötrafik på inre vattenvägar av gods"
+ },
+ {
+  "SNI": "51.101",
+  "SNI_unofficial": "51101",
+  "description": "Reguljär lufttransport av passagerare"
+ },
+ {
+  "SNI": "51.102",
+  "SNI_unofficial": "51102",
+  "description": "Icke reguljär lufttransport av passagerare"
+ },
+ {
+  "SNI": "51.211",
+  "SNI_unofficial": "51211",
+  "description": "Reguljär lufttransport av gods"
+ },
+ {
+  "SNI": "51.212",
+  "SNI_unofficial": "51212",
+  "description": "Icke reguljär lufttransport av gods"
+ },
+ {
+  "SNI": "51.220",
+  "SNI_unofficial": "51220",
+  "description": "Rymdfart"
+ },
+ {
+  "SNI": "52.100",
+  "SNI_unofficial": "52100",
+  "description": "Magasinering och varulagring"
+ },
+ {
+  "SNI": "52.211",
+  "SNI_unofficial": "52211",
+  "description": "Bärgning för landtransport"
+ },
+ {
+  "SNI": "52.219",
+  "SNI_unofficial": "52219",
+  "description": "Övriga stödtjänster till landtransport"
+ },
+ {
+  "SNI": "52.220",
+  "SNI_unofficial": "52220",
+  "description": "Stödtjänster till sjötransport"
+ },
+ {
+  "SNI": "52.230",
+  "SNI_unofficial": "52230",
+  "description": "Stödtjänster till lufttransport"
+ },
+ {
+  "SNI": "52.241",
+  "SNI_unofficial": "52241",
+  "description": "Hamngodshantering"
+ },
+ {
+  "SNI": "52.249",
+  "SNI_unofficial": "52249",
+  "description": "Övrig godshantering"
+ },
+ {
+  "SNI": "52.290",
+  "SNI_unofficial": "52290",
+  "description": "Övriga stödtjänster till transport"
+ },
+ {
+  "SNI": "53.100",
+  "SNI_unofficial": "53100",
+  "description": "Postbefordran via nationella posten"
+ },
+ {
+  "SNI": "53.201",
+  "SNI_unofficial": "53201",
+  "description": "Annan postbefordran"
+ },
+ {
+  "SNI": "53.202",
+  "SNI_unofficial": "53202",
+  "description": "Bud- och kurirverksamhet"
+ },
+ {
+  "SNI": "53.203",
+  "SNI_unofficial": "53203",
+  "description": "Tidningsdistribution"
+ },
+ {
+  "SNI": "55.101",
+  "SNI_unofficial": "55101",
+  "description": "Hotellverksamhet med restaurangrörelse"
+ },
+ {
+  "SNI": "55.102",
+  "SNI_unofficial": "55102",
+  "description": "Drift av konferensanläggningar"
+ },
+ {
+  "SNI": "55.103",
+  "SNI_unofficial": "55103",
+  "description": "Hotellverksamhet utan restaurangrörelse"
+ },
+ {
+  "SNI": "55.201",
+  "SNI_unofficial": "55201",
+  "description": "Vandrarhemsverksamhet"
+ },
+ {
+  "SNI": "55.202",
+  "SNI_unofficial": "55202",
+  "description": "Stugbyverksamhet m.m."
+ },
+ {
+  "SNI": "55.300",
+  "SNI_unofficial": "55300",
+  "description": "Campingplatsverksamhet"
+ },
+ {
+  "SNI": "55.900",
+  "SNI_unofficial": "55900",
+  "description": "Annan logiverksamhet"
+ },
+ {
+  "SNI": "56.100",
+  "SNI_unofficial": "56100",
+  "description": "Restaurangverksamhet"
+ },
+ {
+  "SNI": "56.210",
+  "SNI_unofficial": "56210",
+  "description": "Cateringverksamhet vid enskilda evenemang"
+ },
+ {
+  "SNI": "56.291",
+  "SNI_unofficial": "56291",
+  "description": "Drift av personalmatsalar"
+ },
+ {
+  "SNI": "56.292",
+  "SNI_unofficial": "56292",
+  "description": "Centralköksverksamhet för sjukhus"
+ },
+ {
+  "SNI": "56.293",
+  "SNI_unofficial": "56293",
+  "description": "Centralköksverksamhet för skolor, omsorgs- och andra institutioner"
+ },
+ {
+  "SNI": "56.294",
+  "SNI_unofficial": "56294",
+  "description": "Cateringverksamhet för transportsektorn"
+ },
+ {
+  "SNI": "56.299",
+  "SNI_unofficial": "56299",
+  "description": "Övrig cateringverksamhet"
+ },
+ {
+  "SNI": "56.300",
+  "SNI_unofficial": "56300",
+  "description": "Barverksamhet"
+ },
+ {
+  "SNI": "58.110",
+  "SNI_unofficial": "58110",
+  "description": "Bokutgivning"
+ },
+ {
+  "SNI": "58.120",
+  "SNI_unofficial": "58120",
+  "description": "Publicering av kataloger och sändlistor"
+ },
+ {
+  "SNI": "58.131",
+  "SNI_unofficial": "58131",
+  "description": "Dagstidningsutgivning"
+ },
+ {
+  "SNI": "58.132",
+  "SNI_unofficial": "58132",
+  "description": "Annonstidningsutgivning"
+ },
+ {
+  "SNI": "58.140",
+  "SNI_unofficial": "58140",
+  "description": "Utgivning av tidskrifter"
+ },
+ {
+  "SNI": "58.190",
+  "SNI_unofficial": "58190",
+  "description": "Annan förlagsverksamhet"
+ },
+ {
+  "SNI": "58.210",
+  "SNI_unofficial": "58210",
+  "description": "Utgivning av dataspel"
+ },
+ {
+  "SNI": "58.290",
+  "SNI_unofficial": "58290",
+  "description": "Utgivning av annan programvara"
+ },
+ {
+  "SNI": "59.110",
+  "SNI_unofficial": "59110",
+  "description": "Produktion av film, video och TV-program"
+ },
+ {
+  "SNI": "59.120",
+  "SNI_unofficial": "59120",
+  "description": "Efterproduktion av film, video och TV-program"
+ },
+ {
+  "SNI": "59.130",
+  "SNI_unofficial": "59130",
+  "description": "Film-, video- och TV-programdistribution"
+ },
+ {
+  "SNI": "59.140",
+  "SNI_unofficial": "59140",
+  "description": "Filmvisning"
+ },
+ {
+  "SNI": "59.200",
+  "SNI_unofficial": "59200",
+  "description": "Ljudinspelning och fonogramutgivning"
+ },
+ {
+  "SNI": "60.100",
+  "SNI_unofficial": "60100",
+  "description": "Sändning av radioprogram"
+ },
+ {
+  "SNI": "60.200",
+  "SNI_unofficial": "60200",
+  "description": "Planering av TV-program och sändningsverksamhet"
+ },
+ {
+  "SNI": "61.100",
+  "SNI_unofficial": "61100",
+  "description": "Trådbunden telekommunikation"
+ },
+ {
+  "SNI": "61.200",
+  "SNI_unofficial": "61200",
+  "description": "Trådlös telekommunikation"
+ },
+ {
+  "SNI": "61.300",
+  "SNI_unofficial": "61300",
+  "description": "Telekommunikation via satellit"
+ },
+ {
+  "SNI": "61.900",
+  "SNI_unofficial": "61900",
+  "description": "Annan telekommunikation"
+ },
+ {
+  "SNI": "62.010",
+  "SNI_unofficial": "62010",
+  "description": "Dataprogrammering"
+ },
+ {
+  "SNI": "62.020",
+  "SNI_unofficial": "62020",
+  "description": "Datakonsultverksamhet"
+ },
+ {
+  "SNI": "62.030",
+  "SNI_unofficial": "62030",
+  "description": "Datordrifttjänster"
+ },
+ {
+  "SNI": "62.090",
+  "SNI_unofficial": "62090",
+  "description": "Andra IT- och datatjänster"
+ },
+ {
+  "SNI": "63.110",
+  "SNI_unofficial": "63110",
+  "description": "Databehandling, hosting o.d."
+ },
+ {
+  "SNI": "63.120",
+  "SNI_unofficial": "63120",
+  "description": "Webbportaler"
+ },
+ {
+  "SNI": "63.910",
+  "SNI_unofficial": "63910",
+  "description": "Nyhetsservice"
+ },
+ {
+  "SNI": "63.990",
+  "SNI_unofficial": "63990",
+  "description": "Övriga informationstjänster"
+ },
+ {
+  "SNI": "64.110",
+  "SNI_unofficial": "64110",
+  "description": "Centralbanksverksamhet"
+ },
+ {
+  "SNI": "64.190",
+  "SNI_unofficial": "64190",
+  "description": "Annan monetär finansförmedling"
+ },
+ {
+  "SNI": "64.201",
+  "SNI_unofficial": "64201",
+  "description": "Holdingverksamhet i finansiella koncerner"
+ },
+ {
+  "SNI": "64.202",
+  "SNI_unofficial": "64202",
+  "description": "Holdingverksamhet i icke-finansiella koncerner"
+ },
+ {
+  "SNI": "64.301",
+  "SNI_unofficial": "64301",
+  "description": "Investeringsfonder"
+ },
+ {
+  "SNI": "64.309",
+  "SNI_unofficial": "64309",
+  "description": "Andra fonder och liknande finansiella enheter"
+ },
+ {
+  "SNI": "64.910",
+  "SNI_unofficial": "64910",
+  "description": "Finansiell leasing"
+ },
+ {
+  "SNI": "64.920",
+  "SNI_unofficial": "64920",
+  "description": "Annan kreditgivning"
+ },
+ {
+  "SNI": "64.991",
+  "SNI_unofficial": "64991",
+  "description": "Investment- och riskkapitalbolagsverksamhet"
+ },
+ {
+  "SNI": "64.992",
+  "SNI_unofficial": "64992",
+  "description": "Handel med och förvaltning av värdepapper, för egen räkning"
+ },
+ {
+  "SNI": "64.993",
+  "SNI_unofficial": "64993",
+  "description": "Förvaltning av och handel med värdepapper för en begränsad och sluten krets av ägare"
+ },
+ {
+  "SNI": "64.999",
+  "SNI_unofficial": "64999",
+  "description": "Diverse övrig finansförmedling"
+ },
+ {
+  "SNI": "65.111",
+  "SNI_unofficial": "65111",
+  "description": "Fondanknuten livförsäkring"
+ },
+ {
+  "SNI": "65.119",
+  "SNI_unofficial": "65119",
+  "description": "Övrig livförsäkring"
+ },
+ {
+  "SNI": "65.120",
+  "SNI_unofficial": "65120",
+  "description": "Skadeförsäkring"
+ },
+ {
+  "SNI": "65.200",
+  "SNI_unofficial": "65200",
+  "description": "Återförsäkring"
+ },
+ {
+  "SNI": "65.300",
+  "SNI_unofficial": "65300",
+  "description": "Pensionsfondsverksamhet"
+ },
+ {
+  "SNI": "66.110",
+  "SNI_unofficial": "66110",
+  "description": "Administrativa tjänster till finansiella marknader"
+ },
+ {
+  "SNI": "66.120",
+  "SNI_unofficial": "66120",
+  "description": "Verksamhet utförd av värdepappers- och varumäklare"
+ },
+ {
+  "SNI": "66.190",
+  "SNI_unofficial": "66190",
+  "description": "Andra stödtjänster till finansiella tjänster utom försäkring och pensionsfondsverksamhet"
+ },
+ {
+  "SNI": "66.210",
+  "SNI_unofficial": "66210",
+  "description": "Risk- och skadebedömning"
+ },
+ {
+  "SNI": "66.220",
+  "SNI_unofficial": "66220",
+  "description": "Verksamhet utförd av försäkringsombud och försäkringsmäklare"
+ },
+ {
+  "SNI": "66.290",
+  "SNI_unofficial": "66290",
+  "description": "Andra stödtjänster till försäkring och pensionsfondsverksamhet"
+ },
+ {
+  "SNI": "66.301",
+  "SNI_unofficial": "66301",
+  "description": "Förvaltning av investeringsfonder"
+ },
+ {
+  "SNI": "66.309",
+  "SNI_unofficial": "66309",
+  "description": "Annan fondförvaltning"
+ },
+ {
+  "SNI": "68.100",
+  "SNI_unofficial": "68100",
+  "description": "Handel med egna fastigheter"
+ },
+ {
+  "SNI": "68.201",
+  "SNI_unofficial": "68201",
+  "description": "Uthyrning och förvaltning av egna eller arrenderade bostäder"
+ },
+ {
+  "SNI": "68.202",
+  "SNI_unofficial": "68202",
+  "description": "Uthyrning och förvaltning av egna eller arrenderade industrilokaler"
+ },
+ {
+  "SNI": "68.203",
+  "SNI_unofficial": "68203",
+  "description": "Uthyrning och förvaltning av egna eller arrenderade, andra lokaler"
+ },
+ {
+  "SNI": "68.204",
+  "SNI_unofficial": "68204",
+  "description": "Förvaltning i bostadsrättsföreningar"
+ },
+ {
+  "SNI": "68.209",
+  "SNI_unofficial": "68209",
+  "description": "Övrig förvaltning av egna eller arrenderade fastigheter"
+ },
+ {
+  "SNI": "68.310",
+  "SNI_unofficial": "68310",
+  "description": "Fastighetsförmedling"
+ },
+ {
+  "SNI": "68.320",
+  "SNI_unofficial": "68320",
+  "description": "Fastighetsförvaltning på uppdrag"
+ },
+ {
+  "SNI": "69.101",
+  "SNI_unofficial": "69101",
+  "description": "Advokatbyråverksamhet"
+ },
+ {
+  "SNI": "69.102",
+  "SNI_unofficial": "69102",
+  "description": "Juridiska byråers verksamhet m.m."
+ },
+ {
+  "SNI": "69.103",
+  "SNI_unofficial": "69103",
+  "description": "Patentbyråverksamhet m.m."
+ },
+ {
+  "SNI": "69.201",
+  "SNI_unofficial": "69201",
+  "description": "Redovisning och bokföring"
+ },
+ {
+  "SNI": "69.202",
+  "SNI_unofficial": "69202",
+  "description": "Revision"
+ },
+ {
+  "SNI": "69.203",
+  "SNI_unofficial": "69203",
+  "description": "Skatterådgivning"
+ },
+ {
+  "SNI": "70.100",
+  "SNI_unofficial": "70100",
+  "description": "Verksamheter som utövas av huvudkontor"
+ },
+ {
+  "SNI": "70.210",
+  "SNI_unofficial": "70210",
+  "description": "PR och kommunikation"
+ },
+ {
+  "SNI": "70.220",
+  "SNI_unofficial": "70220",
+  "description": "Konsultverksamhet avseende företags organisation"
+ },
+ {
+  "SNI": "71.110",
+  "SNI_unofficial": "71110",
+  "description": "Arkitektverksamhet"
+ },
+ {
+  "SNI": "71.121",
+  "SNI_unofficial": "71121",
+  "description": "Teknisk konsultverksamhet inom bygg- och anläggningsteknik"
+ },
+ {
+  "SNI": "71.122",
+  "SNI_unofficial": "71122",
+  "description": "Teknisk konsultverksamhet inom industriteknik"
+ },
+ {
+  "SNI": "71.123",
+  "SNI_unofficial": "71123",
+  "description": "Teknisk konsultverksamhet inom elteknik"
+ },
+ {
+  "SNI": "71.124",
+  "SNI_unofficial": "71124",
+  "description": "Teknisk konsultverksamhet inom energi-, miljö- och VVS-teknik"
+ },
+ {
+  "SNI": "71.129",
+  "SNI_unofficial": "71129",
+  "description": "Övrig teknisk konsultverksamhet"
+ },
+ {
+  "SNI": "71.200",
+  "SNI_unofficial": "71200",
+  "description": "Teknisk provning och analys"
+ },
+ {
+  "SNI": "72.110",
+  "SNI_unofficial": "72110",
+  "description": "Bioteknisk forskning och utveckling"
+ },
+ {
+  "SNI": "72.190",
+  "SNI_unofficial": "72190",
+  "description": "Annan naturvetenskaplig och teknisk forskning och utveckling"
+ },
+ {
+  "SNI": "72.200",
+  "SNI_unofficial": "72200",
+  "description": "Samhällsvetenskaplig och humanistisk forskning och utveckling"
+ },
+ {
+  "SNI": "73.111",
+  "SNI_unofficial": "73111",
+  "description": "Reklambyråverksamhet"
+ },
+ {
+  "SNI": "73.112",
+  "SNI_unofficial": "73112",
+  "description": "Direktreklamverksamhet"
+ },
+ {
+  "SNI": "73.119",
+  "SNI_unofficial": "73119",
+  "description": "Övrig reklamverksamhet"
+ },
+ {
+  "SNI": "73.120",
+  "SNI_unofficial": "73120",
+  "description": "Mediebyråverksamhet och annonsförsäljning"
+ },
+ {
+  "SNI": "73.200",
+  "SNI_unofficial": "73200",
+  "description": "Marknads- och opinionsundersökning"
+ },
+ {
+  "SNI": "74.101",
+  "SNI_unofficial": "74101",
+  "description": "Industri- och produktdesignverksamhet"
+ },
+ {
+  "SNI": "74.102",
+  "SNI_unofficial": "74102",
+  "description": "Grafisk designverksamhet"
+ },
+ {
+  "SNI": "74.103",
+  "SNI_unofficial": "74103",
+  "description": "Inredningsarkitektverksamhet"
+ },
+ {
+  "SNI": "74.201",
+  "SNI_unofficial": "74201",
+  "description": "Porträttfotoverksamhet"
+ },
+ {
+  "SNI": "74.202",
+  "SNI_unofficial": "74202",
+  "description": "Reklamfotoverksamhet"
+ },
+ {
+  "SNI": "74.203",
+  "SNI_unofficial": "74203",
+  "description": "Press- och övrig fotografverksamhet"
+ },
+ {
+  "SNI": "74.204",
+  "SNI_unofficial": "74204",
+  "description": "Fotolaboratorieverksamhet"
+ },
+ {
+  "SNI": "74.300",
+  "SNI_unofficial": "74300",
+  "description": "Översättning och tolkning"
+ },
+ {
+  "SNI": "74.900",
+  "SNI_unofficial": "74900",
+  "description": "Övrig verksamhet inom juridik, ekonomi, vetenskap och teknik"
+ },
+ {
+  "SNI": "75.000",
+  "SNI_unofficial": "75000",
+  "description": "Veterinärverksamhet"
+ },
+ {
+  "SNI": "77.110",
+  "SNI_unofficial": "77110",
+  "description": "Uthyrning och leasing av personbilar och lätta motorfordon"
+ },
+ {
+  "SNI": "77.120",
+  "SNI_unofficial": "77120",
+  "description": "Uthyrning och leasing av lastbilar och andra tunga motorfordon"
+ },
+ {
+  "SNI": "77.210",
+  "SNI_unofficial": "77210",
+  "description": "Uthyrning och leasing av fritids- och sportutrustning"
+ },
+ {
+  "SNI": "77.220",
+  "SNI_unofficial": "77220",
+  "description": "Uthyrning av videokassetter och dvd-skivor"
+ },
+ {
+  "SNI": "77.290",
+  "SNI_unofficial": "77290",
+  "description": "Uthyrning och leasing av andra hushållsartiklar och varor för personligt bruk"
+ },
+ {
+  "SNI": "77.310",
+  "SNI_unofficial": "77310",
+  "description": "Uthyrning och leasing av jordbruksmaskiner och jordbruksredskap"
+ },
+ {
+  "SNI": "77.320",
+  "SNI_unofficial": "77320",
+  "description": "Uthyrning och leasing av bygg- och anläggningsmaskiner"
+ },
+ {
+  "SNI": "77.330",
+  "SNI_unofficial": "77330",
+  "description": "Uthyrning och leasing av kontorsmaskiner och kontorsutrustning (inklusive datorer)"
+ },
+ {
+  "SNI": "77.340",
+  "SNI_unofficial": "77340",
+  "description": "Uthyrning och leasing av fartyg och båtar"
+ },
+ {
+  "SNI": "77.350",
+  "SNI_unofficial": "77350",
+  "description": "Uthyrning och leasing av flygplan"
+ },
+ {
+  "SNI": "77.390",
+  "SNI_unofficial": "77390",
+  "description": "Uthyrning och leasing av övrig utrustning och övriga maskiner och materiella tillgångar"
+ },
+ {
+  "SNI": "77.400",
+  "SNI_unofficial": "77400",
+  "description": "Leasing av immateriell egendom och liknande produkter, med undantag för upphovsrättsskyddade verk"
+ },
+ {
+  "SNI": "78.100",
+  "SNI_unofficial": "78100",
+  "description": "Arbetsförmedling och rekrytering"
+ },
+ {
+  "SNI": "78.200",
+  "SNI_unofficial": "78200",
+  "description": "Personaluthyrning"
+ },
+ {
+  "SNI": "78.300",
+  "SNI_unofficial": "78300",
+  "description": "Övrigt tillhandahållande av personalfunktioner"
+ },
+ {
+  "SNI": "79.110",
+  "SNI_unofficial": "79110",
+  "description": "Resebyråverksamhet"
+ },
+ {
+  "SNI": "79.120",
+  "SNI_unofficial": "79120",
+  "description": "Researrangemang"
+ },
+ {
+  "SNI": "79.900",
+  "SNI_unofficial": "79900",
+  "description": "Turist- och bokningsservice"
+ },
+ {
+  "SNI": "80.100",
+  "SNI_unofficial": "80100",
+  "description": "Säkerhetsverksamhet"
+ },
+ {
+  "SNI": "80.200",
+  "SNI_unofficial": "80200",
+  "description": "Säkerhetssystemtjänster"
+ },
+ {
+  "SNI": "80.300",
+  "SNI_unofficial": "80300",
+  "description": "Spanings- och detektivverksamhet"
+ },
+ {
+  "SNI": "81.100",
+  "SNI_unofficial": "81100",
+  "description": "Fastighetsrelaterade stödtjänster"
+ },
+ {
+  "SNI": "81.210",
+  "SNI_unofficial": "81210",
+  "description": "Lokalvård"
+ },
+ {
+  "SNI": "81.221",
+  "SNI_unofficial": "81221",
+  "description": "Rengöring av byggnader"
+ },
+ {
+  "SNI": "81.222",
+  "SNI_unofficial": "81222",
+  "description": "Skorstensfejarverksamhet"
+ },
+ {
+  "SNI": "81.290",
+  "SNI_unofficial": "81290",
+  "description": "Annan rengöring"
+ },
+ {
+  "SNI": "81.300",
+  "SNI_unofficial": "81300",
+  "description": "Skötsel och underhåll av grönytor"
+ },
+ {
+  "SNI": "82.110",
+  "SNI_unofficial": "82110",
+  "description": "Kombinerade kontorstjänster"
+ },
+ {
+  "SNI": "82.190",
+  "SNI_unofficial": "82190",
+  "description": "Kopiering, dokumentsammanställning och andra specialiserade kontorstjänster"
+ },
+ {
+  "SNI": "82.200",
+  "SNI_unofficial": "82200",
+  "description": "Callcenterverksamhet"
+ },
+ {
+  "SNI": "82.300",
+  "SNI_unofficial": "82300",
+  "description": "Arrangemang av kongresser och mässor"
+ },
+ {
+  "SNI": "82.910",
+  "SNI_unofficial": "82910",
+  "description": "Inkassoföretags och kreditupplysningsföretags verksamhet"
+ },
+ {
+  "SNI": "82.920",
+  "SNI_unofficial": "82920",
+  "description": "Förpackningsverksamhet"
+ },
+ {
+  "SNI": "82.990",
+  "SNI_unofficial": "82990",
+  "description": "Övriga företagstjänster"
+ },
+ {
+  "SNI": "84.111",
+  "SNI_unofficial": "84111",
+  "description": "Stats- och kommunledning, lagstiftning och övergripande planering"
+ },
+ {
+  "SNI": "84.112",
+  "SNI_unofficial": "84112",
+  "description": "Inspektion, kontroll, tillståndsgivning"
+ },
+ {
+  "SNI": "84.113",
+  "SNI_unofficial": "84113",
+  "description": "Skatteförvaltning, indrivning"
+ },
+ {
+  "SNI": "84.114",
+  "SNI_unofficial": "84114",
+  "description": "Samhällelig informationsförsörjning"
+ },
+ {
+  "SNI": "84.115",
+  "SNI_unofficial": "84115",
+  "description": "Personalförvaltning och andra allmänna stödtjänster"
+ },
+ {
+  "SNI": "84.121",
+  "SNI_unofficial": "84121",
+  "description": "Administration av grundskole- och gymnasieskoleutbildning"
+ },
+ {
+  "SNI": "84.122",
+  "SNI_unofficial": "84122",
+  "description": "Administration av universitets- och högskoleutbildning samt forskning"
+ },
+ {
+  "SNI": "84.123",
+  "SNI_unofficial": "84123",
+  "description": "Administration av hälso- och sjukvård"
+ },
+ {
+  "SNI": "84.124",
+  "SNI_unofficial": "84124",
+  "description": "Administration av omsorg och socialtjänst"
+ },
+ {
+  "SNI": "84.125",
+  "SNI_unofficial": "84125",
+  "description": "Administration av program för kultur, miljö, boende m.m."
+ },
+ {
+  "SNI": "84.131",
+  "SNI_unofficial": "84131",
+  "description": "Administration av infrastrukturprogram"
+ },
+ {
+  "SNI": "84.132",
+  "SNI_unofficial": "84132",
+  "description": "Administration av program för jordbruk, skogsbruk, jakt och fiske"
+ },
+ {
+  "SNI": "84.133",
+  "SNI_unofficial": "84133",
+  "description": "Administration av arbetsmarknadsprogram"
+ },
+ {
+  "SNI": "84.139",
+  "SNI_unofficial": "84139",
+  "description": "Administration av andra näringslivsprogram"
+ },
+ {
+  "SNI": "84.210",
+  "SNI_unofficial": "84210",
+  "description": "Utrikesförvaltning"
+ },
+ {
+  "SNI": "84.221",
+  "SNI_unofficial": "84221",
+  "description": "Militärt försvar"
+ },
+ {
+  "SNI": "84.222",
+  "SNI_unofficial": "84222",
+  "description": "Gemensam verksamhet för totalförsvaret"
+ },
+ {
+  "SNI": "84.223",
+  "SNI_unofficial": "84223",
+  "description": "Civilt försvar och frivilligförsvar"
+ },
+ {
+  "SNI": "84.231",
+  "SNI_unofficial": "84231",
+  "description": "Åklagarverksamhet"
+ },
+ {
+  "SNI": "84.232",
+  "SNI_unofficial": "84232",
+  "description": "Domstolsverksamhet"
+ },
+ {
+  "SNI": "84.233",
+  "SNI_unofficial": "84233",
+  "description": "Kriminalvård"
+ },
+ {
+  "SNI": "84.240",
+  "SNI_unofficial": "84240",
+  "description": "Polisverksamhet"
+ },
+ {
+  "SNI": "84.250",
+  "SNI_unofficial": "84250",
+  "description": "Brand- och räddningsverksamhet"
+ },
+ {
+  "SNI": "84.300",
+  "SNI_unofficial": "84300",
+  "description": "Obligatorisk socialförsäkring"
+ },
+ {
+  "SNI": "85.100",
+  "SNI_unofficial": "85100",
+  "description": "Förskoleutbildning"
+ },
+ {
+  "SNI": "85.201",
+  "SNI_unofficial": "85201",
+  "description": "Grundskoleutbildning och förskoleklass"
+ },
+ {
+  "SNI": "85.202",
+  "SNI_unofficial": "85202",
+  "description": "Utbildning inom grundsärskola"
+ },
+ {
+  "SNI": "85.311",
+  "SNI_unofficial": "85311",
+  "description": "Studieförberedande gymnasial utbildning"
+ },
+ {
+  "SNI": "85.312",
+  "SNI_unofficial": "85312",
+  "description": "Kommunal vuxenutbildning o.d."
+ },
+ {
+  "SNI": "85.321",
+  "SNI_unofficial": "85321",
+  "description": "Gymnasial yrkesutbildning"
+ },
+ {
+  "SNI": "85.322",
+  "SNI_unofficial": "85322",
+  "description": "Utbildning inom gymnasiesärskola"
+ },
+ {
+  "SNI": "85.323",
+  "SNI_unofficial": "85323",
+  "description": "Annan gymnasial utbildning"
+ },
+ {
+  "SNI": "85.324",
+  "SNI_unofficial": "85324",
+  "description": "Yrkesförarutbildning m.m."
+ },
+ {
+  "SNI": "85.410",
+  "SNI_unofficial": "85410",
+  "description": "Eftergymnasial utbildning vid annat än universitet och högskola"
+ },
+ {
+  "SNI": "85.420",
+  "SNI_unofficial": "85420",
+  "description": "Universitets- eller högskoleutbildning"
+ },
+ {
+  "SNI": "85.510",
+  "SNI_unofficial": "85510",
+  "description": "Sport- och fritidsutbildning"
+ },
+ {
+  "SNI": "85.521",
+  "SNI_unofficial": "85521",
+  "description": "Kommunala kulturskolans utbildning"
+ },
+ {
+  "SNI": "85.522",
+  "SNI_unofficial": "85522",
+  "description": "Övrig musik-, dans- och kulturell utbildning"
+ },
+ {
+  "SNI": "85.530",
+  "SNI_unofficial": "85530",
+  "description": "Trafikskoleverksamhet"
+ },
+ {
+  "SNI": "85.591",
+  "SNI_unofficial": "85591",
+  "description": "Arbetsmarknadsutbildning"
+ },
+ {
+  "SNI": "85.592",
+  "SNI_unofficial": "85592",
+  "description": "Folkhögskoleutbildning"
+ },
+ {
+  "SNI": "85.593",
+  "SNI_unofficial": "85593",
+  "description": "Studieförbundens och frivilligorganisationernas utbildning"
+ },
+ {
+  "SNI": "85.594",
+  "SNI_unofficial": "85594",
+  "description": "Personalutbildning"
+ },
+ {
+  "SNI": "85.599",
+  "SNI_unofficial": "85599",
+  "description": "Diverse övrig utbildning"
+ },
+ {
+  "SNI": "85.600",
+  "SNI_unofficial": "85600",
+  "description": "Stödverksamhet för utbildningsväsendet"
+ },
+ {
+  "SNI": "86.101",
+  "SNI_unofficial": "86101",
+  "description": "Sluten primärvård"
+ },
+ {
+  "SNI": "86.102",
+  "SNI_unofficial": "86102",
+  "description": "Specialiserad sluten somatisk hälso- och sjukvård på sjukhus"
+ },
+ {
+  "SNI": "86.103",
+  "SNI_unofficial": "86103",
+  "description": "Specialiserad sluten psykiatrisk hälso- och sjukvård på sjukhus"
+ },
+ {
+  "SNI": "86.211",
+  "SNI_unofficial": "86211",
+  "description": "Primärvårdsmottagningar med läkare m.m."
+ },
+ {
+  "SNI": "86.212",
+  "SNI_unofficial": "86212",
+  "description": "Annan allmän öppen hälso- och sjukvård, ej primärvård"
+ },
+ {
+  "SNI": "86.221",
+  "SNI_unofficial": "86221",
+  "description": "Specialistläkarverksamhet inom öppenvård, på sjukhus"
+ },
+ {
+  "SNI": "86.222",
+  "SNI_unofficial": "86222",
+  "description": "Specialistläkarverksamhet inom öppenvård, ej på sjukhus"
+ },
+ {
+  "SNI": "86.230",
+  "SNI_unofficial": "86230",
+  "description": "Tandläkarverksamhet"
+ },
+ {
+  "SNI": "86.901",
+  "SNI_unofficial": "86901",
+  "description": "Medicinsk laboratorieverksamhet m.m."
+ },
+ {
+  "SNI": "86.902",
+  "SNI_unofficial": "86902",
+  "description": "Ambulanstransporter och ambulanssjukvård"
+ },
+ {
+  "SNI": "86.903",
+  "SNI_unofficial": "86903",
+  "description": "Primärvård, ej läkare"
+ },
+ {
+  "SNI": "86.904",
+  "SNI_unofficial": "86904",
+  "description": "Tandhygienistverksamhet"
+ },
+ {
+  "SNI": "86.905",
+  "SNI_unofficial": "86905",
+  "description": "Fysioterapeutisk verksamhet  o.d."
+ },
+ {
+  "SNI": "86.909",
+  "SNI_unofficial": "86909",
+  "description": "Annan öppen hälso- och sjukvård, utan läkare"
+ },
+ {
+  "SNI": "87.100",
+  "SNI_unofficial": "87100",
+  "description": "Boende med sjuksköterskevård"
+ },
+ {
+  "SNI": "87.201",
+  "SNI_unofficial": "87201",
+  "description": "Boende med särskild service för personer med utvecklingsstörning eller  psykiska funktionshinder"
+ },
+ {
+  "SNI": "87.202",
+  "SNI_unofficial": "87202",
+  "description": "Boende med särskild service för barn och ungdomar med missbruksproblem"
+ },
+ {
+  "SNI": "87.203",
+  "SNI_unofficial": "87203",
+  "description": "Boende med särskild service för vuxna med missbruksproblem"
+ },
+ {
+  "SNI": "87.301",
+  "SNI_unofficial": "87301",
+  "description": "Vård och omsorg i särskilda boendeformer för äldre personer"
+ },
+ {
+  "SNI": "87.302",
+  "SNI_unofficial": "87302",
+  "description": "Vård och omsorg i särskilda boendeformer för  personer med funktionshinder"
+ },
+ {
+  "SNI": "87.901",
+  "SNI_unofficial": "87901",
+  "description": "Heldygnsvård med boende för barn och ungdomar med sociala problem"
+ },
+ {
+  "SNI": "87.902",
+  "SNI_unofficial": "87902",
+  "description": "Omsorg och sociala insatser i övriga boendeformer för vuxna"
+ },
+ {
+  "SNI": "88.101",
+  "SNI_unofficial": "88101",
+  "description": "Öppna sociala insatser för äldre personer"
+ },
+ {
+  "SNI": "88.102",
+  "SNI_unofficial": "88102",
+  "description": "Öppna sociala insatser för personer med funktionshinder"
+ },
+ {
+  "SNI": "88.910",
+  "SNI_unofficial": "88910",
+  "description": "Dagbarnvård"
+ },
+ {
+  "SNI": "88.991",
+  "SNI_unofficial": "88991",
+  "description": "Öppna sociala insatser för barn och ungdomar med sociala problem"
+ },
+ {
+  "SNI": "88.992",
+  "SNI_unofficial": "88992",
+  "description": "Öppna sociala insatser för vuxna med missbruksproblem"
+ },
+ {
+  "SNI": "88.993",
+  "SNI_unofficial": "88993",
+  "description": "Övriga öppna sociala insatser för vuxna"
+ },
+ {
+  "SNI": "88.994",
+  "SNI_unofficial": "88994",
+  "description": "Humanitära insatser"
+ },
+ {
+  "SNI": "88.995",
+  "SNI_unofficial": "88995",
+  "description": "Drift av flyktingförläggning"
+ },
+ {
+  "SNI": "90.010",
+  "SNI_unofficial": "90010",
+  "description": "Artistisk verksamhet"
+ },
+ {
+  "SNI": "90.020",
+  "SNI_unofficial": "90020",
+  "description": "Stödtjänster till artistisk verksamhet"
+ },
+ {
+  "SNI": "90.030",
+  "SNI_unofficial": "90030",
+  "description": "Litterärt och konstnärligt skapande"
+ },
+ {
+  "SNI": "90.040",
+  "SNI_unofficial": "90040",
+  "description": "Drift av teatrar, konserthus o.d."
+ },
+ {
+  "SNI": "91.011",
+  "SNI_unofficial": "91011",
+  "description": "Biblioteksverksamhet"
+ },
+ {
+  "SNI": "91.012",
+  "SNI_unofficial": "91012",
+  "description": "Arkivverksamhet"
+ },
+ {
+  "SNI": "91.020",
+  "SNI_unofficial": "91020",
+  "description": "Museiverksamhet"
+ },
+ {
+  "SNI": "91.030",
+  "SNI_unofficial": "91030",
+  "description": "Vård av historiska minnesmärken och byggnader och liknande sevärdheter"
+ },
+ {
+  "SNI": "91.040",
+  "SNI_unofficial": "91040",
+  "description": "Drift av botaniska trädgårdar, djurparker och naturreservat"
+ },
+ {
+  "SNI": "92.000",
+  "SNI_unofficial": "92000",
+  "description": "Spel- och vadhållningsverksamhet"
+ },
+ {
+  "SNI": "93.111",
+  "SNI_unofficial": "93111",
+  "description": "Drift av skidsportanläggningar"
+ },
+ {
+  "SNI": "93.112",
+  "SNI_unofficial": "93112",
+  "description": "Drift av golfbanor"
+ },
+ {
+  "SNI": "93.113",
+  "SNI_unofficial": "93113",
+  "description": "Drift av motorbanor"
+ },
+ {
+  "SNI": "93.114",
+  "SNI_unofficial": "93114",
+  "description": "Drift av trav- och galoppbanor"
+ },
+ {
+  "SNI": "93.119",
+  "SNI_unofficial": "93119",
+  "description": "Drift av sporthallar, idrottsplatser och andra sportanläggningar"
+ },
+ {
+  "SNI": "93.120",
+  "SNI_unofficial": "93120",
+  "description": "Sportklubbars och idrottsföreningars verksamhet"
+ },
+ {
+  "SNI": "93.130",
+  "SNI_unofficial": "93130",
+  "description": "Drift av gymanläggningar"
+ },
+ {
+  "SNI": "93.191",
+  "SNI_unofficial": "93191",
+  "description": "Tävling med hästar"
+ },
+ {
+  "SNI": "93.199",
+  "SNI_unofficial": "93199",
+  "description": "Övrig sportverksamhet"
+ },
+ {
+  "SNI": "93.210",
+  "SNI_unofficial": "93210",
+  "description": "Nöjes- och temaparksverksamhet"
+ },
+ {
+  "SNI": "93.290",
+  "SNI_unofficial": "93290",
+  "description": "Övrig fritids- och nöjesverksamhet"
+ },
+ {
+  "SNI": "94.111",
+  "SNI_unofficial": "94111",
+  "description": "Intressebevakning inom branschorganisationer"
+ },
+ {
+  "SNI": "94.112",
+  "SNI_unofficial": "94112",
+  "description": "Intressebevakning inom arbetsgivarorganisationer"
+ },
+ {
+  "SNI": "94.120",
+  "SNI_unofficial": "94120",
+  "description": "Intressebevakning inom yrkesorganisationer"
+ },
+ {
+  "SNI": "94.200",
+  "SNI_unofficial": "94200",
+  "description": "Intressebevakning inom arbetstagarorganisationer"
+ },
+ {
+  "SNI": "94.910",
+  "SNI_unofficial": "94910",
+  "description": "Verksamhet i religiösa samfund"
+ },
+ {
+  "SNI": "94.920",
+  "SNI_unofficial": "94920",
+  "description": "Verksamhet i politiska organisationer"
+ },
+ {
+  "SNI": "94.990",
+  "SNI_unofficial": "94990",
+  "description": "Verksamhet i andra intresseorganisationer"
+ },
+ {
+  "SNI": "95.110",
+  "SNI_unofficial": "95110",
+  "description": "Reparation av datorer och kringutrustning"
+ },
+ {
+  "SNI": "95.120",
+  "SNI_unofficial": "95120",
+  "description": "Reparation av kommunikationsutrustning"
+ },
+ {
+  "SNI": "95.210",
+  "SNI_unofficial": "95210",
+  "description": "Reparation av hemelektronik"
+ },
+ {
+  "SNI": "95.220",
+  "SNI_unofficial": "95220",
+  "description": "Reparation av hushållsapparater samt av utrustning för hem och trädgård"
+ },
+ {
+  "SNI": "95.230",
+  "SNI_unofficial": "95230",
+  "description": "Lagning av skodon och lädervaror"
+ },
+ {
+  "SNI": "95.240",
+  "SNI_unofficial": "95240",
+  "description": "Reparation av möbler och heminredning"
+ },
+ {
+  "SNI": "95.250",
+  "SNI_unofficial": "95250",
+  "description": "Reparation av ur och guldsmedsvaror"
+ },
+ {
+  "SNI": "95.290",
+  "SNI_unofficial": "95290",
+  "description": "Reparation av andra hushållsartiklar och personliga artiklar"
+ },
+ {
+  "SNI": "96.011",
+  "SNI_unofficial": "96011",
+  "description": "Industri- och institutionstvätt"
+ },
+ {
+  "SNI": "96.012",
+  "SNI_unofficial": "96012",
+  "description": "Konsumenttvätt"
+ },
+ {
+  "SNI": "96.021",
+  "SNI_unofficial": "96021",
+  "description": "Hårvård"
+ },
+ {
+  "SNI": "96.022",
+  "SNI_unofficial": "96022",
+  "description": "Skönhetsvård"
+ },
+ {
+  "SNI": "96.030",
+  "SNI_unofficial": "96030",
+  "description": "Begravningsverksamhet"
+ },
+ {
+  "SNI": "96.040",
+  "SNI_unofficial": "96040",
+  "description": "Kroppsvård"
+ },
+ {
+  "SNI": "96.090",
+  "SNI_unofficial": "96090",
+  "description": "Övriga konsumenttjänster"
+ },
+ {
+  "SNI": "97.000",
+  "SNI_unofficial": "97000",
+  "description": "Förvärvsarbete i hushåll"
+ },
+ {
+  "SNI": "98.100",
+  "SNI_unofficial": "98100",
+  "description": "Hushållens produktion av diverse varor för eget bruk"
+ },
+ {
+  "SNI": "98.200",
+  "SNI_unofficial": "98200",
+  "description": "Hushållens produktion av diverse tjänster för eget bruk"
+ },
+ {
+  "SNI": "99.000",
+  "SNI_unofficial": "99000",
+  "description": "Verksamhet vid internationella organisationer, utländska ambassader o.d."
+ }
+]
