@@ -1,0 +1,18 @@
+// Using the launch settings below, 
+// you can debug (F5) modules inside subfolders
+// that import files from parent- or sister folders
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Run Module With Path",
+            "type": "python",
+            "request": "launch",
+            "program":"${file}",
+            "justMyCode": true,
+            "env":{
+                "PYTHONPATH":"${workspaceFolder}"
+            }
+        }
+    ]
+}
