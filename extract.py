@@ -7,9 +7,9 @@ import copy
 import regex as re
 from bs4 import BeautifulSoup
 
-class NoSoup(Exception):
+class NoBeautifulSoupObject(Exception):
     """
-    Data extractor hasn't generated a soup, and cannot start extracting data.
+    Data extractor hasn't generated a BeautifulSoup object, and cannot start extracting data.
     """
     pass
 
@@ -33,14 +33,14 @@ class DataExtractor:
         """
         try:
             with open(file_path, encoding='utf-8') as fp:
-                self.create_soup_from_html(fp)
+                self.create_soup_from_string(fp)
         except (FileNotFoundError):
             logging.error("Couldn't find %s!", file_path)
     
-    def create_soup_from_html(self, raw_html):
+    def create_soup_from_string(self, raw_html):
         """
-        Creates a soup object from a raw HTML or a file pointer.
-        :raw_html: raw HTML or a file pointer.
+        Creates a soup object from a raw HTML string or a file pointer.
+        :raw_html: raw HTML string or a file pointer.
         """
         self.soup = BeautifulSoup(raw_html, 'html.parser')
 

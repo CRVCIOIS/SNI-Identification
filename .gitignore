@@ -172,3 +172,6 @@ training/
 corpus/
 models/
 project.lock
+
+#temporary files
+temp/
