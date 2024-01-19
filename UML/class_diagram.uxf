@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <help_text>Labeled dataset of SNI branches associated with websites.
+</help_text>
+  <zoom_level>6</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>942</x>
+      <y>612</y>
+      <w>174</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Output:  SNI Codes, phone number, etc.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>306</x>
+      <y>534</y>
+      <w>114</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Input: Web-scraped data</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>318</x>
+      <y>594</y>
+      <w>216</w>
+      <h>114</h>
+    </coordinates>
+    <panel_attributes>FileReader
+--
+- data: Datapath
+--
+
+--
+Responsibilities
+-- Read input file and output 
+all relevant data for training/query. 
+group=group-4</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>468</x>
+      <y>186</y>
+      <w>240</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>NLPModel
+--
+--
+/+train_model()/
+/+save_model()/
+/+load_model()/
+/+download_pre_trained_model()/
+--
+Responsibilities
+-- Abstract implementation of specific models.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>990</x>
+      <y>642</y>
+      <w>78</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>/Output Processing/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>540</x>
+      <y>90</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>/models/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>606</x>
+      <y>354</y>
+      <w>300</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;NLPModel[Func]Wrapper&gt;&gt;
+--
+--
+/+[Func]()/
+--
+Responsibilities
+-- Implement specific functionality for evaluations.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>702</x>
+      <y>246</y>
+      <w>96</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>140.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>306</x>
+      <y>564</y>
+      <w>240</w>
+      <h>186</h>
+    </coordinates>
+    <panel_attributes>Input
+--
+
+group=group-4</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>444</x>
+      <y>162</y>
+      <w>684</w>
+      <h>336</h>
+    </coordinates>
+    <panel_attributes>NLPModels
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>624</x>
+      <y>600</y>
+      <w>264</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Main
+Package::main
+--
+- reader: FileReader
+- nlp: NLPModelWrapper
+--
+/+query(fileWithQuery : FilePath): Nace Codes, Company Name, etc./
+--
+Responsibilities
+-- Evaluate input data using models and other.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>540</x>
+      <y>648</y>
+      <w>96</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>140.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>744</x>
+      <y>468</y>
+      <w>18</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;220.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>786</x>
+      <y>192</y>
+      <w>300</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;NLPModelBaseWrapper&gt;&gt;
+--
+-model: NLPModel
+- reader: FileReader
+--
+__init__(modelType)
+/+ Functions all NLPModel objects need/
+--
+Responsibilities
+- Interface with model
+- For example, transform normal vectors into a specific model space. 
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>786</x>
+      <y>306</y>
+      <w>66</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>882</x>
+      <y>648</y>
+      <w>120</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>564</x>
+      <y>102</y>
+      <w>18</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>10.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>528</x>
+      <y>516</y>
+      <w>174</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>*Each class has their own set of unittests, which the writer of the function makes.*
+bg=blue
+style=wordwrap</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

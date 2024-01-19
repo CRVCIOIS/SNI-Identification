@@ -162,3 +162,13 @@ cython_debug/
 # examples
 examples/
 extractor_output/
+
+#.vscode # not always bad to push, as some project-wide settings can be useful for everyone. Up to the reviewer to decide.
+__pycache__
+
+#ignore Spacy stuff
+# assets/** # assets folder will be allowed to live in the repo until production data is needed.
+training/
+corpus/
+models/
+project.lock
