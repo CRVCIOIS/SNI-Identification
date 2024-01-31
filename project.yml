@@ -35,6 +35,8 @@ assets:
 # haven't changed, it won't be re-run.
 workflows:
   all:
+    # - SCB
+    - scrape
     - preprocess
     - train
     - evaluate
@@ -44,6 +46,13 @@ workflows:
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
+  # - name: "SCB"
+  #   help: "Get data from SCB"
+  #   script: "" #TODO
+  - name: "scrape"
+    help: "Scrapes websites"
+    script: 
+    - ".\\run_scrapy.bat https://lkab.com,https://home.sandvik"
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
