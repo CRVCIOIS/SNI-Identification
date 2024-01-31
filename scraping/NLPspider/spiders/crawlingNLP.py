@@ -3,6 +3,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from urllib.parse import urlparse
 from NLPspider.items import NLPspiderItem
+import tldextract
 
 
 class CrawlingnlpSpider(CrawlSpider):
@@ -20,25 +21,34 @@ class CrawlingnlpSpider(CrawlSpider):
                 start_urls (str): Comma-separated list of URLs to start crawling from.
         """
         super(CrawlingnlpSpider, self).__init__(*args, **kwargs)
-        
-        self.start_urls = kwargs.get("start_urls").split(",") # Get the start_urls from the kwargs
+
+        self.start_urls = kwargs.get("start_urls").split(
+            ",")  # Get the start_urls from the kwargs
         allowed = set()  # `set()` to keep every domain only once
 
+        allowed_TLDS = ["se", "com", "org", "net", "nu"]
         for url in self.start_urls:
             """
-            Loop through the start_urls and extract the domain name from each URL.
+            Loop through the start_urls and extract the domain name from
+            each URL.
+
+            Adds se, com, org, net, nu TLD to allowed domains.
             """
-            parts = urlparse(url)
-            allowed.add(parts.netloc)
+            extracted = tldextract.extract(url)
+            for TLD in allowed_TLDS:
+                domain = f"{extracted.domain}.{TLD}"
+                allowed.add(domain)
 
         self.allowed_domains = list(allowed)
         self.logger.debug(f"Start URLs: {self.start_urls}")
         self.logger.debug(f"Allowed domains: {self.allowed_domains}")
         self.rules = (
-            Rule(LinkExtractor(allow_domains=self.allowed_domains), callback="parse_item", follow=True),
+            Rule(LinkExtractor(allow_domains=self.allowed_domains),
+                 callback="parse_item", follow=True),
         )
-        super(CrawlingnlpSpider, self)._compile_rules() # This is needed to compile the rules after we have changed them
-             
+        # This is needed to compile the rules after we have changed them
+        super(CrawlingnlpSpider, self)._compile_rules()
+
     name = "crawlingNLP"
 
     def parse_item(self, response):
@@ -54,5 +64,5 @@ class CrawlingnlpSpider(CrawlSpider):
         item = NLPspiderItem()
         item["url"] = response.url
         item["raw_html"] = str(response.body)
-    
+
         yield item
