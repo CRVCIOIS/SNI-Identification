@@ -34,7 +34,10 @@ class CrawlingnlpSpider(CrawlSpider):
 
             Adds se, com, org, net, nu TLD to allowed domains.
             """
-            extracted = tldextract.extract(url)
+            extracted = tldextract.extract(
+                url)  # Edge case for unusual TLDs, e.g home.sandvik
+
+            allowed.add(f"{extracted.domain}.{extracted.suffix}")
             for TLD in allowed_TLDS:
                 domain = f"{extracted.domain}.{TLD}"
                 allowed.add(domain)
