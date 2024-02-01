@@ -78,7 +78,7 @@ class DataExtractor:
     
     def _extract_from_href(self, keyword):
         """
-        Return a list of strings {s} where a href contains the keyword:
+        Return a list of strings [s] where a href contains the keyword:
             <a href="keyword:s">...</a>
         :param keyword: the keyword to be searched
         :returns: a list of strings
