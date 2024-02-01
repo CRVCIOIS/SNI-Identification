@@ -64,6 +64,36 @@ class DataExtractor:
         for item in body:
             s += item + '\n'
         return s
+    
+    def extract_simple_data(self):
+        """
+        Find links for telephone numbers and e-mail addresses in a website.
+        :returns: a dictionary of lists of strings {'tel': [], 'e-mail': []}
+        """
+        results = {}
+        results['tel'] = [tel.replace('-', '').replace(' ', '') for tel in set(self._extract_from_href('tel'))]
+        results['e-mail'] = list(set(self._extract_from_href('mailto')))
+        
+        return results
+    
+    def _extract_from_href(self, keyword):
+        """
+        Return a set of strings {s} where a href contains the keyword:
+            <a href="keyword:s">...</a>
+        :param keyword: the keyword to be searched
+        :returns: a list of strings
+        """
+        if self.soup is None:
+            raise NoBeautifulSoupObject
+        results = []
+        href_regex = re.compile(fr'{keyword}:(.*)')
+
+        all_tags = self.soup.find_all('a', href=lambda href: href and keyword in href)
+        for tag in all_tags:
+            match = href_regex.match(tag.get('href'))
+            if match:
+                results.append(match.group(1))
+        return results
 
     def _extract_meta(self, filter_=True):
         """
@@ -73,7 +103,7 @@ class DataExtractor:
         :returns: a dictionary {metadata tag: contents}
         """
         if self.soup is None:
-            raise NoSoup
+            raise NoBeautifulSoupObject
         
         allowed_tags = ['title','description']
 
@@ -109,7 +139,7 @@ class DataExtractor:
         :returns: a list of strings.
         """
         if self.soup is None:
-            raise NoSoup
+            raise NoBeautifulSoupObject
 
         soup = copy.deepcopy(self.soup.body)
         
@@ -137,3 +167,10 @@ class DataExtractor:
             for filt in self.string_filter_list:
                 if filt.match(value):
                     lst.pop(i)
+
+
+if __name__ == "__main__":
+    extractor = DataExtractor()
+    extractor.open_file('temp/lkab.html')
+    simple_data = extractor.extract_simple_data()
+    print(simple_data)

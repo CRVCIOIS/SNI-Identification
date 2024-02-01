@@ -7,7 +7,7 @@ import requests
 import logging
 from pathlib import Path
 import regex as re
-from extract import DataExtractor
+from scripts.extract import DataExtractor
 
 def exist_tags_in_plaintext(text):
     """
@@ -67,10 +67,41 @@ def test_tags(address, save_results = False):
             with open(f'extractor_output/{extractor_name}_p_only_filtered.txt','w', encoding='utf-8') as fp:
                 fp.write(s_p_only_filtered)
         
-    logging.debug("All tests for %s ran successfully!", address)
+    logging.debug("All tag tests for %s ran successfully!", address)
+
+def test_simple_data(address, tel, email):
+    """
+    Test if the extractor can find a given telephone number and e-mail
+    in the website address.
+    :param address: the website's address.
+    :param tel: the company's phone number. Give an empty string if no public info available.
+    :param email: the company's e-mail. Give an empty string if no public info available.
+    """
+    r = requests.get(address)
+    Path("temp").mkdir(parents=True, exist_ok=True)
+    with open('temp/website.html','w', encoding='utf-8') as fp:
+        fp.write(r.text)
+
+    extractor = DataExtractor()
+    extractor.open_file('temp/website.html')
+    simple_data = extractor.extract_simple_data()
+
+    if len(simple_data['tel']) == 0:
+        simple_data['tel'].append('')
+    if len(simple_data['e-mail']) == 0:
+        simple_data['e-mail'].append('')
+
+    assert(tel in simple_data['tel'])
+    assert(email in simple_data['e-mail'])
+
+    logging.debug("All simple data tests for %s ran successfully!", address)
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
     addresses = ['https://ssab.se/', 'http://lkab.se','http://bdx.se']
-    for address in addresses:
+    tels = ['', '0771760000', '0920262600']
+    emails = ['','info@lkab.com','info@bdx.se']
+
+    for i, address in enumerate(addresses):
         test_tags(address, True)
+        test_simple_data(address,tels[i],emails[i])
