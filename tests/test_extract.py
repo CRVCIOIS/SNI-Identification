@@ -7,7 +7,7 @@ import requests
 import logging
 from pathlib import Path
 import regex as re
-from scripts.extract import DataExtractor
+from scripts.extract import DataExtractor, NoBeautifulSoupObject
 
 def exist_tags_in_plaintext(text):
     """
@@ -96,6 +96,25 @@ def test_simple_data(address, tel, email):
 
     logging.debug("All simple data tests for %s ran successfully!", address)
 
+def test_no_soup_object():
+    """
+    Check if the extractor raises correct error when trying to extract without a soup.
+    """
+    extractor = DataExtractor()
+    try:
+        extractor.extract()
+        assert False
+    except Exception as e:
+        assert(type(e) is NoBeautifulSoupObject)
+
+    try:
+        extractor.extract_simple_data()
+        assert False
+    except Exception as e:
+        assert(type(e) is NoBeautifulSoupObject)
+    
+    logging.debug("No soup test ran successfully!")
+
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
     addresses = ['https://ssab.se/', 'http://lkab.se','http://bdx.se']
@@ -105,3 +124,5 @@ if __name__ == "__main__":
     for i, address in enumerate(addresses):
         test_tags(address, True)
         test_simple_data(address,tels[i],emails[i])
+
+    test_no_soup_object()
