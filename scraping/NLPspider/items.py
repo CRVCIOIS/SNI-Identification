@@ -32,8 +32,11 @@ class NLPspiderItem(scrapy.Item):
         The URL of the page to be scraped.
     raw_html : scrapy.Field
         The raw HTML content of the page to be scraped.
+    domain : scrapy.Field
+        The domain name of the page to be scraped.
     """
     # define the fields for your item here like:
+    domain = scrapy.Field()
     url = scrapy.Field()
     raw_html = scrapy.Field()
     pass
