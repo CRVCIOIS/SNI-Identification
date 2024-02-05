@@ -24,6 +24,8 @@ class ScrapingPostprocess:
                 self.input_data = json.load(f)
         except (FileNotFoundError):
             logging.error("File not found: %s", self.file_path)
+        except json.JSONDecodeError:
+            logging.error("File is not a valid JSON file: %s", self.file_path)
 
     def postprocess(self):
         """
@@ -72,4 +74,4 @@ class ScrapingPostprocess:
         logging.info("Data written to %s", self.output_directory)
 
 
-#ScrapingPostprocess(r"NLP\scraping\NLPspider\data\crawlingNLP\crawlingNLP_2024-02-05T17-39-41+00-00.json", r"NLP\scraping\NLPspider\restuctured_data").postprocess()
+#ScrapingPostprocess(r"NLP\scraping\NLPspider\data\crawlingNLP\crawlingNLP_2024-02-05T18-28-20+00-00.json", r"NLP\scraping\NLPspider\restuctured_data").postprocess()
