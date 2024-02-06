@@ -20,7 +20,7 @@ class ScrapingPostprocess:
         Opens a file and loads the data into a dictionary.
         """
         try:
-            with open(self.file_path, 'r') as f:
+            with open(self.file_path, 'r', encoding='utf-8') as f:
                 self.input_data = json.load(f)
         except (FileNotFoundError):
             logging.error("File not found: %s", self.file_path)
@@ -74,4 +74,4 @@ class ScrapingPostprocess:
         logging.info("Data written to %s", self.output_directory)
 
 
-#ScrapingPostprocess(r"NLP\scraping\NLPspider\data\crawlingNLP\crawlingNLP_2024-02-05T18-28-20+00-00.json", r"NLP\scraping\NLPspider\restuctured_data").postprocess()
+#ScrapingPostprocess(r"scraping\NLPspider\data\crawlingNLP\crawlingNLP_2024-02-06T09-00-10+00-00.json", r"scraping\NLPspider\restructured_data").postprocess()
