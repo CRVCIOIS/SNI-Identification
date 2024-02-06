@@ -9,7 +9,7 @@
 
 
 
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 
 
 BOT_NAME = "NLPspider"
@@ -101,7 +101,7 @@ AJAXCRAWL_ENABLED = True
 FEED_EXPORT_ENCODING = "utf-8"
 #Exports the result to a json file
 FEEDS = { 
-    'data/%(name)s/%(name)s_%(time)s.json': { 
+    'data/scraped_data.json': { 
         'format': 'json', 
         'overwrite': True,
         } 

@@ -33,7 +33,7 @@ def main(
     records = srsly.read_json(input_path)
     for record in records:
         doc = nlp.make_doc(record["text"])
-        doc.cats[record["sni"]] = 1
+        doc.cats[record["SNI"]] = 1
         doc_bin.add(doc)    
     doc_bin.to_disk(output_path)
 if __name__ == "__main__":

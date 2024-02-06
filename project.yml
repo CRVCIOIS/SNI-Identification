@@ -14,6 +14,7 @@ vars:
   dev: "docs_nace_eval"
   sni: "sni"
   gpu_id: -1
+  scraped_data: "scraped_data"
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -27,8 +28,8 @@ assets:
     description: "JSONL-formatted training data exported, annotated with `DOCUMENTATION`"
   - dest: "assets/${vars.sni}.json"
     description: "JSON-formatted SNI codes"
-  - dest: "assets/${vars.dev}.json"
-    description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
+  # - dest: "assets/${vars.dev}.json"
+  #   description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
 
 # Workflows are sequences of commands (see below) executed in order. You can
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
@@ -37,6 +38,7 @@ workflows:
   all:
     # - SCB
     - scrape
+    - scraping-postprocess
     - preprocess
     - train
     - evaluate
@@ -52,7 +54,16 @@ commands:
   - name: "scrape"
     help: "Scrapes websites"
     script: 
-    - ".\\run_scrapy.bat https://lkab.com,https://home.sandvik"
+    - ".\\run_scrapy.bat https://bdx.se/,https://naidenbygg.se/,https://www.polarbrod.se/,https://www.bdbygg.se/,https://www.swebor.se/,https://www.shorelink.se/,https://www.noak.se/,https://www.ica.se/,https://lkab.com/,https://www.ssab.com/sv-se,https://www.hyreslandslaget.se/"
+    outputs:
+      - "scraping/data/${vars.scraped_data}.json"
+  - name: "scraping-postprocess"
+    script: 
+      - "python scripts/scraping_postprocess.py scraping/data/${vars.scraped_data}.json assets ${vars.train}"
+    deps:
+      - "scraping/data/${vars.scraped_data}.json"
+    outputs:
+      - "assets/${vars.train}.json"
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
@@ -60,10 +71,12 @@ commands:
       - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
       - "assets/${vars.train}.json"
+      - "assets/${vars.dev}.json"
       - "scripts/preprocess.py"
-      - "assets/${vars.sni}.json"
+      # - "assets/${vars.sni}.json"
     outputs:
       - "corpus/${vars.train}.spacy"
+      - "corpus/${vars.dev}.spacy"
 
   - name: "train"
     help: "Train a text classification model"
