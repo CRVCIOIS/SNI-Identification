@@ -1,21 +1,25 @@
 import os
 import logging
+import json
 from dotenv import load_dotenv
 from requests import Session
 from requests_pkcs12 import Pkcs12Adapter
 from definitions import ROOT_DIR
 
 # TODO: 
-# 1. Use _allowed check in every operation
-# 2. Write tests
-# 3. (?) Implement category support
+# (?) Implement category support
 
 load_dotenv(os.path.join(ROOT_DIR, '.env'))
 
+class VariableDoesNotExist(Exception):
+    """Variable does not exist in the list of all variables."""
+    pass
 class VariableDoesNotSupportOperation(Exception):
+    """Variable does not support the chosen operation."""
     pass
 
 class DoesNotOwnVariable(Exception):
+    """Variable does not exist in the list of owned variables."""
     pass
 
 class SCBapi():
@@ -27,12 +31,6 @@ class SCBapi():
         self.api_pass = os.getenv("API_PASS")
         self.owned_vars_from_api = {}
         self.variables_from_api = {}
-        self.json = {
-            "Företagsstatus":"1",
-            "Registreringsstatus":"1",
-            "variabler": [],
-            "Kategorier": []
-        }
         self.operator_map = {
             'Innehaller':self.contains,
             'ArLikaMed':self.equals,
@@ -43,38 +41,56 @@ class SCBapi():
             'Finns':self.exists,
             'FinnsInte':self.exists
         }
+        self.update_owned_vars()
+        self.reset_json()
     
     def __str__(self):
         """
-        Gives a list of owned variables and their available operators.
+        Owned variables + internal JSON file
         """
-        self.update_owned_vars()
-        
-        owned = {}
-        for k,v in self.owned_vars_from_api.items():
-            owned[k] = [o.__name__ for o in v]
-
-        s = "Owned variable: [allowed operations]\n"
+        s = "Variable: [allowed operations]\n"
         s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-        for k,v in owned.items():
+        for k,v in self.variables_from_api.items():
             s+=f"{k}: {v}\n"
+        s += "Owned variable: [allowed operations]\n"
+        s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        for k,v in self.owned_vars_from_api.items():
+            s+=f"{k}: {v}\n"
+        s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        s += "Current JSON file:\n"
+        s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        s += json.dumps(self.json,indent=2, ensure_ascii=False)
         return s
 
-    def _check_if_allowed(self, caller, var_list= None, var_dict = None):
+    def _check_if_allowed(self, operator, var_list= None, var_dict = None):
         """
+        Checks if the given variables are supported by the caller operation.
+
+        :param operator: a string (the exact name of the caller function).
+        :var_list: a list of variables used in the operation, or None.
+        :var_dict: a dictionary used in the operation, or None.
+
+        :raises VariableDoesNotExist: if the variable does not appear in the variable list fetched from the API.
+        :raises DoesNotOwnVariable: if the user does not own the chosen variable.
+        :raises VariableDoesNotSupportOperation: if the variable does not support the chosen operation (the caller).
         """
         if var_list is not None:
             for var in var_list:
+                if var not in self.variables_from_api:
+                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
                 if var not in self.owned_vars_from_api:
-                    raise DoesNotOwnVariable
-                if caller not in self.owned_vars_from_api[var]:
-                    raise VariableDoesNotSupportOperation
+                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
+                if operator not in self.owned_vars_from_api[var]:
+                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
+
         if var_dict is not None:
             for var in var_dict.keys():
+                if var not in self.variables_from_api:
+                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
                 if var not in self.owned_vars_from_api:
-                    raise DoesNotOwnVariable
-                if caller not in self.owned_vars_from_api[var]:
-                    raise VariableDoesNotSupportOperation
+                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
+                if operator not in self.owned_vars_from_api[var]:
+                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
 
     def update_variables(self):
         """
@@ -99,8 +115,8 @@ class SCBapi():
         """
         Update the list of owned variables.
         The dictionary is in the format:
-            {'variable_name':[callback functions]}
-            Where callback functions are:
+            {'variable_name':[function name]}
+            Where the function names are:
                 'contains',                       # Innehaller
                 'equals',                         # ArLikaMed
                 'prefix',                         # BorjarPa
@@ -109,7 +125,8 @@ class SCBapi():
                 'between'                         # Mellan
                 'exists'                          # Finns, FinnsInte
         """
-        self.update_variables()
+        if not self.variables_from_api:
+            self.update_variables()
 
         owned_vars_list = []
         r = self.get_request("api/Je/KoptaVariabler").json()
@@ -119,7 +136,7 @@ class SCBapi():
         self.owned_vars_from_api = {}
         for var in owned_vars_list:
             operators = self.variables_from_api[var]
-            self.owned_vars_from_api[var] = [self.operator_map[o] for o in operators]
+            self.owned_vars_from_api[var] = [self.operator_map[o].__name__ for o in operators]
     
     def exists(self, var: list, exists: bool = True):
         """
@@ -129,6 +146,8 @@ class SCBapi():
         :param exists: boolean value for if the variable should exist or not.
         :returns: the object itself.
         """
+        self._check_if_allowed('exists',var_list=var)
+
         for v in var:
             variable_dict = {
                 "Varde1": "",
@@ -147,6 +166,8 @@ class SCBapi():
     
         :returns: the object itself.
         """
+        self._check_if_allowed('contains',var_dict=var)
+    
         for v in var:
             variable_dict = {
                 "Varde1": var[v],
@@ -164,6 +185,8 @@ class SCBapi():
         :param var: Dictionary of variables and their values to be checked.
         :returns: the object itself.
         """
+        self._check_if_allowed('equals',var_dict=var)
+
         for v in var:
             variable_dict = {
                 "Varde1": var[v],
@@ -181,6 +204,8 @@ class SCBapi():
         :param var: Dictionary of variables and their values to be checked.
         :returns: the object itself.
         """
+        self._check_if_allowed('prefix',var_dict=var)
+
         for v in var:
             variable_dict = {
                 "Varde1": var[v],
@@ -198,6 +223,8 @@ class SCBapi():
         :param var: Dictionary of variables and their values to be checked.
         :returns: the object itself.
         """
+        self._check_if_allowed('start_from',var_dict=var)
+
         for v in var:
             variable_dict = {
                 "Varde1": var[v],
@@ -215,6 +242,8 @@ class SCBapi():
         :param var: Dictionary of variables and their values to be checked.
         :returns: the object itself.
         """
+        self._check_if_allowed('up_to',var_dict=var)
+
         for v in var:
             variable_dict = {
                 "Varde1": var[v],
@@ -232,7 +261,9 @@ class SCBapi():
         :param var: Dictionary of variables and their values to be checked.
         :returns: the object itself.
         """
-        for key, value in var:
+        self._check_if_allowed('between',var_dict=var)
+
+        for key, value in var.items():
             variable_dict = {
                 "Varde1": value[0],
                 "Varde2": value[1],
@@ -263,9 +294,26 @@ class SCBapi():
         self.json["Kategorier"].append(category_dict)
         return self
     
+    def reset_json(self):
+        """
+        Sets the internal JSON file to the default values. 
+        """
+        self.json = {
+            "Företagsstatus":"1",
+            "Registreringsstatus":"1",
+            "variabler": [],
+            "Kategorier": []
+        }
+
     def fetch(self, address: str = "api/Je/HamtaForetag"):
+        """
+        Sends a request with the current JSON file.
+
+        :returns: the response object.
+        """
         logging.debug('Sending the following request:\n%s', self.json)
         r = self.fetch_data(address, self.json)
+        self.reset_json()
         return r
     
     def fetch_data(self, r_address, body=None):
@@ -310,9 +358,8 @@ class SCBapi():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     scb = SCBapi()
-    #print(scb)
-    #scb.update_variables()
+    print(scb)
     #scb.exists(["telefon", "email"]).contains({ "telefon": "070", "email": "x@x.x" }).exists(["namn"]).fetch()
-    r = scb.exists(["Telefon"]).start_from({"Antal arbetsställen": 4}).sni(["62010", "62020"]).fetch()
-    print(r.json())
+    #r = scb.exists(["Telefon"]).start_from({"Antal arbetsställen": 4}).sni(["62010", "62020"]).fetch()
+    #print(r.json())
     

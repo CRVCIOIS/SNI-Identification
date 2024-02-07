@@ -4,8 +4,6 @@ To run simply execute the following command in the terminal:
 > pytest scripts/test_preprocess.py
 """
 
-from pathlib import Path
-
 import pytest
 import spacy
 from spacy.tokens import DocBin
