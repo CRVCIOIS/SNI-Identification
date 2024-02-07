@@ -13,8 +13,11 @@ vars:
   train: "docs_nace_training"
   dev: "docs_nace_eval"
   sni: "sni"
-  gpu_id: -1
+  demo_sni: "demo_sni_labels"
+  gpu_id: 0
   scraped_data: "scraped_data"
+  urls_to_scrape: "https://bdx.se/,https://naidenbygg.se/,https://www.polarbrod.se/,https://www.bdbygg.se/,https://www.shorelink.se/,https://www.noak.se/,https://www.ica.se/,https://lkab.com/,https://www.ssab.com/sv-se,https://www.hyreslandslaget.se/,https://www.postnord.se/,https://www.valmet.com/sv/,https://lbc.se/,https://www.freja.com/se/,https://xr.nu/,https://www.flshipping.se/,https://timmerkorarna.se/,https://infranordic.se/,https://pagen.se/,https://swerock.se/,https://www.coop.se/,https://www.linotol.se/,https://peab.se/,https://www.goteborgshamn.se/"
+  postprocessed_data: "postprocessed_data"
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -39,6 +42,7 @@ workflows:
     # - SCB
     - scrape
     - scraping-postprocess
+    - label
     - preprocess
     - train
     - evaluate
@@ -54,16 +58,26 @@ commands:
   - name: "scrape"
     help: "Scrapes websites"
     script: 
-    - ".\\run_scrapy.bat https://bdx.se/,https://naidenbygg.se/,https://www.polarbrod.se/,https://www.bdbygg.se/,https://www.swebor.se/,https://www.shorelink.se/,https://www.noak.se/,https://www.ica.se/,https://lkab.com/,https://www.ssab.com/sv-se,https://www.hyreslandslaget.se/"
+    - ".\\run_scrapy.bat ${vars.urls_to_scrape}"
     outputs:
       - "scraping/data/${vars.scraped_data}.json"
   - name: "scraping-postprocess"
     script: 
-      - "python scripts/scraping_postprocess.py scraping/data/${vars.scraped_data}.json assets ${vars.train}"
+      - "python scripts/scraping_postprocess.py scraping/data/${vars.scraped_data}.json scraping/data ${vars.postprocessed_data}"
     deps:
       - "scraping/data/${vars.scraped_data}.json"
     outputs:
+      - "scraping/data/${vars.postprocessed_data}.json"
+  - name: label
+    help: "Label the data"
+    script:
+      - "python scripts/demo_label.py assets/${vars.demo_sni}.json scraping/data/${vars.postprocessed_data}.json assets/${vars.train}.json"
+    deps:
+      - "assets/${vars.demo_sni}.json"
+      - "scraping/data/${vars.postprocessed_data}.json"
+    outputs:
       - "assets/${vars.train}.json"
+      - "assets/${vars.dev}.json"
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:

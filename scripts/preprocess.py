@@ -28,6 +28,8 @@ def main(
     Returns:
         None
     """
+    
+    spacy.require_gpu()
     nlp = spacy.blank("sv")
     doc_bin = DocBin()
     records = srsly.read_json(input_path)
