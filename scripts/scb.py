@@ -35,7 +35,7 @@ class SCBapi():
     ```python
     scb = SCBapi()
     resultWrapper = api.up_to({"Antal arbetsställen": "4"}).sni(["62010"]).fetch().json()
-    print(resultWrapper.json(*))
+    print(resultWrapper.json())
     ```
     
     :param cert_path: the path to the certificate file.
