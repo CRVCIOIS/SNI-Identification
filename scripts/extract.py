@@ -60,10 +60,12 @@ class DataExtractor:
 
         s = ""
         for value in meta:
-            s += value + '\n'
+            s += value + " "
         for item in body:
-            s += item + '\n'
-        return s
+            s += item + " "
+            
+        cleaned_s = re.sub(r'\s+', ' ', s)  # Remove multiple spaces
+        return cleaned_s
 
     def _extract_meta(self, filter_=True):
         """

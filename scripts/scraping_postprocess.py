@@ -55,7 +55,7 @@ def postprocess(
                 # the text
                 if existing_item['domain'] == item['domain']:
                     extractor.create_soup_from_string(item['raw_html'])
-                    existing_item['text'] = f'{existing_item["text"]} {extractor.extract(p_only=True)}'
+                    existing_item['text'] = f'{existing_item["text"]} {extractor.extract(p_only=False)}'
                     break
             # If the domain is not in restructured_json, add item to new
             # domain
@@ -64,7 +64,7 @@ def postprocess(
                 new_item = {
                     "domain": item['domain'],
                     "SNI": "",
-                    "text": extractor.extract(p_only=True),
+                    "text": extractor.extract(p_only=False),
                 }
                 restructured_json.append(new_item)
         write_to_file(restructured_json, output_directory, output_file_name)
