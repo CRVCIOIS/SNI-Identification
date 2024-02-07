@@ -1,3 +1,6 @@
+"""
+SCB API Wrapper and related exceptions.
+"""
 import os
 import logging
 import json
@@ -6,8 +9,7 @@ from requests import Session
 from requests_pkcs12 import Pkcs12Adapter
 from definitions import ROOT_DIR
 
-# TODO: 
-# (?) Implement category support
+CERT_PATH = f"{ROOT_DIR}/key.pfx"
 
 load_dotenv(os.path.join(ROOT_DIR, '.env'))
 
@@ -25,10 +27,23 @@ class DoesNotOwnVariable(Exception):
 class SCBapi():
     """
     Wrapper for SCB NÄRA API.
+    
+    To use the API, the user must have a valid certificate and a password.
+    The password should be stored as an environment variable.
+    
+    Example usage:
+    ```python
+    scb = SCBapi()
+    resultWrapper = api.up_to({"Antal arbetsställen": "4"}).sni(["62010"]).fetch().json()
+    print(resultWrapper.json(*))
+    ```
+    
+    :param cert_path: the path to the certificate file.
     """
-    def __init__(self) -> None:
+    def __init__(self, cert_path=CERT_PATH) -> None:
         self.api_base = 'https://privateapi.scb.se/nv0101/v1/sokpavar'
         self.api_pass = os.getenv("API_PASS")
+        self.cert_path = cert_path
         self.owned_vars_from_api = {}
         self.variables_from_api = {}
         self.operator_map = {
@@ -325,7 +340,7 @@ class SCBapi():
         :returns: a response object
         """
         with Session() as s:
-            s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=f'{ROOT_DIR}/key.pfx', pkcs12_password=self.api_pass))
+            s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
             if (body is None):   
                 r = s.get(f'{self.api_base}/{r_address}') # En request
             else :
@@ -352,14 +367,3 @@ class SCBapi():
         """
         r = self.fetch_data(r_address)
         return r
-
-#api.exists(["telefon", "email"]).contains({ "telefon": "070", "email": "a@b.c" }).fetch()
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    scb = SCBapi()
-    print(scb)
-    #scb.exists(["telefon", "email"]).contains({ "telefon": "070", "email": "x@x.x" }).exists(["namn"]).fetch()
-    #r = scb.exists(["Telefon"]).start_from({"Antal arbetsställen": 4}).sni(["62010", "62020"]).fetch()
-    #print(r.json())
-    
