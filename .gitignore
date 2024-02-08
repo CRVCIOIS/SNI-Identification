@@ -175,3 +175,6 @@ project.lock
 
 #temporary files
 temp/
+
+# pfx files
+*.pfx

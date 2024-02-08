@@ -13,6 +13,16 @@
             "env":{
                 "PYTHONPATH":"${workspaceFolder}"
             }
+        },
+        {
+            "name":"Pytest: Run Module With Path",
+            "type": "python",
+            "request":"launch",
+            "module": "pytest",
+            "args": ["${file}"],
+            "env":{
+                "PYTHONPATH":"${workspaceFolder}"
+            }
         }
     ]
 }
