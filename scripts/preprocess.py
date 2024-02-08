@@ -16,6 +16,8 @@ import spacy
 import srsly
 import typer
 from spacy.tokens import DocBin
+from copy import deepcopy
+
 def main(
         input_path: Path = typer.Argument(..., exists=True, dir_okay=False),
         output_path: Path = typer.Argument(..., dir_okay=False),
@@ -29,14 +31,21 @@ def main(
         None
     """
     
-    spacy.require_gpu()
-    nlp = spacy.blank("sv")
+    
+    nlp = spacy.load("sv_core_news_sm")
     doc_bin = DocBin()
     records = srsly.read_json(input_path)
+    labels = {}
     for record in records:
+        labels[record["SNI"]] = 0
+        
+    for record in records:
+        doc_label = deepcopy(labels)
+        doc_label[record["SNI"]] = 1
         doc = nlp.make_doc(record["text"])
-        doc.cats[record["SNI"]] = 1
-        doc_bin.add(doc)    
+        doc.cats = doc_label
+        doc_bin.add(doc)
+    
     doc_bin.to_disk(output_path)
 if __name__ == "__main__":
     typer.run(main)

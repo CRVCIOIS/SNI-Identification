@@ -12,11 +12,12 @@ vars:
   version: "0.0.0"
   train: "docs_nace_training"
   dev: "docs_nace_eval"
+  test: "docs_nace_test"
   sni: "sni"
   demo_sni: "demo_sni_labels"
-  gpu_id: 0
+  gpu_id: -1
   scraped_data: "scraped_data"
-  urls_to_scrape: "https://bdx.se/,https://naidenbygg.se/,https://www.polarbrod.se/,https://www.bdbygg.se/,https://www.shorelink.se/,https://www.noak.se/,https://www.ica.se/,https://lkab.com/,https://www.ssab.com/sv-se,https://www.hyreslandslaget.se/,https://www.postnord.se/,https://www.valmet.com/sv/,https://lbc.se/,https://www.freja.com/se/,https://xr.nu/,https://www.flshipping.se/,https://timmerkorarna.se/,https://infranordic.se/,https://pagen.se/,https://swerock.se/,https://www.coop.se/,https://www.linotol.se/,https://peab.se/,https://www.goteborgshamn.se/"
+  urls_to_scrape: "https://www.skanska.se/,https://peab.se/,https://www.ncc.se/,https://www.jm.se/,https://www.serneke.se/,https://www.icagruppen.se/,https://www.coop.se/,https://www.axfood.se/,https://www.dagab.se/,https://www.telia.se/,https://www.tele2.se/,https://www.telenor.se/,https://www.eltelnetworks.se/,https://pagen.se/,https://www.polarbrod.se/,https://www.lantmannenunibake.se/,https://whitearkitekter.com/se/,https://tengbom.se/,https://www.fop.se/,https://www.krooktjader.se/,https://sveafastigheter.se/,https://www.balder.se/,https://galaren.se/,https://www.swedbank.se/,https://www.handelsbanken.se/sv/,https://seb.se/,https://www.nordea.se/,https://www.scandichotels.se/,https://hotelatsix.com/sv/,https://www.elite.se/,https://www.radissonhotels.com/sv-se/,https://evidensia.se/,https://firstvet.com/sv,https://hallandsdjursjukhus.se/,https://www.gardochdjurhalsan.se/"
   postprocessed_data: "postprocessed_data"
 
 # These are the directories that the project needs. The project CLI will make
@@ -87,7 +88,7 @@ commands:
       - "assets/${vars.train}.json"
       - "assets/${vars.dev}.json"
       - "scripts/preprocess.py"
-      # - "assets/${vars.sni}.json"
+
     outputs:
       - "corpus/${vars.train}.spacy"
       - "corpus/${vars.dev}.spacy"

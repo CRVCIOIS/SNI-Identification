@@ -4,7 +4,7 @@ from pathlib import Path
 import typer
 
 
-def label_SNI(
+def label_sni(
     sni_codes: Path = typer.Argument(..., exists=True, dir_okay=False), 
     input: Path = typer.Argument(..., exists=True, dir_okay=False), 
     output_file_path: Path = typer.Argument(..., exists=False, dir_okay=False)):
@@ -54,4 +54,4 @@ def write_to_file(output_data, output_json_file_path):
 
 
 if __name__ == '__main__':
-   typer.run(label_SNI)
+   typer.run(label_sni)

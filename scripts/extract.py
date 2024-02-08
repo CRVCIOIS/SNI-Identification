@@ -51,18 +51,19 @@ class DataExtractor:
         :param p_only: if True, then only paragraphs will be scraped from the body.
         :returns: a string
         """
+        # TODO: fix extraction of metadata only
         meta = self._extract_meta(filter_).values()
-        body = self._extract_body(filter_, p_only)
+        #body = self._extract_body(filter_, p_only)
         if filter_:
-            self._filter_list(body)
+            #self._filter_list(body)
             meta = list(set(meta))  # remove duplicates
-            body = list(set(body))  # remove duplicates
+            #body = list(set(body))  # remove duplicates
 
         s = ""
         for value in meta:
             s += value + " "
-        for item in body:
-            s += item + " "
+        #for item in body:
+        #    s += item + " "
             
         cleaned_s = re.sub(r'\s+', ' ', s)  # Remove multiple spaces
         return cleaned_s
@@ -75,7 +76,7 @@ class DataExtractor:
         :returns: a dictionary {metadata tag: contents}
         """
         if self.soup is None:
-            raise NoSoup
+            raise NoBeautifulSoupObject
         
         allowed_tags = ['title','description']
 
@@ -116,11 +117,15 @@ class DataExtractor:
         soup = copy.deepcopy(self.soup.body)
         
         if filter_:
+            # Remove links
             for element in soup.find_all('a'):
                 if element.strings is not None:
                     element.decompose()
-
+            # Remove tags containing "cookie"
             for element in soup.find_all('div', class_=re.compile("cookie*.")):
+                element.decompose()
+            # Remove JS scripts    
+            for element in soup.find_all('script'):
                 element.decompose()
 
         if p_only:
