@@ -2,256 +2,617 @@
 <diagram program="umlet" version="15.1">
   <help_text>Labeled dataset of SNI branches associated with websites.
 </help_text>
-  <zoom_level>6</zoom_level>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>942</x>
-      <y>612</y>
-      <w>174</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>Output:  SNI Codes, phone number, etc.</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>306</x>
-      <y>534</y>
-      <w>114</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>Input: Web-scraped data</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>318</x>
-      <y>594</y>
-      <w>216</w>
-      <h>114</h>
-    </coordinates>
-    <panel_attributes>FileReader
---
-- data: Datapath
---
-
---
-Responsibilities
--- Read input file and output 
-all relevant data for training/query. 
-group=group-4</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>468</x>
-      <y>186</y>
-      <w>240</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>NLPModel
---
---
-/+train_model()/
-/+save_model()/
-/+load_model()/
-/+download_pre_trained_model()/
---
-Responsibilities
--- Abstract implementation of specific models.</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>990</x>
-      <y>642</y>
-      <w>78</w>
-      <h>30</h>
-    </coordinates>
-    <panel_attributes>/Output Processing/
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>540</x>
-      <y>90</y>
-      <w>60</w>
-      <h>18</h>
-    </coordinates>
-    <panel_attributes>/models/
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>606</x>
-      <y>354</y>
-      <w>300</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;NLPModel[Func]Wrapper&gt;&gt;
---
---
-/+[Func]()/
---
-Responsibilities
--- Implement specific functionality for evaluations.</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>702</x>
-      <y>246</y>
-      <w>96</w>
-      <h>18</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>140.0;10.0;10.0;10.0</additional_attributes>
-  </element>
+  <zoom_level>9</zoom_level>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>306</x>
-      <y>564</y>
-      <w>240</w>
-      <h>186</h>
+      <x>0</x>
+      <y>144</y>
+      <w>1341</w>
+      <h>990</h>
     </coordinates>
-    <panel_attributes>Input
+    <panel_attributes>scripts
 --
-
-group=group-4</panel_attributes>
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>36</x>
+      <y>234</y>
+      <w>360</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>DataExtractor
+Module::extract
+--
+- soup: BeautifulSoup
+- string_filter_list: str[0..*]
+--
++ __init__(): void
++ __str__(): str
++ open_file(file_path: str): void
++ create_soup_from_string(raw_html: str): void
++ extract(filter_: bool, p_only: bool): str
++ extract_simple_data(): dict
+- extract_from_href(keyword: str): str[0..*]
+- _extract_meta(filter_: bool): dict
+- _extract_body(filter_: bool, p_only: bool): list
+- _filter_list(body: list): void
+--
+Responsibilities:
+-- Provide different levels of preprocessing
+-- Extract basic information from tags</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>486</x>
+      <y>207</y>
+      <w>468</w>
+      <h>423</h>
+    </coordinates>
+    <panel_attributes>SCBapi
+Module::scb
+--
+- api_base: str
+- api_pass: str
+- cert_path: str
+- owned_vars_from_api: dict
+- variables_from_api: dict
+- operator_map: dict
+- json: dict
+--
++ __init__(cert_path: str): void
++ __str__(): str
++ update_variables(): void
++ update_owned_vars(): void
++ exists(var: lst, exists: bool): SCBapi
++ contains(var: dict): SCBapi
++ equals(var: dict): SCBapi
++ prefix(var: dict): SCBapi
++ start_from(var: dict): SCBapi
++ up_to(var: dict): SCBapi
++ between(var: dict): SCBapi
++ sni(codes: lst, level: int, exclusion: bool): SCBapi
++ reset_json(): void
++ fetch(address: str): response
+- _post_request(r_address: str): response
+- get_request(r_address: str): response
+- _check_if_allowed(operator: str, var_list: lst, var_dict = dict): void
+--
+Responsibilities:
+-- Abstraction of SCB API</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>603</x>
+      <y>693</y>
+      <w>396</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;global functions&gt;&gt;
+Module::preprocess
+--
+--
++ main(input_path: str, output_path: str): void
+--
+Responsibilities:
+-- Preprocess using spaCy</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>444</x>
-      <y>162</y>
-      <w>684</w>
-      <h>336</h>
+      <x>1422</x>
+      <y>171</y>
+      <w>1557</w>
+      <h>612</h>
     </coordinates>
-    <panel_attributes>NLPModels
+    <panel_attributes>scraping
 --
-</panel_attributes>
+
+group=group-1</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>624</x>
-      <y>600</y>
-      <w>264</w>
-      <h>120</h>
+      <x>1908</x>
+      <y>270</y>
+      <w>198</w>
+      <h>99</h>
     </coordinates>
-    <panel_attributes>Main
-Package::main
+    <panel_attributes>NLPspiderItem
+Module::items
 --
-- reader: FileReader
-- nlp: NLPModelWrapper
 --
-/+query(fileWithQuery : FilePath): Nace Codes, Company Name, etc./
 --
-Responsibilities
--- Evaluate input data using models and other.</panel_attributes>
+Responsibilities:
+-- define custom items
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>1440</x>
+      <y>207</y>
+      <w>1503</w>
+      <h>558</h>
+    </coordinates>
+    <panel_attributes>NLPspider
+--
+
+group=group-1</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>540</x>
-      <y>648</y>
-      <w>96</w>
-      <h>18</h>
+      <x>1998</x>
+      <y>36</y>
+      <w>27</w>
+      <h>252</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>140.0;10.0;10.0;10.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+group=group-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;260.0</additional_attributes>
   </element>
   <element>
-    <id>Relation</id>
+    <id>UMLClass</id>
     <coordinates>
-      <x>744</x>
+      <x>1467</x>
       <y>468</y>
-      <w>18</w>
-      <h>144</h>
+      <w>216</w>
+      <h>99</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <panel_attributes>NlpspiderSpiderMiddleware
+Module::middlewares
+--
+--
+--
+Responsibilities:
+-- override built-in scrapy functions
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1467</x>
+      <y>360</y>
+      <w>216</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>NlpspiderDownloaderMiddleware
+Module::middlewares
+--
+--
+--
+Responsibilities:
+-- override built-in scrapy functions
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1467</x>
+      <y>252</y>
+      <w>216</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>NlpspiderPipeline
+Module::pipelines
+--
+--
+--
+Responsibilities:
+-- override built-in scrapy pipelines
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1728</x>
+      <y>405</y>
+      <w>387</w>
+      <h>306</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;global constants&gt;&gt;
+Module::settings
+--
++ LOG_LEVEL: str
++ BOT_NAME: str
++ SPIDER_MODULES: str[0..*]
++ NEWSPIDER_MODULE: str
++ ROBOTSTXT_OBEY: bool
++ AUTOTHROTTLE_ENABLED: bool
++ AUTOTHROTTLE_START_DELAY: int
++ AUTOTHROTTLE_MAX_DELAY: int
++ AUTOTHROTTLE_TARGET_CONCURRENCY: float
++ REQUEST_FINGERPRINTER_IMPLEMENTATION: str
++ TWISTED_REACTOR: str
++ AJAXCRAWL_ENABLED: bool
++ FEED_EXPORT_ENCODING: str
++ FEEDS: dict
++ DEPTH_LIMIT: int
+--
+--
+Responsibilities:
+-- define global scrapy constants
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2331</x>
+      <y>288</y>
+      <w>468</w>
+      <h>423</h>
+    </coordinates>
+    <panel_attributes>CrawlingnlpSpider
+Module::crawlingNLP
+--
+- start_urls: str[1..*]
+- allowed: set
+- allowed_TLDS: str[1..*]
+- allowed_domains: str[1..*]
+- rules: Rule
+--
++ __init__(args: lst, kwrgs: dict): void
++ parse_item(response: scrapy.http.Response): NLPspiderItem
+--
+Responsibilities:
+-- custom web-crawler
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>2295</x>
+      <y>252</y>
+      <w>621</w>
+      <h>486</h>
+    </coordinates>
+    <panel_attributes>spiders
+--
+
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2457</x>
+      <y>63</y>
+      <w>198</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>CrawlSpider
+Module::scrapy.spiders
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2547</x>
+      <y>99</y>
+      <w>27</w>
+      <h>207</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+group=group-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2745</x>
+      <y>99</y>
+      <w>36</w>
+      <h>207</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2=1
+group=group-1</panel_attributes>
+    <additional_attributes>10.0;210.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2664</x>
+      <y>63</y>
+      <w>198</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>Rule
+Module::scrapy.spiders
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3060</x>
+      <y>459</y>
+      <w>198</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>Response
+Module::scrapy.http
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1953</x>
+      <y>0</y>
+      <w>108</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>Item
+Module::scrapy
+group=group-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2790</x>
+      <y>477</y>
+      <w>279</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+group=group-1</panel_attributes>
+    <additional_attributes>10.0;10.0;290.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2097</x>
+      <y>315</y>
+      <w>252</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..*
+group=group-1</panel_attributes>
+    <additional_attributes>260.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1071</x>
+      <y>1314</y>
+      <w>387</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;pipeline&gt;&gt;
+project
+package::root
+--
+--
+--
+Responsibilities:
+-- Project runner</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>27</x>
+      <y>693</y>
+      <w>531</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;global functions&gt;&gt;
+Module::scraping_postprocess
+--
+--
++ postprocess(file_path: str, output_directory: str, output_file_name: str): void
++ open_file(file_path: str): void
++ write_to_file(restructured_json: dict, output_directory: str, output_file_name: str): void
+--
+Responsibilities:
+-- Fix scrapy output format</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>216</x>
+      <y>495</y>
+      <w>36</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2=1
+m1=1</panel_attributes>
     <additional_attributes>10.0;220.0;10.0;10.0</additional_attributes>
   </element>
   <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>162</x>
+      <y>495</y>
+      <w>171</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1413</x>
+      <y>666</y>
+      <w>936</w>
+      <h>666</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;720.0;1020.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>801</x>
+      <y>810</y>
+      <w>441</w>
+      <h>522</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>470.0;560.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>459</x>
+      <y>810</y>
+      <w>693</w>
+      <h>522</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>750.0;560.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>786</x>
-      <y>192</y>
-      <w>300</w>
-      <h>120</h>
+      <x>1746</x>
+      <y>1260</y>
+      <w>288</w>
+      <h>36</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;NLPModelBaseWrapper&gt;&gt;
---
--model: NLPModel
-- reader: FileReader
---
-__init__(modelType)
-/+ Functions all NLPModel objects need/
---
-Responsibilities
-- Interface with model
-- For example, transform normal vectors into a specific model space. 
-</panel_attributes>
+    <panel_attributes>TextCategorizer
+module::spacy.pipeline.textcat
+
+/textcat.py</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>786</x>
-      <y>306</y>
-      <w>66</w>
-      <h>60</h>
+      <x>1449</x>
+      <y>1287</y>
+      <w>315</w>
+      <h>126</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>90.0;10.0;10.0;80.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;120.0;330.0;10.0</additional_attributes>
   </element>
   <element>
-    <id>Relation</id>
+    <id>UMLClass</id>
     <coordinates>
-      <x>882</x>
-      <y>648</y>
-      <w>120</w>
-      <h>18</h>
+      <x>1746</x>
+      <y>1341</y>
+      <w>288</w>
+      <h>36</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>564</x>
-      <y>102</y>
-      <w>18</w>
-      <h>96</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>10.0;140.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLNote</id>
-    <coordinates>
-      <x>528</x>
-      <y>516</y>
-      <w>174</w>
-      <h>42</h>
-    </coordinates>
-    <panel_attributes>*Each class has their own set of unittests, which the writer of the function makes.*
-bg=blue
-style=wordwrap</panel_attributes>
+    <panel_attributes>Tokenizer
+module::spacy.tokenizer
+
+/textcat.py</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1449</x>
+      <y>1368</y>
+      <w>315</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;90.0;330.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1746</x>
+      <y>1431</y>
+      <w>288</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Vectors
+module::spacy.vectors</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1449</x>
+      <y>1458</y>
+      <w>315</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;60.0;330.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1746</x>
+      <y>1494</y>
+      <w>288</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>MultiLabel_TextCategorizer
+module::spacy.pipeline.textcat_multilabel</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1449</x>
+      <y>1512</y>
+      <w>315</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;40.0;330.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1746</x>
+      <y>1557</y>
+      <w>288</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Corpus
+module::spacy.training.corpus</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1449</x>
+      <y>1575</y>
+      <w>315</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;330.0;10.0</additional_attributes>
   </element>
 </diagram>

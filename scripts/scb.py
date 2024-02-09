@@ -56,6 +56,7 @@ class SCBapi():
             'Finns':self.exists,
             'FinnsInte':self.exists
         }
+        self.json = {}
         self.update_owned_vars()
         self.reset_json()
     
@@ -77,36 +78,6 @@ class SCBapi():
         s += json.dumps(self.json,indent=2, ensure_ascii=False)
         return s
 
-    def _check_if_allowed(self, operator, var_list= None, var_dict = None):
-        """
-        Checks if the given variables are supported by the caller operation.
-
-        :param operator: a string (the exact name of the caller function).
-        :var_list: a list of variables used in the operation, or None.
-        :var_dict: a dictionary used in the operation, or None.
-
-        :raises VariableDoesNotExist: if the variable does not appear in the variable list fetched from the API.
-        :raises DoesNotOwnVariable: if the user does not own the chosen variable.
-        :raises VariableDoesNotSupportOperation: if the variable does not support the chosen operation (the caller).
-        """
-        if var_list is not None:
-            for var in var_list:
-                if var not in self.variables_from_api:
-                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
-                if var not in self.owned_vars_from_api:
-                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
-                if operator not in self.owned_vars_from_api[var]:
-                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
-
-        if var_dict is not None:
-            for var in var_dict.keys():
-                if var not in self.variables_from_api:
-                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
-                if var not in self.owned_vars_from_api:
-                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
-                if operator not in self.owned_vars_from_api[var]:
-                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
-
     def update_variables(self):
         """
         Update the dictionary of all variables.
@@ -122,7 +93,7 @@ class SCBapi():
                 'exists'                          # Finns, FinnsInte
         """
         self.variables_from_api = {}
-        variables = self.get_request("api/Je/Variabler").json()
+        variables = self._get_request("api/Je/Variabler").json()
         for var in variables:
             self.variables_from_api[var['Id_Variabel_JE']]=var['Operatorer']
 
@@ -144,7 +115,7 @@ class SCBapi():
             self.update_variables()
 
         owned_vars_list = []
-        r = self.get_request("api/Je/KoptaVariabler").json()
+        r = self._get_request("api/Je/KoptaVariabler").json()
         for var in r['Variabler']:
             owned_vars_list.append(var['Id_Variabel_JE'])
         
@@ -347,7 +318,7 @@ class SCBapi():
                 r = s.post(f'{self.api_base}/{r_address}', json=body)
         return r
 
-    def post_request(self, r_address, body):
+    def _post_request(self, r_address, body):
         """
         Method for creating a POST request against SCB API.
         
@@ -358,7 +329,7 @@ class SCBapi():
         r = self.fetch_data(r_address, body)
         return r
 
-    def get_request(self, r_address):
+    def _get_request(self, r_address):
         """
         Method for creating a GET request against SCB API.
         
@@ -367,3 +338,33 @@ class SCBapi():
         """
         r = self.fetch_data(r_address)
         return r
+
+    def _check_if_allowed(self, operator, var_list= None, var_dict = None):
+        """
+        Checks if the given variables are supported by the caller operation.
+
+        :param operator: a string (the exact name of the caller function).
+        :var_list: a list of variables used in the operation, or None.
+        :var_dict: a dictionary used in the operation, or None.
+
+        :raises VariableDoesNotExist: if the variable does not appear in the variable list fetched from the API.
+        :raises DoesNotOwnVariable: if the user does not own the chosen variable.
+        :raises VariableDoesNotSupportOperation: if the variable does not support the chosen operation (the caller).
+        """
+        if var_list is not None:
+            for var in var_list:
+                if var not in self.variables_from_api:
+                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
+                if var not in self.owned_vars_from_api:
+                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
+                if operator not in self.owned_vars_from_api[var]:
+                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
+
+        if var_dict is not None:
+            for var in var_dict.keys():
+                if var not in self.variables_from_api:
+                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
+                if var not in self.owned_vars_from_api:
+                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
+                if operator not in self.owned_vars_from_api[var]:
+                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
