@@ -10,15 +10,35 @@ import requests
 import logging
 from pathlib import Path
 import regex as re
-from scripts.scripts.extract import DataExtractor, NoBeautifulSoupObject
+from scripts.extract import DataExtractor, NoBeautifulSoupObject
 import pytest
 
-@pytest.fixture
-def address():
+DATA = {
+    'https://ssab.se/':{'tel':'','email':''}, 
+    'http://lkab.se':{'tel':'0771760000','email':'info@lkab.com'},
+    'http://bdx.se':{'tel':'0920262600','email':'info@bdx.se'}
+}
+
+@pytest.fixture(params=DATA.keys())
+def address(request):
     """
-    Return a website address
+    :yields: a website address
     """
-    return 'https://ssab.se/'
+    yield request.param
+
+@pytest.fixture()
+def tel(address):
+    """
+    :returns: a telephone number.
+    """
+    return DATA[address]['tel']
+
+@pytest.fixture()
+def email(address):
+    """
+    :returns: an e-mail address number.
+    """
+    return DATA[address]['email']
 
 @pytest.fixture
 def raw_request(address):
@@ -35,7 +55,7 @@ def temp_input_file(tmp_path, raw_request):
     input_file = tmp_path / "request.html"
     input_file.write_text(raw_request, encoding='utf-8')
     return input_file
-    
+
 
 def exist_tags_in_plaintext(text):
     """
@@ -95,32 +115,29 @@ def test_tags(raw_request, temp_input_file, save_results = True):
     logging.debug("All tag tests for %s ran successfully!", address)
     temp_input_file.unlink() # delete the temp file
 
-def test_simple_data(address, tel, email):
+def test_simple_data(address, tel, email, temp_input_file):
     """
     Test if the extractor can find a given telephone number and e-mail
     in the website address.
     :param address: the website's address.
-    :param tel: the company's phone number. Give an empty string if no public info available.
+    :param telnum: the company's phone number. Give an empty string if no public info available.
     :param email: the company's e-mail. Give an empty string if no public info available.
     """
-    r = requests.get(address)
-    Path("temp").mkdir(parents=True, exist_ok=True)
-    with open('temp/website.html','w', encoding='utf-8') as fp:
-        fp.write(r.text)
 
     extractor = DataExtractor()
-    extractor.open_file('temp/website.html')
+    extractor.open_file(temp_input_file)
     simple_data = extractor.extract_simple_data()
 
     if len(simple_data['tel']) == 0:
         simple_data['tel'].append('')
-    if len(simple_data['e-mail']) == 0:
-        simple_data['e-mail'].append('')
+    if len(simple_data['email']) == 0:
+        simple_data['email'].append('')
 
     assert(tel in simple_data['tel'])
-    assert(email in simple_data['e-mail'])
+    assert(email in simple_data['email'])
 
     logging.debug("All simple data tests for %s ran successfully!", address)
+    temp_input_file.unlink() # delete the temp file
 
 def test_no_soup_object():
     """
@@ -140,15 +157,3 @@ def test_no_soup_object():
         assert(type(e) is NoBeautifulSoupObject)
     
     logging.debug("No soup test ran successfully!")
-
-if __name__ == "__main__":
-    logging.getLogger().setLevel(logging.DEBUG)
-    addresses = ['https://ssab.se/', 'http://lkab.se','http://bdx.se']
-    tels = ['', '0771760000', '0920262600']
-    emails = ['','info@lkab.com','info@bdx.se']
-
-    for i, address in enumerate(addresses):
-        test_tags(address, True)
-        test_simple_data(address,tels[i],emails[i])
-
-    test_no_soup_object()

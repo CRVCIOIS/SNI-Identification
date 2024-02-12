@@ -68,11 +68,11 @@ class DataExtractor:
     def extract_simple_data(self):
         """
         Find links for telephone numbers and e-mail addresses in a website.
-        :returns: a dictionary of lists of strings {'tel': [], 'e-mail': []}
+        :returns: a dictionary of lists of strings {'tel': [], 'email': []}
         """
         results = {}
         results['tel'] = [tel.replace('-', '').replace(' ', '') for tel in set(self._extract_from_href('tel'))]
-        results['e-mail'] = list(set(self._extract_from_href('mailto')))
+        results['email'] = list(set(self._extract_from_href('mailto')))
         
         return results
     
