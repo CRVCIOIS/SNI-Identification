@@ -5,21 +5,6 @@
 
 import scrapy
 
-"""
-items.py
----------
-
-This module contains the definition of the items to be scraped by the NLPspider.
-
-Classes:
---------
-NLPspiderItem : This is the item class for the NLPspider. It defines the fields that will be scraped.
-
-Modules:
---------
-scrapy : This module provides all the core functionality of Scrapy, including items, spiders, and the core scraping functionality.
-
-"""
 
 
 class NLPspiderItem(scrapy.Item):
