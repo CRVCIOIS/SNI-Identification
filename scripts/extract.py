@@ -44,26 +44,31 @@ class DataExtractor:
         """
         self.soup = BeautifulSoup(raw_html, 'html.parser')
 
-    def extract(self, filter_ = True, p_only = False):
+    def extract(self, filter_ = True, p_only = False, extract_meta = True, extract_body = True):
         """
         Extracts text and creates a string from a scraped HTML page.
         :param filter_: if True (default), then the data is also filtered.
         :param p_only: if True, then only paragraphs will be scraped from the body.
+        :param extract_meta: if True, then meta will be extracted.
+        :param extract_body: if True, then body will be extracted. 
         :returns: a string
         """
-        # TODO: fix extraction of metadata only
-        meta = self._extract_meta(filter_).values()
-        #body = self._extract_body(filter_, p_only)
-        if filter_:
-            #self._filter_list(body)
-            meta = list(set(meta))  # remove duplicates
-            #body = list(set(body))  # remove duplicates
-
         s = ""
-        for value in meta:
-            s += value + " "
-        #for item in body:
-        #    s += item + " "
+        
+        if extract_body:
+            body = self._extract_body(filter_, p_only)
+            if filter_:
+                self._filter_list(body)
+                body = list(set(body))  # remove duplicates
+            for item in body:
+                s += item + " "    
+            
+        if extract_meta:
+            meta = self._extract_meta(filter_).values()
+            if filter_:
+                meta = list(set(meta))  # remove duplicates
+            for value in meta:
+                s += value + " "
             
         cleaned_s = re.sub(r'\s+', ' ', s)  # Remove multiple spaces
         return cleaned_s

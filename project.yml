@@ -16,9 +16,12 @@ vars:
   sni: "sni"
   demo_sni: "demo_sni_labels"
   gpu_id: -1
-  scraped_data: "scraped_data"
-  urls_to_scrape: "https://www.skanska.se/,https://peab.se/,https://www.ncc.se/,https://www.jm.se/,https://www.serneke.se/,https://www.icagruppen.se/,https://www.coop.se/,https://www.axfood.se/,https://www.dagab.se/,https://www.telia.se/,https://www.tele2.se/,https://www.telenor.se/,https://www.eltelnetworks.se/,https://pagen.se/,https://www.polarbrod.se/,https://www.lantmannenunibake.se/,https://whitearkitekter.com/se/,https://tengbom.se/,https://www.fop.se/,https://www.krooktjader.se/,https://sveafastigheter.se/,https://www.balder.se/,https://galaren.se/,https://www.swedbank.se/,https://www.handelsbanken.se/sv/,https://seb.se/,https://www.nordea.se/,https://www.scandichotels.se/,https://hotelatsix.com/sv/,https://www.elite.se/,https://www.radissonhotels.com/sv-se/,https://evidensia.se/,https://firstvet.com/sv,https://hallandsdjursjukhus.se/,https://www.gardochdjurhalsan.se/"
-  postprocessed_data: "postprocessed_data"
+  scraped_path: "scraping/data/scraped_data"
+  extracted_path: "scraping/data/extracted_data"
+  extract_meta: "True"
+  extract_body: "False"
+  extract_p_only: "False"
+  urls_to_scrape: ""
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -42,7 +45,7 @@ workflows:
   all:
     # - SCB
     - scrape
-    - scraping-postprocess
+    - extract
     - label
     - preprocess
     - train
@@ -61,21 +64,21 @@ commands:
     script: 
     - ".\\run_scrapy.bat ${vars.urls_to_scrape}"
     outputs:
-      - "scraping/data/${vars.scraped_data}.json"
-  - name: "scraping-postprocess"
+      - "${vars.scraped_path}.json"
+  - name: "extract"
     script: 
-      - "python scripts/scraping_postprocess.py scraping/data/${vars.scraped_data}.json scraping/data ${vars.postprocessed_data}"
+      - "python scripts/postprocess.py ${vars.scraped_path}.json ${vars.extracted_path} ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
     deps:
-      - "scraping/data/${vars.scraped_data}.json"
+      - "${vars.scraped_path}.json"
     outputs:
-      - "scraping/data/${vars.postprocessed_data}.json"
+      - "${vars.extracted_path}.json"
   - name: label
     help: "Label the data"
     script:
-      - "python scripts/demo_label.py assets/${vars.demo_sni}.json scraping/data/${vars.postprocessed_data}.json assets/${vars.train}.json"
+      - "python scripts/demo_label.py assets/${vars.demo_sni}.json ${vars.extracted_path}.json assets/${vars.train}.json"
     deps:
       - "assets/${vars.demo_sni}.json"
-      - "scraping/data/${vars.postprocessed_data}.json"
+      - "scraping/data/${vars.extracted_path}.json"
     outputs:
       - "assets/${vars.train}.json"
       - "assets/${vars.dev}.json"

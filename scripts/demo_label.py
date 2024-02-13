@@ -4,26 +4,25 @@ from pathlib import Path
 import typer
 
 
-def label_sni(
-    sni_codes: Path = typer.Argument(..., exists=True, dir_okay=False), 
-    input: Path = typer.Argument(..., exists=True, dir_okay=False), 
+def label(
+    sni_path: Path = typer.Argument(..., exists=True, dir_okay=False), 
+    input_path: Path = typer.Argument(..., exists=True, dir_okay=False), 
     output_file_path: Path = typer.Argument(..., exists=False, dir_okay=False)):
     """
     Labels the scraped data with SNI codes.
     
-    :param sni_codes: Path to the file with the SNI codes.
-    :param input: Path to the file with the scraped data.
-    :param output_file_path: Path to the file where the labeled data will be saved.
+    :param sni_path (Path): Path to the json file with the SNI codes, a dictionary {'domain': 'SNI code'}.
+    :param input_path (Path): Path to the file with the scraped data we want to label.
+    :param output_file_path (Path): Path to the file where the labeled data will be saved.
     """
-    input = open_file(input)
-    sni_codes = open_file(sni_codes)
-    if (sni_codes and input) is not None:
-        for item in input:
+    data = open_file(input_path)
+    sni_codes = open_file(sni_path)
+    if (sni_codes and data) is not None:
+        for item in data:
             if item["domain"] in sni_codes:
                 item["SNI"] = sni_codes[item["domain"]]
 
-        write_to_file(input, output_file_path)
-        write_to_file(input, Path("assets/docs_nace_eval.json"))
+        write_to_file(data, output_file_path)
   
 def open_file(file_path):
     """
@@ -41,17 +40,17 @@ def open_file(file_path):
         logging.error("File is not a valid JSON file: %s", file_path)
     return None
 
-def write_to_file(output_data, output_json_file_path):
+def write_to_file(output_data, output_path):
     """
     Writes data to a JSON file.
     
-    :param output_data: Data to be written to the file.
-    :param output_json_file_path: Path to the output JSON file.
+    :param output_data (Path): Data to be written to the file.
+    :param output_path (Path): Path to the output JSON file.
     """
-    with open(Path(output_json_file_path), 'w', encoding='utf-8') as f:
+    with open(Path(output_path), 'w', encoding='utf-8') as f:
         json.dump(output_data, f, indent=4, ensure_ascii=False)
-    logging.info("Data written to %s", output_json_file_path)
+    logging.info("Data written to %s", output_path)
 
 
 if __name__ == '__main__':
-   typer.run(label_sni)
+   typer.run(label)

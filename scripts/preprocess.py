@@ -16,7 +16,7 @@ import spacy
 import srsly
 import typer
 from spacy.tokens import DocBin
-from copy import deepcopy
+from copy import copy
 
 def main(
         input_path: Path = typer.Argument(..., exists=True, dir_okay=False),
@@ -24,15 +24,11 @@ def main(
 ):
     """
     Preprocesses the input data and saves the processed labeled documents in binary form to the output path.
-    Args:
-        input_path (Path): Path to the input data file.
-        output_path (Path): Path to save the processed documents.
-    Returns:
-        None
+    :param input_path (Path): Path to the input data file.
+    :param output_path (Path): Path to save the processed documents.
     """
     
-    
-    nlp = spacy.load("sv_core_news_sm")
+    nlp = spacy.blank("sv")
     doc_bin = DocBin()
     records = srsly.read_json(input_path)
     labels = {}
@@ -40,7 +36,7 @@ def main(
         labels[record["SNI"]] = 0
         
     for record in records:
-        doc_label = deepcopy(labels)
+        doc_label = copy(labels)
         doc_label[record["SNI"]] = 1
         doc = nlp.make_doc(record["text"])
         doc.cats = doc_label
