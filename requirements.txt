@@ -4,11 +4,10 @@ Automat==22.10.0
 beautifulsoup4==4.12.2
 blis==0.7.11
 catalogue==2.0.10
+beautifulsoup4==4.12.2
 certifi==2023.11.17
 cffi==1.16.0
 charset-normalizer==3.3.2
-click==8.1.7
-cloudpathlib==0.16.0
 colorama==0.4.6
 confection==0.1.4
 constantly==23.10.4
@@ -17,6 +16,7 @@ cssselect==1.2.0
 cymem==2.0.8
 filelock==3.13.1
 hyperlink==21.0.0
+exceptiongroup==1.2.0
 idna==3.6
 incremental==22.10.0
 iniconfig==2.0.0
@@ -69,3 +69,11 @@ w3lib==2.1.2
 wasabi==1.1.2
 weasel==0.3.4
 zope.interface==6.1
+pyscbwrapper==0.1.1
+pytest==7.4.4
+regex==2023.12.25
+requests==2.31.0
+soupsieve==2.5
+tomli==2.0.1
+urllib3==2.1.0
+validators==0.22.0
