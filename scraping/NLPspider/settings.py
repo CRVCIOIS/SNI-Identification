@@ -9,7 +9,7 @@
 
 
 
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 
 
 BOT_NAME = "NLPspider"
@@ -42,10 +42,10 @@ ROBOTSTXT_OBEY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-#    "Accept-Language": "en",
-#}
+DEFAULT_REQUEST_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "sv",
+}
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
@@ -101,7 +101,7 @@ AJAXCRAWL_ENABLED = True
 FEED_EXPORT_ENCODING = "utf-8"
 #Exports the result to a json file
 FEEDS = { 
-    'data/%(name)s/%(name)s_%(time)s.json': { 
+    'data/scraped_data.json': { 
         'format': 'json', 
         'overwrite': True,
         } 

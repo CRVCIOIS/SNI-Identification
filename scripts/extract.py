@@ -44,26 +44,34 @@ class DataExtractor:
         """
         self.soup = BeautifulSoup(raw_html, 'html.parser')
 
-    def extract(self, filter_ = True, p_only = False):
+    def extract(self, filter_ = True, p_only = False, extract_meta = True, extract_body = True):
         """
         Extracts text and creates a string from a scraped HTML page.
         :param filter_: if True (default), then the data is also filtered.
         :param p_only: if True, then only paragraphs will be scraped from the body.
+        :param extract_meta: if True, then meta will be extracted.
+        :param extract_body: if True, then body will be extracted. 
         :returns: a string
         """
-        meta = self._extract_meta(filter_).values()
-        body = self._extract_body(filter_, p_only)
-        if filter_:
-            self._filter_list(body)
-            meta = list(set(meta))  # remove duplicates
-            body = list(set(body))  # remove duplicates
-
         s = ""
-        for value in meta:
-            s += value + '\n'
-        for item in body:
-            s += item + '\n'
-        return s
+        
+        if extract_body:
+            body = self._extract_body(filter_, p_only)
+            if filter_:
+                self._filter_list(body)
+                body = list(set(body))  # remove duplicates
+            for item in body:
+                s += item + " "    
+            
+        if extract_meta:
+            meta = self._extract_meta(filter_).values()
+            if filter_:
+                meta = list(set(meta))  # remove duplicates
+            for value in meta:
+                s += value + " "
+            
+        cleaned_s = re.sub(r'\s+', ' ', s)  # Remove multiple spaces
+        return cleaned_s
 
     def _extract_meta(self, filter_=True):
         """
@@ -73,7 +81,7 @@ class DataExtractor:
         :returns: a dictionary {metadata tag: contents}
         """
         if self.soup is None:
-            raise NoSoup
+            raise NoBeautifulSoupObject
         
         allowed_tags = ['title','description']
 
@@ -114,11 +122,15 @@ class DataExtractor:
         soup = copy.deepcopy(self.soup.body)
         
         if filter_:
+            # Remove links
             for element in soup.find_all('a'):
                 if element.strings is not None:
                     element.decompose()
-
+            # Remove tags containing "cookie"
             for element in soup.find_all('div', class_=re.compile("cookie*.")):
+                element.decompose()
+            # Remove JS scripts    
+            for element in soup.find_all('script'):
                 element.decompose()
 
         if p_only:
