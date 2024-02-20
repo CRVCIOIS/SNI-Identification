@@ -12,8 +12,16 @@ vars:
   version: "0.0.0"
   train: "docs_nace_training"
   dev: "docs_nace_eval"
+  test: "docs_nace_test"
   sni: "sni"
+  demo_sni: "demo_sni_labels"
   gpu_id: -1
+  scraped_path: "scraping/data/scraped_data"
+  extracted_path: "scraping/data/extracted_data"
+  extract_meta: "True"
+  extract_body: "False"
+  extract_p_only: "False"
+  urls_to_scrape: ""
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -27,14 +35,18 @@ assets:
     description: "JSONL-formatted training data exported, annotated with `DOCUMENTATION`"
   - dest: "assets/${vars.sni}.json"
     description: "JSON-formatted SNI codes"
-  - dest: "assets/${vars.dev}.json"
-    description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
+  # - dest: "assets/${vars.dev}.json"
+  #   description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
 
 # Workflows are sequences of commands (see below) executed in order. You can
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
 # haven't changed, it won't be re-run.
 workflows:
   all:
+    # - SCB
+    - scrape
+    - extract
+    - label
     - preprocess
     - train
     - evaluate
@@ -44,6 +56,32 @@ workflows:
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
+  # - name: "SCB"
+  #   help: "Get data from SCB"
+  #   script: "" #TODO
+  - name: "scrape"
+    help: "Scrapes websites"
+    script: 
+    - "python scripts/run_scrapy.py ${vars.urls_to_scrape} ${vars.scraped_path}.json"
+    outputs:
+      - "${vars.scraped_path}.json"
+  - name: "extract"
+    script: 
+      - "python scripts/postprocess.py ${vars.scraped_path}.json ${vars.extracted_path}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
+    deps:
+      - "${vars.scraped_path}.json"
+    outputs:
+      - "${vars.extracted_path}.json"
+  - name: label
+    help: "Label the data"
+    script:
+      - "python scripts/demo_label.py assets/${vars.demo_sni}.json ${vars.extracted_path}.json assets/${vars.train}.json"
+    deps:
+      - "assets/${vars.demo_sni}.json"
+      - "scraping/data/${vars.extracted_path}.json"
+    outputs:
+      - "assets/${vars.train}.json"
+      - "assets/${vars.dev}.json"
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
@@ -51,10 +89,12 @@ commands:
       - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
       - "assets/${vars.train}.json"
+      - "assets/${vars.dev}.json"
       - "scripts/preprocess.py"
-      - "assets/${vars.sni}.json"
+
     outputs:
       - "corpus/${vars.train}.spacy"
+      - "corpus/${vars.dev}.spacy"
 
   - name: "train"
     help: "Train a text classification model"
