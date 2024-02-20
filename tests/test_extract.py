@@ -10,15 +10,35 @@ import requests
 import logging
 from pathlib import Path
 import regex as re
-from scripts.extract import DataExtractor
+from scripts.extract import DataExtractor, NoBeautifulSoupObject
 import pytest
 
-@pytest.fixture
-def address():
+DATA = {
+    'https://ssab.se/':{'tel':'','email':''}, 
+    'http://lkab.se':{'tel':'0771760000','email':'info@lkab.com'},
+    'http://bdx.se':{'tel':'0920262600','email':'info@bdx.se'}
+}
+
+@pytest.fixture(params=DATA.keys())
+def address(request):
     """
-    Return a website address
+    :yields: a website address
     """
-    return 'https://ssab.se/'
+    yield request.param
+
+@pytest.fixture()
+def tel(address):
+    """
+    :returns: a telephone number.
+    """
+    return DATA[address]['tel']
+
+@pytest.fixture()
+def email(address):
+    """
+    :returns: an e-mail address number.
+    """
+    return DATA[address]['email']
 
 @pytest.fixture
 def raw_request(address):
@@ -35,7 +55,7 @@ def temp_input_file(tmp_path, raw_request):
     input_file = tmp_path / "request.html"
     input_file.write_text(raw_request, encoding='utf-8')
     return input_file
-    
+
 
 def exist_tags_in_plaintext(text):
     """
@@ -91,5 +111,49 @@ def test_tags(raw_request, temp_input_file, save_results = True):
                 fp.write(s_filtered)
             with open(f'extractor_output/{extractor_name}_p_only_filtered.txt','w', encoding='utf-8') as fp:
                 fp.write(s_p_only_filtered)
-    
+        
+    logging.debug("All tag tests for %s ran successfully!", address)
     temp_input_file.unlink() # delete the temp file
+
+def test_simple_data(address, tel, email, temp_input_file):
+    """
+    Test if the extractor can find a given telephone number and e-mail
+    in the website address.
+    :param address: the website's address.
+    :param telnum: the company's phone number. Give an empty string if no public info available.
+    :param email: the company's e-mail. Give an empty string if no public info available.
+    """
+
+    extractor = DataExtractor()
+    extractor.open_file(temp_input_file)
+    simple_data = extractor.extract_simple_data()
+
+    if len(simple_data['tel']) == 0:
+        simple_data['tel'].append('')
+    if len(simple_data['email']) == 0:
+        simple_data['email'].append('')
+
+    assert(tel in simple_data['tel'])
+    assert(email in simple_data['email'])
+
+    logging.debug("All simple data tests for %s ran successfully!", address)
+    temp_input_file.unlink() # delete the temp file
+
+def test_no_soup_object():
+    """
+    Check if the extractor raises correct error when trying to extract without a soup.
+    """
+    extractor = DataExtractor()
+    try:
+        extractor.extract()
+        assert False
+    except Exception as e:
+        assert(type(e) is NoBeautifulSoupObject)
+
+    try:
+        extractor.extract_simple_data()
+        assert False
+    except Exception as e:
+        assert(type(e) is NoBeautifulSoupObject)
+    
+    logging.debug("No soup test ran successfully!")
