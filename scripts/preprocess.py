@@ -33,7 +33,8 @@ def main(
     records = srsly.read_json(input_path)
     labels = {}
     for record in records:
-        labels[record["SNI"]] = 0
+        if labels.get(record["SNI"]) is None:
+            labels[record["SNI"]] = 0
         
     for record in records:
         doc_label = copy(labels)
