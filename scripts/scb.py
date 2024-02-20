@@ -1,96 +1,166 @@
 import os
 import json
 import logging
+import random
 from scripts.scb_wrapper import SCBapi
 from definitions import ROOT_DIR 
+from scripts.mongo import get_client
 
-def list_codes():
-    """
-    Get the list of all 5-digit codes which are not filtered by "filtered_sni.json".
-    Saves as the list as two json files:
-    - temp/SNI_to_name.json
-    - temp/name_to_SNI.json
 
-    :returns a tuple of dictionaries: (SNI_to_name, name_to_SNI)
+# MongoDB definitions ("schema")
+DB              = "SCB"
+SNI             = "SNI_codes"
+COMPANIES       = "companies"
+MUNICIPALITIES  = "municipalities"
+
+def store_codes():
     """
+    Saves the list of all 5-digit codes which are not filtered by "filtered_sni.json" to the mongodb database.
+    The codes are saved inside the collection "SNI_codes".
+    """
+    mongo_client = get_client()
     wrapper = SCBapi()
     r = wrapper.get("api/Je/KategorierMedKodtabeller")
 
     with open(os.path.join(ROOT_DIR, 'assets', 'filtered_sni.json') , 'r', encoding='utf-8') as f:
         sni = json.load(f)
         sni_list = [sni_code['Varde'] for sni_code in sni[0]['VardeLista']]
-
-    SNI_to_name = {}
-    name_to_SNI = {} 
-
+    
+    codes = []
+    
     for code in r.json()[1]['VardeLista']:
         if code['Varde'][0:2] in sni_list:
-            SNI_to_name[code['Varde']] = code['Text']
-            name_to_SNI[code['Text']] = code['Varde']
+            codes.append({
+                'sni_code':code['Varde'],
+                'description': code['Text']
+                })
+    
+    mongo_client[DB][SNI].insert_many(codes)
+    mongo_client[DB][SNI].create_index('sni_code')
 
-    if not os.path.exists(os.path.join(ROOT_DIR, 'temp')):
-        os.makedirs(os.path.join(ROOT_DIR, 'temp'))
-
-    with open(os.path.join(ROOT_DIR, 'temp', 'SNI_to_name.json'), 'w', encoding='utf-8') as f:
-        json.dump(SNI_to_name, f, ensure_ascii=False)
-
-    with open(os.path.join(ROOT_DIR, 'temp', 'name_to_SNI.json'), 'w', encoding='utf-8') as f:
-        json.dump(name_to_SNI, f, ensure_ascii=False)
-
-    return (SNI_to_name, name_to_SNI)
-
-def get_municipalities():
+def fetch_codes(sni_to_description = True):
     """
-    Get the list of all municipalities from SCB.
-    Saves as the list as two json files:
-    - temp/code_to_municipalities.json
-    - temp/municipalities_to_code.json
-
-    :returns a tuple of dictionaries: (code_to_municipalities, municipalities_to_code)
+    Fetch the list of all 5 digit codes from the mongodb database.
+    
+    :param sni_to_description: if False then {description: sni_code} will be returned
+    :returns a list of touples: {sni_code: description}
+    """
+    
+    mongo_client = get_client()
+    codes = mongo_client[DB][SNI].find()
+    sni_codes = {}
+    if sni_to_description:
+        for code in codes:
+            sni_codes[code['sni_code']] = code['description']
+    else:
+        for code in codes:
+            sni_codes[code['description']] = code['sni_code']
+    return sni_codes
+    
+def store_municipalities():
+    """
+    Saves the list of all municipalities from SCB to the db.
     """
     wrapper = SCBapi()
     r = wrapper.get("api/Je/KategorierMedKodtabeller")
+    
+    mongo_client = get_client()
+        
+    municipalities = []
+    for mun in r.json()[4]['VardeLista']:
+        municipalities.append({
+            'code': mun["Varde"],
+            'name': mun["Text"]
+        })
 
-    code_to_municipalities = {}
-    municipalities_to_code = {}
+    mongo_client[DB][MUNICIPALITIES].insert_many(municipalities)
+    mongo_client[DB][SNI].create_index('code')
 
-    if not os.path.exists(os.path.join(ROOT_DIR, 'temp')):
-        os.makedirs(os.path.join(ROOT_DIR, 'temp'))
-
-    for code in r.json()[4]['VardeLista']:
-        code_to_municipalities[code['Varde']] = code['Text']
-        municipalities_to_code[code['Text']] = code['Varde']
-
-    with open(os.path.join(ROOT_DIR, 'temp', 'code_to_municipalities.json'), 'w', encoding='utf-8') as f:
-        json.dump(code_to_municipalities, f, ensure_ascii=False)
-    with open(os.path.join(ROOT_DIR, 'temp', 'municipalities_to_code.json'), 'w', encoding='utf-8') as f:
-        json.dump(municipalities_to_code, f, ensure_ascii=False)
-
-    return (code_to_municipalities, municipalities_to_code)
-
-def load_codes():
+def fetch_municipalities(code_to_name = True):
     """
-    Load the list of all 5-digit codes which are not filtered by "filtered_sni.json" from files.
-
-    :returns a tuple of dictionaries: (SNI_to_name, name_to_SNI)
+    Fetch the list of all municipalities from the mongodb database.
+    
+    :param code_to_name: if False then return {name: code}
+    :returns a list of touples: {code: name}
     """
-    with open(os.path.join(ROOT_DIR, 'temp', 'SNI_to_name.json') , 'r', encoding='utf-8') as f:
-        SNI_to_name = json.load(f)
-    with open(os.path.join(ROOT_DIR, 'temp', 'name_to_SNI.json') , 'r', encoding='utf-8') as f:
-        name_to_SNI = json.load(f)
+    mongo_client = get_client()
+    mun_list = mongo_client[DB][MUNICIPALITIES].find()
+    municipalities = {}
+    if code_to_name:
+        for m in mun_list:
+            municipalities[m['code']] = m['name']
+    else:
+        for m in mun_list:
+            municipalities[m['name']] = m['code']
+    return municipalities
 
-    return (SNI_to_name, name_to_SNI)
+def last_code_checked():
+    """
+    Last SNI code checked in the companies collection.
+    
+    params:
+    companies: companies collection
+    returns:
+    last SNI code checked
+    """
+    mongo_client = get_client()
+    last_company = mongo_client[DB][COMPANIES].find().sort([("_id", -1)]).limit(1) # Get the last company entered into the database
+    if "sni_code" in last_company:
+        return last_company["sni_code"]
+    return None
 
-def get_companies_by_codes():
+def fetch_companies_by_municipality(sni_code: str, fetch_limit = 50, max_tries_per_code = 30):
     wrapper = SCBapi()
-    # Däckservice = 45204
-    for mun_code in get_municipalities()[0].keys():
-        r = wrapper.sni(['45204']).category([mun_code]).count(False).json()
+    fetch_count = 0
+    tries = 0
+    comp_arr = []
+    print(f"Fetching from SNI: {sni_code}")
+    
+    mun_codes = list(fetch_municipalities().keys())
+    random.shuffle(mun_codes)
+    
+    while fetch_count < fetch_limit and tries < max_tries_per_code:
+        mun_code = mun_codes.pop()
+        r = wrapper.sni([sni_code]).category([mun_code]).count(False).json()
         print(f"Municipality: {mun_code} - Companies: {r}")
+        if r+fetch_count > fetch_limit:
+            print(f"Skipping {mun_code} too many companies!")
+            continue
+        fetch_count += r
+        companies = wrapper.sni([sni_code]).category([mun_code]).fetch().json()
+        comp_arr.extend(companies)
+    print(f"Total companies fetched: {fetch_count}")
+    print(f"----> Stopping fetching from SNI {sni_code}")
+    return comp_arr
 
 
-#TODO: Randomize the order of municipalities and count the number of companies fetched for each sni by municipality
-#TODO: Stop fetching from SNI when the number of companies fetched is greater than 50
+def fetch_companies(start_sni, stop_sni):
+    mongo_client = get_client()
+    docs = mongo_client[DB][SNI].find().sort([("sni_code")])
+    for doc in docs:
+        if (int(doc["sni_code"]) >= int(start_sni)) and not (int(doc["sni_code"]) > int(stop_sni)):
+            companies = fetch_companies_by_municipality(doc["sni_code"], fetch_limit=2)
+            mongo_client[DB][COMPANIES].insert_many(companies)
+            
+
+def fetch_all_companies():
+    """
+    """
+    start_sni="01120"
+    stop_sni="95290"
+    mongo_client = get_client()
+    sni_codes = fetch_codes()
+    
+    last_code = last_code_checked()
+    print(f"Last code checked: {last_code}")
+    
+    if last_code is not None:
+        for code in sni_codes.keys():
+            if code == last_code:
+                sni_codes.pop(code)
+                continue
+            sni_codes.pop(code)
+
 
 
 if __name__ == "__main__":
@@ -98,14 +168,21 @@ if __name__ == "__main__":
     #list_codes()
     #get_municipalities()
     #get_companies_by_codes()
+    mongo_client = get_client()
+    if mongo_client[DB][SNI].count_documents({}) == 0:
+        store_codes()
+    if mongo_client[DB][MUNICIPALITIES].count_documents({}) == 0:
+        store_municipalities()
 
-    wrapper = SCBapi()
-    results = wrapper.sni(['45204']).category(['0181'], cat="SätesKommun").fetch().json()
-    for company in results:
-        print(company)
-        input()
-        name = company['Företagsnamn']
-        print(name)
-        branches = [company[x] for x in company.keys() if ('Bransch_' in x and 'kod' in x) and ('P' not in x and 'HAE' not in x)]
-        print(branches)
-        input()
+    fetch_companies("01120", "01131")
+
+    # wrapper = SCBapi()
+    # results = wrapper.sni(['45204']).category(['0181'], cat="SätesKommun").fetch().json()
+    # for company in results:
+    #     print(company)
+    #     input()
+    #     name = company['Företagsnamn']
+    #     print(name)
+    #     branches = [company[x] for x in company.keys() if ('Bransch_' in x and 'kod' in x) and ('P' not in x and 'HAE' not in x)]
+    #     print(branches)
+    #     input()

@@ -10,7 +10,7 @@ from requests import Session
 from requests_pkcs12 import Pkcs12Adapter
 from definitions import ROOT_DIR
 
-CERT_PATH = f"{ROOT_DIR}/key.pfx"
+CERT_PATH = os.path.join(ROOT_DIR, "key.pfx")
 
 load_dotenv(os.path.join(ROOT_DIR, '.env'))
 
@@ -43,7 +43,7 @@ class SCBapi():
     """
     def __init__(self, cert_path=CERT_PATH) -> None:
         self.api_base = 'https://privateapi.scb.se/nv0101/v1/sokpavar'
-        self.api_pass = os.getenv("API_PASS")
+        self.api_pass = os.getenv("SCB_API_PASS")
         self.cert_path = cert_path
         self.owned_vars_from_api = {}
         self.variables_from_api = {}
