@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from extract import DataExtractor
+from scripts.extract import DataExtractor
 import typer
 import tldextract
 from typing_extensions import Annotated
@@ -54,14 +54,17 @@ def extract_wrapper(
 
     if (dataset is not None) and (scraped_data is not None):
         extractor = DataExtractor()
+        domain_text = {}  # Dictionary to store extracted text: {domain: text}
         
         for scraped_item in scraped_data:
             extractor.create_soup_from_string(scraped_item['raw_html'])
             extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-            for data_point in dataset:
-                domain = f'{tldextract.extract(data_point['url']).domain}.{tldextract.extract(data_point['url']).suffix}'
-                if domain == scraped_item['domain']:
-                    data_point['text'] = f'{data_point["text"]} {extracted_text}'
+            domain_text[scraped_item['domain']] = f'{domain_text.get(scraped_item["domain"], "")} {extracted_text}'
+        
+        for data_point in dataset:
+            domain = f'{tldextract.extract(data_point["url"]).domain}.{tldextract.extract(data_point["url"]).suffix}'
+            if domain in domain_text:
+                data_point['text'] = domain_text[domain]
 
         write_to_json(dataset, output_path)
 
