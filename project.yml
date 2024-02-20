@@ -1,8 +1,7 @@
-
-# 
+# TODO: Take a look on file paths and make sure they are correct 
 # This YAML file represents the project configuration for the NLP project.
 # It contains settings and parameters that are used to configure and run the project.
-# 
+#
 title: "Test"
 description: "Lorem Lipsum"
 # Variables can be referenced across the project.yml using ${vars.var_name}
@@ -48,6 +47,7 @@ workflows:
     - google
     - scrape
     - extract
+    - divide
     - preprocess
     - train
     - evaluate
@@ -56,7 +56,7 @@ workflows:
     - google
     - scrape
     - extract
-
+    - divide
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
@@ -68,40 +68,49 @@ commands:
   #   script: "" #TODO
   - name: "google"
     help: "Get company URL's by using Google search API"
-    script: 
+    script:
       - "python scripts/google_wrapper.py ${vars.scb_data_file} ${vars.scb_data_file}"
     deps:
       - "${vars.scb_data_file}"
-    outputs: 
+    outputs:
       - "${vars.scb_data_file}"
 
   - name: "scrape"
     help: "Scrapes websites"
-    script: 
-    - "python scripts/scraping_wrapper.py ${vars.scb_data_file} ${vars.scraped_path}.json"
+    script:
+      - "python scripts/scraping_wrapper.py ${vars.scb_data_file} ${vars.scraped_path}.json"
     deps:
       - "${vars.scb_data_file}"
     outputs:
       - "${vars.scraped_path}.json"
 
   - name: "extract"
-    script: 
+    script:
       - "python scripts/postprocess.py ${vars.scraped_path}.json ${vars.extracted_path}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
     deps:
       - "${vars.scraped_path}.json"
     outputs:
       - "${vars.extracted_path}.json"
 
-    #TODO: Create a function that splits the dataset into a training and cross validation set.
+  - name: "divide"
+    help: "Divides the dataset into two, one smaller for cross-validation and a larger for training"
+    script:
+      - "python scripts/divide_dataset.py ${vars.extracted_path}.json ${vars.dev}.json"
+    deps:
+      - "${vars.extracted_path}.json"
+      - "scripts/divide_dataset.py"
+    outputs:
+      - "${vars.extracted_path}.json"
+      - "${vars.dev}.json"
 
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/preprocess.py assets/${vars.extracted_path}.json corpus/${vars.train}.spacy "
-      - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
+      - "python scripts/preprocess.py ${vars.extracted_path}.json corpus/${vars.train}.spacy "
+      - "python scripts/preprocess.py ${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
-      - "assets/${vars.train}.json"
-      - "assets/${vars.dev}.json"
+      - "${vars.extracted_path}.json"
+      - "${vars.dev}.json"
       - "scripts/preprocess.py"
 
     outputs:
