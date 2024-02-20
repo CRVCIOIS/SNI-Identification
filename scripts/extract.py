@@ -83,29 +83,7 @@ class DataExtractor:
         :returns: a string
         """
         s = ""
-        
-        if extract_body:
-            body = self._extract_body(filter_, p_only)
-            if filter_:
-                self._filter_list(body)
-                body = list(set(body))  # remove duplicates
-            for item in body:
-                s += item + " "
-            
-        if extract_meta:
-            meta = self._extract_meta(filter_)
-            if filter_:
-                meta = list(set(meta))  # remove duplicates
-            for item in meta:
-                s += item + " "
-                
-        if filter_:
-            s = self._filter_chars(s)
-            
-        #s = re.sub(r'\s{2,}', ' ', s) # Remove multiple spaces
-
-        :returns: a string
-        """
+    
         meta = self._extract_meta(filter_).values()
         body = self._extract_body(filter_, p_only)
         if filter_:

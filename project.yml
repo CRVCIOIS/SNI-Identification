@@ -22,6 +22,7 @@ vars:
   extract_body: "False"
   extract_p_only: "False"
   urls_to_scrape: ""
+  scb_data_file: "....json" #TODO: Change me
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -44,12 +45,18 @@ assets:
 workflows:
   all:
     # - SCB
+    - google
     - scrape
     - extract
-    - label
     - preprocess
     - train
     - evaluate
+
+  test_without_training:
+    - google
+    - scrape
+    - extract
+
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
@@ -59,12 +66,24 @@ commands:
   # - name: "SCB"
   #   help: "Get data from SCB"
   #   script: "" #TODO
+  - name: "google"
+    help: "Get company URL's by using Google search API"
+    script: 
+      - "python scripts/google_wrapper.py ${vars.scb_data_file} ${vars.scb_data_file}"
+    deps:
+      - "${vars.scb_data_file}"
+    outputs: 
+      - "${vars.scb_data_file}"
+
   - name: "scrape"
     help: "Scrapes websites"
     script: 
-    - "python scripts/run_scrapy.py ${vars.urls_to_scrape} ${vars.scraped_path}.json"
+    - "python scripts/scraping_wrapper.py ${vars.scb_data_file} ${vars.scraped_path}.json"
+    deps:
+      - "${vars.scb_data_file}"
     outputs:
       - "${vars.scraped_path}.json"
+
   - name: "extract"
     script: 
       - "python scripts/postprocess.py ${vars.scraped_path}.json ${vars.extracted_path}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
@@ -72,20 +91,13 @@ commands:
       - "${vars.scraped_path}.json"
     outputs:
       - "${vars.extracted_path}.json"
-  - name: label
-    help: "Label the data"
-    script:
-      - "python scripts/demo_label.py assets/${vars.demo_sni}.json ${vars.extracted_path}.json assets/${vars.train}.json"
-    deps:
-      - "assets/${vars.demo_sni}.json"
-      - "scraping/data/${vars.extracted_path}.json"
-    outputs:
-      - "assets/${vars.train}.json"
-      - "assets/${vars.dev}.json"
+
+    #TODO: Create a function that splits the dataset into a training and cross validation set.
+
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/preprocess.py assets/${vars.train}.json corpus/${vars.train}.spacy "
+      - "python scripts/preprocess.py assets/${vars.extracted_path}.json corpus/${vars.train}.spacy "
       - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
       - "assets/${vars.train}.json"
