@@ -22,6 +22,7 @@ class DataExtractor:
         self.string_filter_list = [ # Last filter, removes strings from lists.
             re.compile(r'\d\d\d\d') # Remove strings with years (i.e. a string containing '2013')
             ]
+
         self.character_filter_list = [ # Last filter, removes characters from strings.
             re.compile(r'\s{2,}'),  # Remove multiple spaces
             re.compile(r'\|+'),     # Remove pipes
@@ -49,6 +50,7 @@ class DataExtractor:
                 "]+", flags=re.UNICODE)
         ]
 
+
     def __str__(self):
         return self.extract()
 
@@ -75,6 +77,7 @@ class DataExtractor:
         Extracts text and creates a string from a scraped HTML page.
         :param filter_: if True (default), then the data is also filtered.
         :param p_only: if True, then only paragraphs will be scraped from the body.
+
         :param extract_meta: if True, then meta will be extracted.
         :param extract_body: if True, then body will be extracted. 
         :returns: a string
@@ -100,6 +103,21 @@ class DataExtractor:
             s = self._filter_chars(s)
             
         #s = re.sub(r'\s{2,}', ' ', s) # Remove multiple spaces
+
+        :returns: a string
+        """
+        meta = self._extract_meta(filter_).values()
+        body = self._extract_body(filter_, p_only)
+        if filter_:
+            self._filter_list(body)
+            meta = list(set(meta))  # remove duplicates
+            body = list(set(body))  # remove duplicates
+
+        s = ""
+        for value in meta:
+            s += value + '\n'
+        for item in body:
+            s += item + '\n'
         return s
 
     def _extract_meta(self, filter_=True):
@@ -110,7 +128,9 @@ class DataExtractor:
         :returns: a dictionary {metadata tag: contents}
         """
         if self.soup is None:
+
             raise NoBeautifulSoupObject
+
         
         allowed_tags = ['title','description']
 
@@ -134,6 +154,7 @@ class DataExtractor:
             else:
                 content = tag.attrs.get('content', '')
                 metadata.append(content)
+
 
         return metadata
 
@@ -188,4 +209,3 @@ class DataExtractor:
         for filter in self.character_filter_list:
             text = filter.sub('', text) 
         return text
-                
