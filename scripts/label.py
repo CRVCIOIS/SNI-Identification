@@ -11,25 +11,25 @@ def label(
     """
     Labels the scraped data with SNI codes.
     
-    :param sni_path (Path): Path to the json file with the SNI codes, a dictionary {'domain': 'SNI code'}.
-    :param input_path (Path): Path to the file with the scraped data we want to label.
+    :param sni_path (Path): Path to the json file with the SNI codes, a dictionary: {'domain': 'SNI code'}.
+    :param input_path (Path): Path to the file with the extracted data to be labeled.
     :param output_file_path (Path): Path to the file where the labeled data will be saved.
     """
-    data = open_file(input_path)
-    sni_codes = open_file(sni_path)
+    data = open_json(input_path)
+    sni_codes = open_json(sni_path)
     if (sni_codes and data) is not None:
         for item in data:
             if item["domain"] in sni_codes:
                 item["SNI"] = sni_codes[item["domain"]]
 
-        write_to_file(data, output_file_path)
+        write_to_json(data, output_file_path)
   
-def open_file(file_path):
+def open_json(file_path: Path):
     """
-    Opens a JSON file and returns its contents as a dictionary.
+    Opens a JSON file and returns its contents as a JSON object.
     
     :param file_path: Path to the JSON file.
-    :return: Dictionary containing the contents of the JSON file.
+    :return: JSON object containing the contents of the JSON file.
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -40,11 +40,11 @@ def open_file(file_path):
         logging.error("File is not a valid JSON file: %s", file_path)
     return None
 
-def write_to_file(output_data, output_path):
+def write_to_json(output_data: dict[str, str], output_path: Path):
     """
     Writes data to a JSON file.
     
-    :param output_data (Path): Data to be written to the file.
+    :param output_data (dict): Data to be written to the file.
     :param output_path (Path): Path to the output JSON file.
     """
     with open(Path(output_path), 'w', encoding='utf-8') as f:

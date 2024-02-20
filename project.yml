@@ -62,12 +62,12 @@ commands:
   - name: "scrape"
     help: "Scrapes websites"
     script: 
-    - ".\\run_scrapy.bat ${vars.urls_to_scrape}"
+    - "python scripts/run_scrapy.py ${vars.urls_to_scrape} ${vars.scraped_path}.json"
     outputs:
       - "${vars.scraped_path}.json"
   - name: "extract"
     script: 
-      - "python scripts/postprocess.py ${vars.scraped_path}.json ${vars.extracted_path} ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
+      - "python scripts/postprocess.py ${vars.scraped_path}.json ${vars.extracted_path}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
     deps:
       - "${vars.scraped_path}.json"
     outputs:
