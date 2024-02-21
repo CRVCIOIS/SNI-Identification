@@ -1,0 +1,86 @@
+[
+    {
+        "Varde": "21",
+        "Text": "Enkla bolag"
+    },
+    {
+        "Varde": "22",
+        "Text": "Partrederier"
+    },
+    {
+        "Varde": "31",
+        "Text": "Handelsbolag, kommanditbolag"
+    },
+    {
+        "Varde": "32",
+        "Text": "Gruvbolag"
+    },
+    {
+        "Varde": "41",
+        "Text": "Bankaktiebolag"
+    },
+    {
+        "Varde": "42",
+        "Text": "Försäkringsaktiebolag"
+    },
+    {
+        "Varde": "43",
+        "Text": "Europabolag"
+    },
+    {
+        "Varde": "49",
+        "Text": "Övriga aktiebolag"
+    },
+    {
+        "Varde": "51",
+        "Text": "Ekonomiska föreningar"
+    },
+    {
+        "Varde": "55",
+        "Text": "Europakooperativ, grupperingar"
+    },
+    {
+        "Varde": "62",
+        "Text": "Samfälligheter"
+    },
+    {
+        "Varde": "81",
+        "Text": "Statliga enheter"
+    },
+    {
+        "Varde": "87",
+        "Text": "Off. korporationer o anstalter"
+    },
+    {
+        "Varde": "88",
+        "Text": "Hypoteksföreningar"
+    },
+    {
+        "Varde": "89",
+        "Text": "Regionala statliga myndigheter"
+    },
+    {
+        "Varde": "91",
+        "Text": "Oskiftade dödsbon"
+    },
+    {
+        "Varde": "92",
+        "Text": "Ömsesidiga försäkringsbolag"
+    },
+    {
+        "Varde": "93",
+        "Text": "Sparbanker"
+    },
+    {
+        "Varde": "94",
+        "Text": "Understöds-, Försäkringsfören."
+    },
+    {
+        "Varde": "98",
+        "Text": "Övr sv jur pers, enl särsk lag"
+    },
+    {
+        "Varde": "99",
+        "Text": "Juridisk form ej utredd"
+    }
+]
