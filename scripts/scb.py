@@ -83,7 +83,6 @@ class SCBinterface():
         """
         Fetch the list of all 5 digit codes from the mongodb database.
         
-        :param sni_to_description: if False then {description: sni_code} will be returned
         :returns a dict: {sni_code: description}
         """
         
@@ -114,7 +113,6 @@ class SCBinterface():
         """
         Fetch the list of all municipalities from the mongodb database.
         
-        :param code_to_name: if False then return {name: code}
         :returns a dict: {code: name}
         """
         mun_list = self.mongo_client[Schema.DB][Schema.MUNICIPALITIES].find()
@@ -152,8 +150,7 @@ class SCBinterface():
     def fetch_legal_forms(self):
         """
         Fetch the list of all legal forms from the mongodb database.
-        
-        :param code_to_name: if False then return {name: code}
+
         :returns a dict: {code: name}
         """
         forms = self.mongo_client[Schema.DB][Schema.LEGAL_FORMS].find()
@@ -267,6 +264,7 @@ class SCBinterface():
         start_sni: start SNI code
         stop_sni: stop SNI code
         fetch_limit: maximum number of companies to fetch
+        max_tries_per_code: maximum number of tries for each sni
         """
         last_code = self.last_code_checked()
         docs = self.mongo_client[Schema.DB][Schema.SNI].find({"sni_code": { "$ne": last_code }}).sort([("sni_code")])
