@@ -1,7 +1,3 @@
-# TODO: Take a look on file paths and make sure they are correct 
-# This YAML file represents the project configuration for the NLP project.
-# It contains settings and parameters that are used to configure and run the project.
-#
 title: "CRVCIOIS SNI CNN AI Model pipeline"
 description: "This is a training and evaluation pipeline for a CNN AI model which predicts a companys SNI code based on their website data."
 # Variables can be referenced across the project.yml using ${vars.var_name}
