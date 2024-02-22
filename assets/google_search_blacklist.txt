@@ -1,0 +1,26 @@
+Sites that should be blacklisted in the custom Google search engine.
+allabolag.se
+bizzdo.se
+bolagsfakta.se
+creditsafe.com
+cylex.se
+eniro.se
+globalfinreg.com
+hitta.se
+infoo.se
+jensnylander.com
+jobbland.se
+krafman.se
+largestcompanies.no
+largestcompanies.se
+merinfo.se
+mrkoll.se
+nordlei.se
+opencorpdata.com
+proff.se
+ratsit.se
+riksdelen.se
+syna.se
+upplysning.se
+vainu.io
+vat-search.eu

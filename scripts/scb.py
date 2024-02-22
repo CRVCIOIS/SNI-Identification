@@ -301,7 +301,7 @@ class SCBinterface():
         """
         self.mongo_client[Schema.DB][Schema.API_COUNT].update_one({}, {"$inc": {"count": num_requests}}, upsert=True)
         
-    def fetch_companies_from_db(self, sni_code):
+    def fetch_companies_from_db(self, sni_code, no_url=False):
         """
         Fetch companies from the database based on the SNI code.
         params:
@@ -309,7 +309,11 @@ class SCBinterface():
         returns:
         list of companies
         """
-        companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
+        if no_url:
+            query = {"branch_codes": sni_code, "url": {"$eq": ""}}
+            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
+        else:
+            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
         return list(companies)
 
 

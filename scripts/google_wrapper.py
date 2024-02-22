@@ -2,57 +2,45 @@
 This module provides a wrapper function to process input data, search for company URLs on Google,
 and write the updated data to an output file.
 """
-import json
 import logging
-from pathlib import Path
 import typer
-from typing_extensions import Annotated
 from scripts.google_search_api import GoogleSearchAPI
+from scripts.scb import SCBinterface
 
+FILTER_LIST = [
+    'aktiebolag',
+    'handelsbolag'
+]
 
-def main(
-        input_path: Annotated[Path, typer.Argument(
-            exists=True, 
-            file_okay=True, 
-            dir_okay=False, 
-            readable=True, 
-            resolve_path=True, 
-            formats=["json"], 
-            help="The path to the input data file."
-            )],
-        output_path: Annotated[Path, typer.Argument(
-            exists=True, 
-            file_okay=True, 
-            dir_okay=False, 
-            readable=True, 
-            resolve_path=True, 
-            formats=["json"], 
-            help="The path to the output data file."
-            )],
-        ):
+def _filter(original, filter_list):
     """
-    Process the input data file, search for company URLs on Google, and write the updated data to the output file.
+    Google custom search API fails to find some "too detailed" terms,
+        which regular Google search succeeds.
+        This function filters out these problematic terms.
+    """
+    name = original.lower()
+    for f in filter_list:
+        name = name.replace(f,'')
+    return name
 
-    Args:
-    :param: input_path (Path): The path to the input data file.
-    :param: output_path (Path): The path to the output data file.
+def main():
+    """
+    Process the input data file, search for company URLs on Google, and update the DB.
     """
 
-    with open(input_path, 'r', encoding='utf-8') as f:
-        logging.debug("Reading data from %s", input_path)
-        data = json.load(f)
-
+    interface = SCBinterface()
+    sni_codes = interface.fetch_codes()
     
     google = GoogleSearchAPI()
-    
-    for company in data:
-        if (company["url"] == "" or company["url"] == None) and (company["name"] != "" or company["name"] != None):
-            logging.debug("Searching on Google for %s", company["name"])
-            company["url"] = google.search(company["name"])
-    
-    with open(Path(output_path), 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-        logging.info("Data written to %s", output_path)
-    
+    for code in sni_codes.keys():
+        data = interface.fetch_companies_from_db(code, no_url=True)
+        for company in data:
+            if (company["url"] == "" or company["url"] is None) and (company["name"] != "" or company["name"] is not None):
+                name = _filter(company['name'], FILTER_LIST)
+                logging.debug("Searching on Google for %s", name)
+                company["url"] = google.search(name)
+                interface.update_url_for_company(company["org_nr"], company["url"])
+
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     typer.run(main)

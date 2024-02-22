@@ -30,7 +30,9 @@ class GoogleSearchAPI:
         service = build("customsearch", "v1", developerKey=self.api_key)
         # hl: The language of the search results. gl: The country to search from. lr: The language to return results in. cr: The country to search in.
         res = service.cse().list(q=query, cx=self.search_engine_id, hl="sv", gl="sv", lr="lang_sv", cr="sv", num=1).execute()
-        return res["items"][0]["link"]
+        if 'link' in res["items"][0]:
+            return res["items"][0]["link"]
+        return ""
     
     def batch_search(self, query_list: list[str]):
         """
