@@ -270,7 +270,7 @@ class SCBapi():
         """
         Method for creating a request that checks all companies of the specified SNI sector codes.
         
-        :param sni: List of SNI codes to be checked.
+        :param codes: List of SNI codes to be checked.
         :param exclusion: Boolean value for if the SNI codes should be excluded or not.
         :param level: The level of the SNI code to be checked. (1-3)
         """
