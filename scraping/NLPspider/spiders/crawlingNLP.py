@@ -30,19 +30,18 @@ class CrawlingnlpSpider(CrawlSpider):
         allowed = set()  # `set()` to keep every domain only once
 
         allowed_TLDS = ["se", "com", "org", "net", "nu"]
-        for url in self.start_urls:
+        for link in self.start_urls:
             """
             Loop through the start_urls and extract the domain name from
             each URL.
 
             Adds se, com, org, net, nu TLD to allowed domains.
             """
-            extracted = tldextract.extract(
-                url)  # Edge case for unusual TLDs, e.g home.sandvik
-
-            allowed.add(f"{extracted.domain}.{extracted.suffix}")
+            
+            url = tldextract.extract(link) 
+            allowed.add(f"{url.domain}.{url.suffix}")
             for TLD in allowed_TLDS:
-                domain = f"{extracted.domain}.{TLD}"
+                domain = f"{url.domain}.{TLD}"
                 allowed.add(domain)
 
         self.allowed_domains = list(allowed)

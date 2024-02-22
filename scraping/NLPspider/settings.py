@@ -100,13 +100,5 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 AJAXCRAWL_ENABLED = True
 
 FEED_EXPORT_ENCODING = "utf-8"
-#Exports the result to a json file
-FEEDS = { 
-    'data/scraped_data.json': { 
-        'format': 'json', 
-        'overwrite': True,
-        } 
-}
 
-#TODO: Find optimal depth limit
 DEPTH_LIMIT = 1
