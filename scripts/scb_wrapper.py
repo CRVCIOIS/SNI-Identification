@@ -293,7 +293,6 @@ class SCBapi():
         
         :param cat: The category to be checked.
         :param codes: List of category codes to be checked.
-        :param exclusion: Boolean value for if the category codes should be excluded or not.
         """
         
         category_dict = {
