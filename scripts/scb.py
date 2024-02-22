@@ -1,370 +1,323 @@
 """
-SCB API Wrapper and related exceptions.
+Utility methods for fetching and saving results from the SCB API.
 """
 import os
-import logging
 import json
-from dotenv import load_dotenv
-from requests import Session
-from requests_pkcs12 import Pkcs12Adapter
-from definitions import ROOT_DIR
+import logging
+import random
+from enum import StrEnum
+from scripts.scb_wrapper import SCBapi
+from definitions import ROOT_DIR 
+from scripts.mongo import get_client
 
-CERT_PATH = f"{ROOT_DIR}/key.pfx"
+# MongoDB definitions ("schema")
 
-load_dotenv(os.path.join(ROOT_DIR, '.env'))
-
-class VariableDoesNotExist(Exception):
-    """Variable does not exist in the list of all variables."""
-    pass
-class VariableDoesNotSupportOperation(Exception):
-    """Variable does not support the chosen operation."""
-    pass
-
-class DoesNotOwnVariable(Exception):
-    """Variable does not exist in the list of owned variables."""
-    pass
-
-class SCBapi():
+class Schema(StrEnum):
     """
-    Wrapper for SCB NÄRA API.
-    
-    To use the API, the user must have a valid certificate and a password.
-    The password should be stored as an environment variable.
-    
+    Used to loosely enforce a schema for MongoDB.
+        Defines database name and collection names. 
+    """
+    # Database
+    DB              = "SCB"
+    # Collections
+    SNI             = "SNI_codes"
+    COMPANIES       = "companies"
+    MUNICIPALITIES  = "municipalities"
+    API_COUNT       = "api_count"
+    LEGAL_FORMS     = "legal_forms"
+
+class SCBinterface():
+    """
+    Class for interfacing with the SCB API and the MongoDB database.
+
     Example usage:
-    ```python
-    scb = SCBapi()
-    resultWrapper = api.up_to({"Antal arbetsställen": "4"}).sni(["62010"]).fetch().json()
-    print(resultWrapper.json())
-    ```
-    
-    :param cert_path: the path to the certificate file.
+            ```
+            scb = SCBinterface()
+            scb.fetch_companies_from_api(
+                sni_start="00000",
+                sni_stop="02300", 
+                fetch_limit=10,
+                max_tries_per_code=5)
+            ```
     """
-    def __init__(self, cert_path=CERT_PATH) -> None:
-        self.api_base = 'https://privateapi.scb.se/nv0101/v1/sokpavar'
-        self.api_pass = os.getenv("API_PASS")
-        self.cert_path = cert_path
-        self.owned_vars_from_api = {}
-        self.variables_from_api = {}
-        self.operator_map = {
-            'Innehaller':self.contains,
-            'ArLikaMed':self.equals,
-            'BorjarPa':self.prefix,
-            'FranOchMed':self.start_from,
-            'TillOchMed':self.up_to,
-            'Mellan':self.between,
-            'Finns':self.exists,
-            'FinnsInte':self.exists
-        }
-        self.json = {}
-        self.update_owned_vars()
-        self.reset_json()
-    
-    def __str__(self):
-        """
-        Owned variables + internal JSON file
-        """
-        s = "Variable: [allowed operations]\n"
-        s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-        for k,v in self.variables_from_api.items():
-            s+=f"{k}: {v}\n"
-        s += "Owned variable: [allowed operations]\n"
-        s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-        for k,v in self.owned_vars_from_api.items():
-            s+=f"{k}: {v}\n"
-        s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-        s += "Current JSON file:\n"
-        s += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-        s += json.dumps(self.json,indent=2, ensure_ascii=False)
-        return s
-
-    def update_variables(self):
-        """
-        Update the dictionary of all variables.
-        The dictionary is in the format:
-            {'variable_name':[allowed operations]}
-            Where allowed_operations are:
-                'contains',                       # Innehaller
-                'equals',                         # ArLikaMed
-                'prefix',                         # BorjarPa
-                'starting' ( at incl.),           # FranOchMed
-                'ending' (at incl.),              # TillOchMed
-                'between'                         # Mellan
-                'exists'                          # Finns, FinnsInte
-        """
-        self.variables_from_api = {}
-        variables = self._get_request("api/Je/Variabler").json()
-        for var in variables:
-            self.variables_from_api[var['Id_Variabel_JE']]=var['Operatorer']
-
-    def update_owned_vars(self):
-        """
-        Update the list of owned variables.
-        The dictionary is in the format:
-            {'variable_name':[function name]}
-            Where the function names are:
-                'contains',                       # Innehaller
-                'equals',                         # ArLikaMed
-                'prefix',                         # BorjarPa
-                'starting' ( at incl.),           # FranOchMed
-                'ending' (at incl.),              # TillOchMed
-                'between'                         # Mellan
-                'exists'                          # Finns, FinnsInte
-        """
-        if not self.variables_from_api:
-            self.update_variables()
-
-        owned_vars_list = []
-        r = self._get_request("api/Je/KoptaVariabler").json()
-        for var in r['Variabler']:
-            owned_vars_list.append(var['Id_Variabel_JE'])
+    def __init__(self):
+        self.wrapper = SCBapi()
+        self.mongo_client = get_client()
         
-        self.owned_vars_from_api = {}
-        for var in owned_vars_list:
-            operators = self.variables_from_api[var]
-            self.owned_vars_from_api[var] = [self.operator_map[o].__name__ for o in operators]
-    
-    def exists(self, var: list, exists: bool = True):
+        self._init_collection(Schema.SNI, self._store_codes)
+        self._init_collection(Schema.MUNICIPALITIES, self._store_municipalities)
+        self._init_collection(Schema.LEGAL_FORMS, self._store_legal_forms)
+
+    def _init_collection(self, collection, callback):
         """
-        Method for creating a request that checks if a variable exists.
+        Check if vital collections are empty, if so, store the data
+        """
+        if self.mongo_client[Schema.DB][collection].count_documents({}) == 0:
+            callback()
+
+    def _store_codes(self):
+        """
+        Saves the list of all 5-digit codes which are not filtered by "filtered_sni.json" to the mongodb database.
+        The codes are saved inside the collection "SNI_codes".
+        """
         
-        :param var: the variable(s) to be checked.
-        :param exists: boolean value for if the variable should exist or not.
-        :returns: the object itself.
-        """
-        self._check_if_allowed('exists',var_list=var)
+        r = self.wrapper.get("api/Je/KategorierMedKodtabeller")
 
-        for v in var:
-            variable_dict = {
-                "Varde1": "",
-                "Varde2": "",
-                "Operator": "Finns" if exists else "FinnsInte",
-                "Variabel": v
-            }
-            self.json["variabler"].append(variable_dict)
-        return self
-    
-    def contains(self, var: dict):
-        """
-        Method for creating a request that checks if a variable contains provided information.
+        with open(os.path.join(ROOT_DIR, 'assets', 'filtered_sni.json') , 'r', encoding='utf-8') as f:
+            sni = json.load(f)
+            sni_list = [sni_code['Varde'] for sni_code in sni[0]['VardeLista']]
         
-        :param var: Dictionary of variables and their values to be checked.
-    
-        :returns: the object itself.
-        """
-        self._check_if_allowed('contains',var_dict=var)
-    
-        for v in var:
-            variable_dict = {
-                "Varde1": var[v],
-                "Varde2": "",
-                "Operator": "Innehaller",
-                "Variabel": v
-            }
-            self.json["variabler"].append(variable_dict)
-        return self
-    
-    def equals(self, var: dict):
-        """
-        Method for creating a request that checks if a variable equals provided information.
+        codes = []
         
-        :param var: Dictionary of variables and their values to be checked.
-        :returns: the object itself.
-        """
-        self._check_if_allowed('equals',var_dict=var)
-
-        for v in var:
-            variable_dict = {
-                "Varde1": var[v],
-                "Varde2": "",
-                "Operator": "ArLikaMed",
-                "Variabel": v
-            }
-            self.json["variabler"].append(variable_dict)
-        return self
-    
-    def prefix(self, var: dict):
-        """
-        Method for creating a request that checks if a variable is prefixed with provided information.
+        for code in r.json()[1]['VardeLista']:
+            if code['Varde'][0:2] in sni_list:
+                codes.append({
+                    'sni_code':code['Varde'],
+                    'description': code['Text']
+                    })
         
-        :param var: Dictionary of variables and their values to be checked.
-        :returns: the object itself.
-        """
-        self._check_if_allowed('prefix',var_dict=var)
+        self.mongo_client[Schema.DB][Schema.SNI].insert_many(codes)
+        self.mongo_client[Schema.DB][Schema.SNI].create_index('sni_code')
 
-        for v in var:
-            variable_dict = {
-                "Varde1": var[v],
-                "Varde2": "",
-                "Operator": "BorjarPa",
-                "Variabel": v
-            }
-            self.json["variabler"].append(variable_dict)
-        return self
-    
-    def start_from(self, var: dict):
+    def fetch_codes(self):
         """
-        Method for creating a request that checks all companies with a number variable starting with (incl.) the provided number.
+        Fetch the list of all 5 digit codes from the mongodb database.
         
-        :param var: Dictionary of variables and their values to be checked.
-        :returns: the object itself.
+        :returns a dict: {sni_code: description}
         """
-        self._check_if_allowed('start_from',var_dict=var)
-
-        for v in var:
-            variable_dict = {
-                "Varde1": var[v],
-                "Varde2": "",
-                "Operator": "FranOchMed",
-                "Variabel": v
-            }
-            self.json["variabler"].append(variable_dict)
-        return self
-    
-    def up_to(self, var: dict):
-        """
-        Method for creating a request that checks all companies with a number variable up to (incl.) to the provided number.
         
-        :param var: Dictionary of variables and their values to be checked.
-        :returns: the object itself.
-        """
-        self._check_if_allowed('up_to',var_dict=var)
-
-        for v in var:
-            variable_dict = {
-                "Varde1": var[v],
-                "Varde2": "",
-                "Operator": "TillOchMed",
-                "Variabel": v
-            }
-            self.json["variabler"].append(variable_dict)
-        return self
-    
-    def between(self, var: dict):
-        """
-        Method for creating a request that checks all companies with a number variable between with the provided numbers.
+        codes = self.mongo_client[Schema.DB][Schema.SNI].find()
+        sni_codes = {}
+        for code in codes:
+            sni_codes[code['sni_code']] = code['description']
+        return sni_codes
         
-        :param var: Dictionary of variables and their values to be checked.
-        :returns: the object itself.
+    def _store_municipalities(self):
         """
-        self._check_if_allowed('between',var_dict=var)
-
-        for key, value in var.items():
-            variable_dict = {
-                "Varde1": value[0],
-                "Varde2": value[1],
-                "Operator": "Mellan",
-                "Variabel": key
-            }
-            self.json["variabler"].append(variable_dict)
-        return self
-    
-    def sni(self, codes: list, level: int = 1, exclusion: bool = False):
+        Saves the list of all municipalities from SCB to the db.
         """
-        Method for creating a request that checks all companies of the specified SNI sector codes.
         
-        :param sni: List of SNI codes to be checked.
-        :param exclusion: Boolean value for if the SNI codes should be excluded or not.
-        :param level: The level of the SNI code to be checked. (1-3)
+        r = self.wrapper.get("api/Je/KategorierMedKodtabeller")
+            
+        municipalities = []
+        for mun in r.json()[4]['VardeLista']:
+            municipalities.append({
+                'code': mun["Varde"],
+                'name': mun["Text"]
+            })
+
+        self.mongo_client[Schema.DB][Schema.MUNICIPALITIES].insert_many(municipalities)
+        self.mongo_client[Schema.DB][Schema.SNI].create_index('code')
+
+    def fetch_municipalities(self):
         """
-        if exclusion:
-            with open(f'{ROOT_DIR}/assets/sni.txt', 'r') as f:
-                read_codes = f.read().splitlines()
-            codes = [code for code in read_codes if code not in codes]
+        Fetch the list of all municipalities from the mongodb database.
         
-        category_dict = {
-            "Kategori": "Bransch",
-            "Kod": codes,
-            "Branschniva": level
-        }
-        self.json["Kategorier"].append(category_dict)
-        return self
-    
-    def reset_json(self):
+        :returns a dict: {code: name}
         """
-        Sets the internal JSON file to the default values. 
-        """
-        self.json = {
-            "Företagsstatus":"1",
-            "Registreringsstatus":"1",
-            "variabler": [],
-            "Kategorier": []
-        }
+        mun_list = self.mongo_client[Schema.DB][Schema.MUNICIPALITIES].find()
+        municipalities = {}
+        for m in mun_list:
+            municipalities[m['code']] = m['name']
+        return municipalities
 
-    def fetch(self, address: str = "api/Je/HamtaForetag"):
+    def _store_legal_forms(self):
         """
-        Sends a request with the current JSON file.
-
-        :returns: the response object.
+        Saves the list of all legal forms (that an entity can have), excluding those in the filter list from SCB to the db.
         """
-        logging.debug('Sending the following request:\n%s', self.json)
-        r = self.fetch_data(address, self.json)
-        self.reset_json()
-        return r
-    
-    def fetch_data(self, r_address, body=None):
-        """
-        General method for creating requests against SCB API.
         
-        :param r_address: the suffix of the address of the specific request.
-        :param body: the body to be sent with POST requests
-        :returns: a response object
-        """
-        with Session() as s:
-            s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
-            if (body is None):   
-                r = s.get(f'{self.api_base}/{r_address}') # En request
-            else :
-                r = s.post(f'{self.api_base}/{r_address}', json=body)
-        return r
-
-    def _post_request(self, r_address, body):
-        """
-        Method for creating a POST request against SCB API.
+        r = self.wrapper.get("api/Je/KategorierMedKodtabeller").json()
         
-        :param r_address: the suffix of the address of the specific request.
-        :param body: the body to be sent with POST requests
-        :returns: response object from the request. 
-        """
-        r = self.fetch_data(r_address, body)
-        return r
-
-    def _get_request(self, r_address):
-        """
-        Method for creating a GET request against SCB API.
+        with open(os.path.join(ROOT_DIR, 'assets', 'filtered_legal_forms.json') , 'r', encoding='utf-8') as f:
+            filter_list = json.load(f)
         
-        :param r_address: the suffix of the address of the specific request.
-        :returns: response object from the request. 
+        filter_list = [form['Varde'] for form in filter_list]
+        
+        legal_forms = []
+        
+        for cat in r:
+            if cat['Id_Kategori_JE'] == 'Juridisk form':
+                for form in cat['VardeLista']:
+                    if form['Varde'] in filter_list:
+                        legal_forms.append({
+                            'code': form['Varde'],
+                            'description': form['Text']
+                        })
+        
+        self.mongo_client[Schema.DB][Schema.LEGAL_FORMS].insert_many(legal_forms)
+        self.mongo_client[Schema.DB][Schema.LEGAL_FORMS].create_index('code')
+        
+    def fetch_legal_forms(self):
         """
-        r = self.fetch_data(r_address)
-        return r
+        Fetch the list of all legal forms from the mongodb database.
 
-    def _check_if_allowed(self, operator, var_list= None, var_dict = None):
+        :returns a dict: {code: name}
         """
-        Checks if the given variables are supported by the caller operation.
+        forms = self.mongo_client[Schema.DB][Schema.LEGAL_FORMS].find()
+        legal_forms = {}
+        for form in forms:
+            legal_forms[form['code']] = form['description']
+        return legal_forms
+        
 
-        :param operator: a string (the exact name of the caller function).
-        :var_list: a list of variables used in the operation, or None.
-        :var_dict: a dictionary used in the operation, or None.
-
-        :raises VariableDoesNotExist: if the variable does not appear in the variable list fetched from the API.
-        :raises DoesNotOwnVariable: if the user does not own the chosen variable.
-        :raises VariableDoesNotSupportOperation: if the variable does not support the chosen operation (the caller).
+    def last_code_checked(self):
         """
-        if var_list is not None:
-            for var in var_list:
-                if var not in self.variables_from_api:
-                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
-                if var not in self.owned_vars_from_api:
-                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
-                if operator not in self.owned_vars_from_api[var]:
-                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
+        Last SNI code checked in the companies collection.
+        
+        returns:
+        last SNI code checked
+        """
+        last_company = self.mongo_client[Schema.DB][Schema.COMPANIES].find().sort([("_id", -1)]).limit(1) # Get the last company entered into the database
+        
+        if "branch_codes" in last_company[0]:
+            return last_company[0]["branch_codes"][0]
+        return None
 
-        if var_dict is not None:
-            for var in var_dict.keys():
-                if var not in self.variables_from_api:
-                    raise VariableDoesNotExist("'%s' does not exist in the list of all variables!" % (var))
-                if var not in self.owned_vars_from_api:
-                    raise DoesNotOwnVariable("'%s' exists, but is not in the list of owned variables!" % (var))
-                if operator not in self.owned_vars_from_api[var]:
-                    raise VariableDoesNotSupportOperation("'%s' does not support '%s'!" % (var, operator))
+    def _filter_companies(self, companies):
+        """
+        Filters information about companies fetched from the SCB API.
+        
+        params:
+        companies: list of companies
+        """
+        filtered_companies = []
+        for company in companies:
+            filtered_company = {}
+            filtered_company["branch_codes"] = []
+            filtered_company["url"] = ""
+            for key, value in company.items():
+                match key:
+                    case "Företagsnamn":
+                        filtered_company["name"] = value
+                    case "OrgNr":
+                        filtered_company["org_nr"] = value
+                    case "PostAdress":
+                        filtered_company["address"] = value
+                    case "PostNr":
+                        filtered_company["postal_code"] = value
+                    case "PostOrt":
+                        filtered_company["postal_city"] = value
+                    case "Säteskommun, kod":
+                        filtered_company["municipality_code"] = value
+                    case "Säteskommun":
+                        filtered_company["municipality"] = value
+                    case "Telefon":
+                        filtered_company["phone"] = value
+                if ('Bransch_' in key and 'kod' in key) and ('P' not in key and 'HAE' not in key):
+                    filtered_company["branch_codes"].append(value)
+            filtered_companies.append(filtered_company)
+                    
+        return filtered_companies
+
+    def _fetch_companies_by_municipality(self, sni_code: str, fetch_limit = 50, max_tries_per_code = 15):
+        """
+        Function for fetching companies by SNI code from random municipalities.
+        
+        params:
+        sni_code: SNI code
+        fetch_limit: maximum number of companies to fetch
+        max_tries_per_code: maximum number of tries to fetch companies from SNI code
+        """
+        
+        total_fetched = 0
+        tries = 0
+        comp_arr = []
+        logging.debug(f"Fetching from SNI: {sni_code}")
+
+        mun_codes = list(self.fetch_municipalities().keys())
+        random.shuffle(mun_codes)
+
+        legal_forms = list(self.fetch_legal_forms().keys())
+
+        while total_fetched < fetch_limit:
+            if tries >= max_tries_per_code:
+                logging.debug(f"Failed to fetch {sni_code} too many times, skipping!")
+                break
+
+            mun_code = mun_codes.pop()
+            found_count = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").count(False).json()
+            logging.debug(f"Municipality: {mun_code} - Companies: {found_count}")
+
+            if found_count == 0:
+                tries += 1
+                continue
+            if found_count+total_fetched > fetch_limit:
+                logging.debug(f"Skipping {mun_code} too many companies!")
+                tries += 1
+                continue
+
+            total_fetched += found_count
+            companies = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch().json()
+            comp_arr.extend(self._filter_companies(companies))
+
+        logging.debug(f"Total companies fetched: {total_fetched}")
+        logging.debug(f"----> Stopping fetching from SNI {sni_code}")
+        self._update_api_request_count(total_fetched)
+        return comp_arr
+
+
+    def fetch_companies_from_api(self, start_sni, stop_sni, fetch_limit=50, max_tries_per_code=15):
+        """
+        Fetch companies from the SCB API from random municipalities in the specified SNI code range.
+        
+        params:
+        start_sni: start SNI code
+        stop_sni: stop SNI code
+        fetch_limit: maximum number of companies to fetch
+        max_tries_per_code: maximum number of tries for each sni
+        """
+        last_code = self.last_code_checked()
+        docs = self.mongo_client[Schema.DB][Schema.SNI].find({"sni_code": { "$ne": last_code }}).sort([("sni_code")])
+        if (last_code is not None) and (last_code > start_sni):
+            start_sni = last_code
+        for doc in docs:
+            if (doc["sni_code"] >= start_sni) and not (doc["sni_code"] > stop_sni):
+                companies = self._fetch_companies_by_municipality(
+                    doc["sni_code"], 
+                    fetch_limit=fetch_limit, 
+                    max_tries_per_code=max_tries_per_code)
+                if len(companies) > 0:
+                    self.mongo_client[Schema.DB][Schema.COMPANIES].insert_many(companies)
+        
+
+    def fetch_all_companies_from_api(self, fetch_limit=50):
+        """
+        Fetch companies based on filtered SNI list from the SCB API from random municipalities.
+
+        params:
+        fetch_limit: maximum number of companies to fetch
+        """
+        start_sni="01120"
+        stop_sni="95290"
+        
+        self.fetch_companies_from_api(start_sni, stop_sni, fetch_limit=fetch_limit)
+        
+
+    def _update_api_request_count(self, num_requests=1):
+        """
+        Updates the count of API requests made to the SCB API.
+        params:
+        num_requests: number of requests made
+        """
+        self.mongo_client[Schema.DB][Schema.API_COUNT].update_one({}, {"$inc": {"count": num_requests}}, upsert=True)
+        
+    def fetch_companies_from_db(self, sni_code):
+        """
+        Fetch companies from the database based on the SNI code.
+        params:
+        sni_code: SNI code
+        returns:
+        list of companies
+        """
+        companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
+        return list(companies)
+
+
+    def update_url_for_company(self, org_nr, url):
+        """
+        Updates the URL for a company in the database.
+        params:
+        org_nr: organization number
+        url: URL to update
+        """
+        self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
