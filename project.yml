@@ -1,10 +1,5 @@
-
-# 
-# This YAML file represents the project configuration for the NLP project.
-# It contains settings and parameters that are used to configure and run the project.
-# 
-title: "Test"
-description: "Lorem Lipsum"
+title: "CRVCIOIS SNI CNN AI Model pipeline"
+description: "This is a training and evaluation pipeline for a CNN AI model which predicts a companys SNI code based on their website data."
 # Variables can be referenced across the project.yml using ${vars.var_name}
 vars:
   config: "config.cfg"
@@ -12,8 +7,17 @@ vars:
   version: "0.0.0"
   train: "docs_nace_training"
   dev: "docs_nace_eval"
+  test: "docs_nace_test"
   sni: "sni"
+  demo_sni: "demo_sni_labels"
   gpu_id: -1
+  scraped_path: "scraping/data/scraped_data"
+  extracted_path: "scraping/data/extracted_data"
+  extract_meta: "True"
+  extract_body: "False"
+  extract_p_only: "False"
+  urls_to_scrape: ""
+  scb_data_file: "scb_data"
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -27,34 +31,82 @@ assets:
     description: "JSONL-formatted training data exported, annotated with `DOCUMENTATION`"
   - dest: "assets/${vars.sni}.json"
     description: "JSON-formatted SNI codes"
-  - dest: "assets/${vars.dev}.json"
-    description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
 
 # Workflows are sequences of commands (see below) executed in order. You can
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
 # haven't changed, it won't be re-run.
 workflows:
   all:
+    # - SCB
+    - google
+    - scrape
+    - extract
+    - divide
     - preprocess
     - train
     - evaluate
+
+  test_without_training:
+    - google
+    - scrape
+    - extract
+    - divide
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
+  - name: "google"
+    help: "Get company URL's by using Google search API"
+    script:
+      - "python scripts/google_wrapper.py ${vars.scb_data_file} ${vars.scb_data_file}"
+    deps:
+      - "${vars.scb_data_file}"
+    outputs:
+      - "${vars.scb_data_file}"
+
+  - name: "scrape"
+    help: "Scrapes websites"
+    script:
+      - "python scripts/scraping_wrapper.py ${vars.scb_data_file} ${vars.scraped_path}.json"
+    deps:
+      - "${vars.scb_data_file}"
+    outputs:
+      - "${vars.scraped_path}.json"
+
+  - name: "extract"
+    script:
+      - "python scripts/postprocess.py ${vars.scraped_path}.json ${vars.extracted_path}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
+    deps:
+      - "${vars.scraped_path}.json"
+    outputs:
+      - "${vars.extracted_path}.json"
+
+  - name: "divide"
+    help: "Divides the dataset into two, one smaller for cross-validation and a larger for training"
+    script:
+      - "python scripts/divide_dataset.py ${vars.extracted_path}.json ${vars.dev}.json"
+    deps:
+      - "${vars.extracted_path}.json"
+      - "scripts/divide_dataset.py"
+    outputs:
+      - "${vars.extracted_path}.json"
+      - "${vars.dev}.json"
+
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/preprocess.py assets/${vars.train}.json corpus/${vars.train}.spacy "
-      - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
+      - "python scripts/preprocess.py ${vars.extracted_path}.json corpus/${vars.train}.spacy "
+      - "python scripts/preprocess.py ${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
-      - "assets/${vars.train}.json"
+      - "${vars.extracted_path}.json"
+      - "${vars.dev}.json"
       - "scripts/preprocess.py"
-      - "assets/${vars.sni}.json"
+
     outputs:
       - "corpus/${vars.train}.spacy"
+      - "corpus/${vars.dev}.spacy"
 
   - name: "train"
     help: "Train a text classification model"
