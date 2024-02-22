@@ -1,3 +1,6 @@
+"""
+Tests for SCB wrapper
+"""
 import os
 import pytest
 from requests import Session
