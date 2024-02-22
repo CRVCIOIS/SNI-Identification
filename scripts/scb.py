@@ -6,7 +6,6 @@ from scripts.scb_wrapper import SCBapi
 from definitions import ROOT_DIR 
 from scripts.mongo import get_client
 
-
 # MongoDB definitions ("schema")
 DB              = "SCB"
 SNI             = "SNI_codes"
@@ -45,7 +44,7 @@ def fetch_codes():
     Fetch the list of all 5 digit codes from the mongodb database.
     
     :param sni_to_description: if False then {description: sni_code} will be returned
-    :returns a list of touples: {sni_code: description}
+    :returns a dict: {sni_code: description}
     """
     
     mongo_client = get_client()
@@ -79,7 +78,7 @@ def fetch_municipalities():
     Fetch the list of all municipalities from the mongodb database.
     
     :param code_to_name: if False then return {name: code}
-    :returns a list of touples: {code: name}
+    :returns a dict: {code: name}
     """
     mongo_client = get_client()
     mun_list = mongo_client[DB][MUNICIPALITIES].find()
@@ -120,7 +119,7 @@ def fetch_legal_forms():
     Fetch the list of all legal forms from the mongodb database.
     
     :param code_to_name: if False then return {name: code}
-    :returns a list of touples: {code: name}
+    :returns a dict: {code: name}
     """
     mongo_client = get_client()
     forms = mongo_client[DB][LEGAL_FORMS].find()
@@ -142,8 +141,9 @@ def last_code_checked():
     """
     mongo_client = get_client()
     last_company = mongo_client[DB][COMPANIES].find().sort([("_id", -1)]).limit(1) # Get the last company entered into the database
-    if "sni_code" in last_company:
-        return last_company["sni_code"]
+    
+    if "branch_codes" in last_company[0]:
+        return last_company[0]["branch_codes"][0]
     return None
 
 def filter_companies(companies):
@@ -168,9 +168,11 @@ def filter_companies(companies):
                     filtered_company["address"] = value
                 case "PostNr":
                     filtered_company["postal_code"] = value
-                case "SätesKommun, kod":
+                case "PostOrt":
+                    filtered_company["postal_city"] = value
+                case "Säteskommun, kod":
                     filtered_company["municipality_code"] = value
-                case "SätesKommun":
+                case "Säteskommun":
                     filtered_company["municipality"] = value
                 case "Telefon":
                     filtered_company["phone"] = value
@@ -190,33 +192,40 @@ def fetch_companies_by_municipality(sni_code: str, fetch_limit = 50, max_tries_p
     max_tries_per_code: maximum number of tries to fetch companies from SNI code
     """
     wrapper = SCBapi()
-    fetch_count = 0
+    total_fetched = 0
     tries = 0
     comp_arr = []
-    print(f"Fetching from SNI: {sni_code}")
-    
+    logging.debug(f"Fetching from SNI: {sni_code}")
+
     mun_codes = list(fetch_municipalities().keys())
     random.shuffle(mun_codes)
-    
+
     legal_forms = list(fetch_legal_forms().keys())
-    
-        
-    while fetch_count < fetch_limit and tries < max_tries_per_code:
+
+    while total_fetched < fetch_limit:
+        if tries >= max_tries_per_code:
+            logging.debug(f"Failed to fetch {sni_code} too many times, skipping!")
+            break
+
         mun_code = mun_codes.pop()
-        r = wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").count(False).json()
-        print(f"Municipality: {mun_code} - Companies: {r}")
-        if r == 0:
+        found_count = wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").count(False).json()
+        logging.debug(f"Municipality: {mun_code} - Companies: {found_count}")
+
+        if found_count == 0:
             tries += 1
             continue
-        if r+fetch_count > fetch_limit:
-            print(f"Skipping {mun_code} too many companies!")
+        if found_count+total_fetched > fetch_limit:
+            logging.debug(f"Skipping {mun_code} too many companies!")
+            tries += 1
             continue
-        fetch_count += r
+
+        total_fetched += found_count
         companies = wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch().json()
         comp_arr.extend(filter_companies(companies))
-    print(f"Total companies fetched: {fetch_count}")
-    print(f"----> Stopping fetching from SNI {sni_code}")
-    update_api_request_count(fetch_count)
+
+    logging.debug(f"Total companies fetched: {total_fetched}")
+    logging.debug(f"----> Stopping fetching from SNI {sni_code}")
+    update_api_request_count(total_fetched)
     return comp_arr
 
 
@@ -230,13 +239,16 @@ def fetch_companies_from_api(start_sni, stop_sni, fetch_limit=50):
     fetch_limit: maximum number of companies to fetch
     """
     mongo_client = get_client()
-    docs = mongo_client[DB][SNI].find().sort([("sni_code")])
+    last_code = last_code_checked()
+    docs = mongo_client[DB][SNI].find({"sni_code": { "$ne": last_code }}).sort([("sni_code")])
+    if (last_code is not None) and (last_code > start_sni):
+        start_sni = last_code
     for doc in docs:
-        if (int(doc["sni_code"]) >= int(start_sni)) and not (int(doc["sni_code"]) > int(stop_sni)):
+        if (doc["sni_code"] >= start_sni) and not (doc["sni_code"] > stop_sni):
             companies = fetch_companies_by_municipality(doc["sni_code"], fetch_limit=fetch_limit)
             if len(companies) > 0:
                 mongo_client[DB][COMPANIES].insert_many(companies)
-            
+    
 
 def fetch_all_companies_from_api(fetch_limit=50):
     """
@@ -279,8 +291,6 @@ def update_url_for_company(org_nr, url):
     """
     mongo_client = get_client()
     mongo_client[DB][COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
-        
-
 
 if __name__ == "__main__":
     #logging.basicConfig(level=logging.DEBUG)
@@ -294,18 +304,20 @@ if __name__ == "__main__":
         store_municipalities()
     if mongo_client[DB][LEGAL_FORMS].count_documents({}) == 0:
         store_legal_forms()
+    
+    fetch_companies_from_api(start_sni="01110",stop_sni="02200",fetch_limit=10)
 
     #fetch_companies_from_api("01131", "01131", fetch_limit=2)
     
-    print(fetch_companies_from_db("01131"))
+    #logging.debug(fetch_companies_from_db("01131"))
 
     # wrapper = SCBapi()
     # results = wrapper.sni(['45204']).category(['0181'], cat="SätesKommun").fetch().json()
     # for company in results:
-    #     print(company)
+    #     logging.debug(company)
     #     input()
     #     name = company['Företagsnamn']
-    #     print(name)
+    #     logging.debug(name)
     #     branches = [company[x] for x in company.keys() if ('Bransch_' in x and 'kod' in x) and ('P' not in x and 'HAE' not in x)]
-    #     print(branches)
+    #     logging.debug(branches)
     #     input()
