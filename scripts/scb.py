@@ -283,6 +283,9 @@ class SCBinterface():
     def fetch_all_companies_from_api(self, fetch_limit=50):
         """
         Fetch companies based on filtered SNI list from the SCB API from random municipalities.
+
+        params:
+        fetch_limit: maximum number of companies to fetch
         """
         start_sni="01120"
         stop_sni="95290"
@@ -298,7 +301,7 @@ class SCBinterface():
         """
         self.mongo_client[Schema.DB][Schema.API_COUNT].update_one({}, {"$inc": {"count": num_requests}}, upsert=True)
         
-    def fetch_companies_from_db(self, sni_code = "01110"):
+    def fetch_companies_from_db(self, sni_code):
         """
         Fetch companies from the database based on the SNI code.
         params:
