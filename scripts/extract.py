@@ -23,6 +23,34 @@ class DataExtractor:
             re.compile(r'\d\d\d\d') # Remove strings with years (i.e. a string containing '2013')
             ]
 
+        self.character_filter_list = [ # Last filter, removes characters from strings.
+            re.compile(r'\s{2,}'),  # Remove multiple spaces
+            re.compile(r'\|+'),     # Remove pipes
+            re.compile(r'\n+'),     # Remove newlines
+            re.compile(r'\t+'),     # Remove tabs
+            re.compile(r'\r+'),     # Remove carriage returns
+            re.compile(r"#\w+"),    # Remove hashtags
+            re.compile("["          # Remove emojis and other symbols
+                u"\U0001F600-\U0001F64F"  
+                u"\U0001F300-\U0001F5FF"  
+                u"\U0001F680-\U0001F6FF"  
+                u"\U0001F1E0-\U0001F1FF"  
+                u"\U00002702-\U000027B0"
+                u"\U000024C2-\U0001F251"
+                u"\U0001f926-\U0001f937"
+                u"\U00010000-\U0010ffff"
+                u"\u2640-\u2642" 
+                u"\u2600-\u2B55"
+                u"\u200d"
+                u"\u23cf"
+                u"\u23e9"
+                u"\u231a"
+                u"\ufe0f"
+                u"\u3030"
+                "]+", flags=re.UNICODE)
+        ]
+
+
     def __str__(self):
         return self.extract()
 
@@ -44,25 +72,35 @@ class DataExtractor:
         """
         self.soup = BeautifulSoup(raw_html, 'html.parser')
 
-    def extract(self, filter_ = True, p_only = False):
+    def extract(self, filter_ = True, p_only = False, extract_meta = True, extract_body = True):
         """
         Extracts text and creates a string from a scraped HTML page.
         :param filter_: if True (default), then the data is also filtered.
         :param p_only: if True, then only paragraphs will be scraped from the body.
+
+        :param extract_meta: if True, then meta will be extracted.
+        :param extract_body: if True, then body will be extracted. 
         :returns: a string
         """
-        meta = self._extract_meta(filter_).values()
-        body = self._extract_body(filter_, p_only)
-        if filter_:
-            self._filter_list(body)
-            meta = list(set(meta))  # remove duplicates
-            body = list(set(body))  # remove duplicates
-
         s = ""
-        for value in meta:
-            s += value + '\n'
-        for item in body:
-            s += item + '\n'
+        
+        if extract_body:
+            body = self._extract_body(filter_, p_only)
+            if filter_:
+                self._filter_list(body)
+                body = list(set(body))  # remove duplicates
+            for item in body:
+                s += item + " "
+            
+        if extract_meta:
+            meta = self._extract_meta(filter_)
+            if filter_:
+                meta = list(set(meta))  # remove duplicates
+            for item in meta:
+                s += item + " "
+                
+        if filter_:
+            s = self._filter_chars(s)
         return s
     
     def extract_simple_data(self):
@@ -104,11 +142,12 @@ class DataExtractor:
         """
         if self.soup is None:
             raise NoBeautifulSoupObject
+
         
         allowed_tags = ['title','description']
 
         meta_tags = self.soup.find_all('meta')
-        metadata = {}
+        metadata = []
 
         for tag in meta_tags:
             name = None
@@ -122,11 +161,12 @@ class DataExtractor:
                 for allowed_tag in allowed_tags:
                     if allowed_tag in name:
                         content = tag.attrs.get('content', '')
-                        metadata[name] = content
+                        metadata.append(content)
                         break
             else:
                 content = tag.attrs.get('content', '')
-                metadata[name] = content
+                metadata.append(content)
+
 
         return metadata
 
@@ -144,11 +184,15 @@ class DataExtractor:
         soup = copy.deepcopy(self.soup.body)
         
         if filter_:
+            # Remove links
             for element in soup.find_all('a'):
                 if element.strings is not None:
                     element.decompose()
-
+            # Remove tags containing "cookie"
             for element in soup.find_all('div', class_=re.compile("cookie*.")):
+                element.decompose()
+            # Remove JS scripts    
+            for element in soup.find_all('script'):
                 element.decompose()
 
         if p_only:
@@ -167,10 +211,13 @@ class DataExtractor:
             for filt in self.string_filter_list:
                 if filt.match(value):
                     lst.pop(i)
-
-
-if __name__ == "__main__":
-    extractor = DataExtractor()
-    extractor.open_file('temp/lkab.html')
-    simple_data = extractor.extract_simple_data()
-    print(simple_data)
+                    
+    def _filter_chars(self, text):
+        """
+        Takes a string and removes every character 
+        with a matching regex from the filter list.
+        :param text: a string
+        """
+        for filter in self.character_filter_list:
+            text = filter.sub('', text) 
+        return text

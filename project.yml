@@ -3,7 +3,6 @@
 #
 title: "CRVCIOIS SNI CNN AI Model pipeline"
 description: "This is a training and evaluation pipeline for a CNN AI model which predicts a companys SNI code based on their website data."
-
 # Variables can be referenced across the project.yml using ${vars.var_name}
 # Filename, as 'train' only specifies the actual name and not where it's stored or it's extension
 vars:
@@ -26,11 +25,13 @@ directories: ["assets", "training", "configs", "scripts", "corpus", "scraping"]
 # Assets that should be downloaded or available in the directory. We're shipping
 # them with the project, so they won't have to be downloaded. But the
 # 'project assets' command still lets you verify that the checksums match.
+
 # assets:
 #   - dest: "assets/${vars.train}.json"
 #     description: "JSONL-formatted training data exported"
 #   - dest: "assets/${vars.dev}.json"
 #     description: "JSONL-formatted development data)"
+
 
 # Workflows are sequences of commands (see below) executed in order. You can
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
@@ -65,11 +66,17 @@ workflows:
     - evaluate-prod
 
 
+  test_without_training:
+    - google
+    - scrape
+    - extract
+    - divide
+
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
-commands:
+
   # - name: "SCB"
   #   help: "Get data from SCB"
   #   script: "" #TODO
@@ -119,8 +126,8 @@ commands:
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/preprocess.py assets/${vars.train}.json corpus/${vars.train}.spacy "
-      - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
+      - "python scripts/preprocess.py ${vars.extracted_path}.json corpus/${vars.train}.spacy "
+      - "python scripts/preprocess.py ${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
       - "assets/${vars.train}.json"
       - "assets/${vars.dev}.json"
