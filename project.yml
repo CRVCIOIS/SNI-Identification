@@ -1,78 +1,207 @@
-
-# 
 # This YAML file represents the project configuration for the NLP project.
 # It contains settings and parameters that are used to configure and run the project.
-# 
-title: "Test"
-description: "Lorem Lipsum"
+#
+title: "CRVCIOIS SNI CNN AI Model pipeline"
+description: "This is a training and evaluation pipeline for a CNN AI model which predicts a companys SNI code based on their website data."
 # Variables can be referenced across the project.yml using ${vars.var_name}
+# Filename, as 'train' only specifies the actual name and not where it's stored or it's extension
 vars:
-  config: "config.cfg"
-  name: "NACE"
-  version: "0.0.0"
+  config: "config"
+  version: "0.0.1"
   train: "docs_nace_training"
   dev: "docs_nace_eval"
-  sni: "sni"
   gpu_id: -1
+  scraped_data_file_name: "scraped_data"
+  extract_meta: "True"
+  extract_body: "False"
+  extract_p_only: "False"
+  scb_data_file_name: "scb_data"
+  nr_of_each_sni: 10
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
-directories: ["assets", "training", "configs", "scripts", "corpus"]
+directories: ["assets", "training", "configs", "scripts", "corpus", "scraping"]
 
 # Assets that should be downloaded or available in the directory. We're shipping
 # them with the project, so they won't have to be downloaded. But the
 # 'project assets' command still lets you verify that the checksums match.
-assets:
-  - dest: "assets/${vars.train}.json"
-    description: "JSONL-formatted training data exported, annotated with `DOCUMENTATION`"
-  - dest: "assets/${vars.sni}.json"
-    description: "JSON-formatted SNI codes"
-  - dest: "assets/${vars.dev}.json"
-    description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
+
+# assets:
+#   - dest: "assets/${vars.train}.json"
+#     description: "JSONL-formatted training data exported"
+#   - dest: "assets/${vars.dev}.json"
+#     description: "JSONL-formatted development data)"
+
 
 # Workflows are sequences of commands (see below) executed in order. You can
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
 # haven't changed, it won't be re-run.
 workflows:
+
+  evaluate-dev:
+    - evaluate-speed-dev
+    - evaluate-accuracy-dev
+  evaluate-prod:
+    - evaluate-speed-prod
+    - evaluate-accuracy-prod
+
   all:
+    # - SCB
+    - google
+    - scrape
+    - extract
+    - divide
     - preprocess
     - train
-    - evaluate
+    - evaluate-prod
+
+  train:
+    # - SCB
+    - google
+    - scrape
+    - extract
+    - divide
+    - preprocess
+    - train-models
+    - evaluate-prod
+
+
+  test_without_training:
+    - google
+    - scrape
+    - extract
+    - divide
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
-commands:
+
+  # - name: "SCB"
+  #   help: "Get data from SCB"
+  #   script: "" #TODO
+  - name: "google"
+    help: "Get company URL's by using Google search API"
+    script:
+      - "python scripts/google_wrapper.py assets/${vars.scb_data_file_name}.json assets/${vars.scb_data_file_name}.json"
+    deps:
+      - "assets/${vars.scb_data_file_name}.json"
+      - "scrpits/google_wrapper.py"
+      - "scripts/google_search_api.py"
+    outputs:
+      - "assets/${vars.scb_data_file_name}.json"
+
+  - name: "scrape"
+    help: "Scrapes websites"
+    script:
+      - "python scripts/scraping_wrapper.py assets/${vars.scb_data_file_name}.json assets/${vars.scraped_data_file_name}.json"
+    deps:
+      - "${vars.scb_data_file_name}"
+      - "scripts/scraping_wrapper.py"
+    outputs:
+      - "assets/${vars.scraped_data_file_name}.json"
+
+  - name: "extract"
+    help: "Extacts valuable the valuable data from the scraped website"
+    script:
+      - "python scripts/extract_wrapper.py assets/${vars.scb_data_file_name}.json assets/${vars.scraped_data_file_name}.json assets/${vars.train}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
+    deps:
+      - "assets/${vars.scb_data_file_name}.json"
+      - "assets/${vars.scraped_data_file_name}.json"
+      - "scripts/extract_wrapper.py"
+    outputs:
+      - "assets/${vars.train}.json"
+
+  - name: "divide"
+    help: "Divides the dataset into two, one smaller for cross-validation and a larger for training"
+    script:
+      - "python scripts/divide_dataset.py assets/${vars.train}.json assets/${vars.dev}.json, ${vars.nr_of_each_sni}"
+    deps:
+      - "assets/${vars.train}.json"
+      - "scripts/divide_dataset.py"
+    outputs:
+      - "assets/${vars.train}.json"
+      - "assets/${vars.dev}.json"
+
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/preprocess.py assets/${vars.train}.json corpus/${vars.train}.spacy "
-      - "python scripts/preprocess.py assets/${vars.dev}.json corpus/${vars.dev}.spacy "
+      - "python scripts/preprocess.py ${vars.extracted_path}.json corpus/${vars.train}.spacy "
+      - "python scripts/preprocess.py ${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
       - "assets/${vars.train}.json"
+      - "assets/${vars.dev}.json"
       - "scripts/preprocess.py"
-      - "assets/${vars.sni}.json"
+
     outputs:
       - "corpus/${vars.train}.spacy"
+      - "corpus/${vars.dev}.spacy"
 
-  - name: "train"
+  - name: "train-models"
     help: "Train a text classification model"
     script:
-      - "python -m spacy train configs/${vars.config} --output training/ --paths.train corpus/${vars.train}.spacy --paths.dev corpus/${vars.dev}.spacy --gpu-id ${vars.gpu_id}"
+      - "python -m spacy train configs/${vars.config}.cfg --output training/ --paths.train corpus/${vars.train}.spacy --paths.dev corpus/${vars.dev}.spacy --gpu-id ${vars.gpu_id}"
     deps:
       - "corpus/${vars.train}.spacy"
       - "corpus/${vars.dev}.spacy"
-      - "configs/config.cfg"
+      - "configs/${vars.config}.cfg"
     outputs:
       - "training/model-best"
 
-  - name: "evaluate"
-    help: "Evaluate the model and export metrics"
+  # Deprecated
+  # - name: "evaluate"
+  #   help: "Evaluate the model and export metrics"
+  #   script:
+  #     - "python -m spacy evaluate training/model-best corpus/${vars.dev}.spacy --output training/metrics.json --gpu-id ${vars.gpu_id}"
+  #   deps:
+  #     - "corpus/${vars.dev}.spacy"
+  #     - "training/model-best"
+  #   outputs:
+  #     - "training/metrics.json"
+
+  
+  - name: "evaluate-accuracy-prod"
+    help: "Evaluate the prod model for accuracy and export metrics"
     script:
-      - "python -m spacy evaluate training/model-best corpus/${vars.dev}.spacy --output training/metrics.json --gpu-id ${vars.gpu_id}"
+      - "python -m spacy benchmark accuracy training/model-best corpus/${vars.train}.spacy --output training/metrics-accuracy-prod-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy/accuracy-prod-${vars.train}.html"
     deps:
       - "corpus/${vars.dev}.spacy"
       - "training/model-best"
     outputs:
-      - "training/metrics.json"
+      - "training/metrics-accuracy-prod-${vars.train}.json"
+      - "training/displacy/accuracy-prod-${vars.train}.html"
+
+  - name: "evaluate-speed-prod"
+    help: "Evaluate the prod model for speed and export metrics"
+    script:
+      - "python -m spacy benchmark speed training/model-best corpus/${vars.train}.spacy --output training/metrics-speed-prod-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy/speed-prod-${vars.train}.html"
+    deps:
+      - "corpus/${vars.dev}.spacy"
+      - "training/model-best"
+    outputs:
+      - "training/metrics-speed-prod-${vars.train}.json"
+      - "training/displacy/speed-prod-${vars.train}.html"
+
+  - name: "evaluate-accuracy-dev"
+    help: "Evaluate the dev model for accuracy and export metrics"
+    script:
+      - "python -m spacy benchmark accuracy training/model-best corpus/${vars.train}.spacy --output training/metrics-accuracy-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy/accuracy-dev-${vars.train}.html"
+    deps:
+      - "corpus/${vars.dev}.spacy"
+      - "training/model-best"
+    outputs:
+      - "training/metrics-accuracy-dev-${vars.train}.json"
+      - "training/displacy/accuracy-dev-${vars.train}.html"
+      
+  
+  - name: "evaluate-speed-dev"
+    help: "Evaluate the dev model for and export metrics"
+    script:
+      - "python -m spacy benchmark accuracy training/model-best corpus/${vars.train}.spacy --output training/metrics-speed-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy/speed-dev-${vars.train}.html"
+    deps:
+      - "corpus/${vars.dev}.spacy"
+      - "training/model-best"
+    outputs:
+      - "training/metrics-speed-dev-${vars.train}.json"
+      - "training/displacy/speed-dev-${vars.train}.html"
+

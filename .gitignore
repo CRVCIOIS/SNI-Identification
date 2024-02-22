@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# scraped data
+scraping/data/
+
 # Distribution / packaging
 .Python
 build/
@@ -176,5 +179,5 @@ project.lock
 #temporary files
 temp/
 
-# pfx files
+#keys and certs
 *.pfx
