@@ -1,3 +1,12 @@
+"""
+This module contains a wrapper function for extracting text from raw HTML in the scraped data and inserting it into a dataset.
+
+The `extract_wrapper` function performs the following steps:
+1. Opens the input dataset file and the input scraped data file.
+2. Extracts text from raw HTML in the scraped data and stores it in a dictionary, where the keys are the domains and the values are the extracted text.
+3. Updates the dataset with the extracted text based on the domain.
+4. Writes the updated dataset to the output data file.
+"""
 import json
 import logging
 from pathlib import Path
@@ -5,7 +14,6 @@ from scripts.extract import DataExtractor
 import typer
 import tldextract
 from typing_extensions import Annotated
-
 
 
 def extract_wrapper(

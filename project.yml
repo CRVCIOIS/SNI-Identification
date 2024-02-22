@@ -2,8 +2,8 @@
 # This YAML file represents the project configuration for the NLP project.
 # It contains settings and parameters that are used to configure and run the project.
 #
-title: "Test"
-description: "Lorem Lipsum"
+title: "CRVCIOIS SNI CNN AI Model pipeline"
+description: "This is a training and evaluation pipeline for a CNN AI model which predicts a companys SNI code based on their website data."
 # Variables can be referenced across the project.yml using ${vars.var_name}
 vars:
   config: "config.cfg"
@@ -21,7 +21,7 @@ vars:
   extract_body: "False"
   extract_p_only: "False"
   urls_to_scrape: ""
-  scb_data_file: "....json" #TODO: Change me
+  scb_data_file: "scb_data"
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -35,8 +35,6 @@ assets:
     description: "JSONL-formatted training data exported, annotated with `DOCUMENTATION`"
   - dest: "assets/${vars.sni}.json"
     description: "JSON-formatted SNI codes"
-  # - dest: "assets/${vars.dev}.json"
-  #   description: "JSONL-formatted development data, annotated with `DOCUMENTATION`)"
 
 # Workflows are sequences of commands (see below) executed in order. You can
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
@@ -63,9 +61,6 @@ workflows:
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
-  # - name: "SCB"
-  #   help: "Get data from SCB"
-  #   script: "" #TODO
   - name: "google"
     help: "Get company URL's by using Google search API"
     script:

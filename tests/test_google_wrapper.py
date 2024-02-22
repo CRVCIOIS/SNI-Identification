@@ -1,11 +1,27 @@
+"""
+This module contains a unit test for `google_wrapper` module.
+"""
+
 import json
 import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from google_wrapper import main
 
 @patch('google_wrapper.GoogleSearchAPI')
 def test_main(mock_google_search_api):
+    """Test the main function of the google_wrapper module.
+
+    This test verifies that the `main` function correctly processes the input data and produces the expected output data.
+
+    It mocks the `GoogleSearchAPI` class to simulate a successful search result.
+
+    Args:
+        mock_google_search_api: The mocked `GoogleSearchAPI` class.
+
+    Returns:
+        None
+    """
     # Arrange
     mock_google_search_api.return_value.search.return_value = 'http://example.com'
     input_path = Path('input.json')
@@ -21,6 +37,7 @@ def test_main(mock_google_search_api):
         {"name": "Another Test Company", "url": "http://example.com"}
     ]
 
+    input_path.mkdir(parents=True, exist_ok=True)
     with open(input_path, 'w') as f:
         json.dump(input_data, f)
 

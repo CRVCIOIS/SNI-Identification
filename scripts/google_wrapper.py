@@ -1,10 +1,12 @@
+"""
+This module provides a wrapper function to process input data, search for company URLs on Google,
+and write the updated data to an output file.
+"""
 import json
 import logging
 from pathlib import Path
-
 import typer
 from typing_extensions import Annotated
-
 from scripts.google_search_api import GoogleSearchAPI
 
 
@@ -28,6 +30,13 @@ def main(
             help="The path to the output data file."
             )],
         ):
+    """
+    Process the input data file, search for company URLs on Google, and write the updated data to the output file.
+
+    Args:
+    :param: input_path (Path): The path to the input data file.
+    :param: output_path (Path): The path to the output data file.
+    """
 
     with open(input_path, 'r', encoding='utf-8') as f:
         logging.debug("Reading data from %s", input_path)

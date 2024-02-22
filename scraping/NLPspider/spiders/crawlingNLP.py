@@ -1,3 +1,6 @@
+"""
+This module contains the CrawlingnlpSpider class, which is a Scrapy spider for crawling and scraping websites for the NLP project.
+"""
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule

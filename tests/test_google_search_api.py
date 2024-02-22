@@ -1,6 +1,13 @@
+"""
+This module contains test cases for the GoogleSearchAPI class.
 
+The GoogleSearchAPI class provides methods to perform searches and batch searches using the Google Search API.
+
+Test cases:
+- test_search: Checks the behavior of the search method in the API.
+- test_batch_search: Checks the behavior of the batch_search method in the API.
+"""
 import pytest
-
 from scripts.google_search_api import GoogleSearchAPI
 import tldextract
 
@@ -8,9 +15,10 @@ import tldextract
 @pytest.fixture
 def api():
     """
-    Fixture for creating an Google Search API object.
+    Fixture for creating a GoogleSearchAPI object.
 
-    :returns: an GoogleSearchAPI object.
+    Returns:
+        GoogleSearchAPI: An instance of the GoogleSearchAPI class.
     """
     api = GoogleSearchAPI() 
     return api

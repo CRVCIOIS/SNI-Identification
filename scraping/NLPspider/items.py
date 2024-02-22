@@ -1,10 +1,3 @@
-# Define here the models for your scraped items
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/items.html
-
-import scrapy
-
 """
 items.py
 ---------
@@ -20,6 +13,8 @@ Modules:
 scrapy : This module provides all the core functionality of Scrapy, including items, spiders, and the core scraping functionality.
 
 """
+
+import scrapy
 
 
 class NLPspiderItem(scrapy.Item):
@@ -39,4 +34,3 @@ class NLPspiderItem(scrapy.Item):
     domain = scrapy.Field()
     url = scrapy.Field()
     raw_html = scrapy.Field()
-    pass
