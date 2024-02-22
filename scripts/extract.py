@@ -102,6 +102,36 @@ class DataExtractor:
         if filter_:
             s = self._filter_chars(s)
         return s
+    
+    def extract_simple_data(self):
+        """
+        Find links for telephone numbers and e-mail addresses in a website.
+        :returns: a dictionary of lists of strings {'tel': [], 'email': []}
+        """
+        results = {}
+        results['tel'] = [tel.replace('-', '').replace(' ', '') for tel in set(self._extract_from_href('tel'))]
+        results['email'] = list(set(self._extract_from_href('mailto')))
+        
+        return results
+    
+    def _extract_from_href(self, keyword):
+        """
+        Return a list of strings [s] where a href contains the keyword:
+            <a href="keyword:s">...</a>
+        :param keyword: the keyword to be searched
+        :returns: a list of strings
+        """
+        if self.soup is None:
+            raise NoBeautifulSoupObject
+        results = []
+        href_regex = re.compile(fr'{keyword}:(.*)')
+
+        all_tags = self.soup.find_all('a', href=lambda href: href and keyword in href)
+        for tag in all_tags:
+            match = href_regex.match(tag.get('href'))
+            if match:
+                results.append(match.group(1))
+        return results
 
     def _extract_meta(self, filter_=True):
         """
@@ -111,7 +141,6 @@ class DataExtractor:
         :returns: a dictionary {metadata tag: contents}
         """
         if self.soup is None:
-
             raise NoBeautifulSoupObject
 
         
