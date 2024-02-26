@@ -168,9 +168,12 @@ class SCBinterface():
         last SNI code checked
         """
         last_company = self.mongo_client[Schema.DB][Schema.COMPANIES].find().sort([("_id", -1)]).limit(1) # Get the last company entered into the database
-        
-        if "branch_codes" in last_company[0]:
-            return last_company[0]["branch_codes"][0]
+
+        lc = list(last_company)
+        if not list(lc):
+            return None
+        if "branch_codes" in lc[0]:
+            return lc[0]["branch_codes"][0]
         return None
 
     def _filter_companies(self, companies):
@@ -280,7 +283,7 @@ class SCBinterface():
                     self.mongo_client[Schema.DB][Schema.COMPANIES].insert_many(companies)
         
 
-    def fetch_all_companies_from_api(self, fetch_limit=50):
+    def fetch_all_companies_from_api(self, fetch_limit=50, max_tries_per_code = 15):
         """
         Fetch companies based on filtered SNI list from the SCB API from random municipalities.
 
@@ -290,8 +293,7 @@ class SCBinterface():
         start_sni="01120"
         stop_sni="95290"
         
-        self.fetch_companies_from_api(start_sni, stop_sni, fetch_limit=fetch_limit)
-        
+        self.fetch_companies_from_api(start_sni, stop_sni, fetch_limit=fetch_limit, max_tries_per_code=max_tries_per_code)
 
     def _update_api_request_count(self, num_requests=1):
         """
@@ -316,7 +318,6 @@ class SCBinterface():
             companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
         return list(companies)
 
-
     def update_url_for_company(self, org_nr, url):
         """
         Updates the URL for a company in the database.
@@ -325,3 +326,7 @@ class SCBinterface():
         url: URL to update
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
+
+if __name__ == "__main__":
+    scb = SCBinterface()
+    scb.fetch_all_companies_from_api()

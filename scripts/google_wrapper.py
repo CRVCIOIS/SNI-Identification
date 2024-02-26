@@ -42,5 +42,5 @@ def main():
                 interface.update_url_for_company(company["org_nr"], company["url"])
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
     typer.run(main)
