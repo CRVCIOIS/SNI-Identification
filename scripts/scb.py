@@ -328,5 +328,6 @@ class SCBinterface():
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
 
 if __name__ == "__main__":
+    #logging.basicConfig(level=logging.DEBUG)
     scb = SCBinterface()
     scb.fetch_all_companies_from_api()

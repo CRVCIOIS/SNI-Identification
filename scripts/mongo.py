@@ -6,20 +6,12 @@ from definitions import ROOT_DIR
 import bson
 
 BACKUP_PATH = os.path.join(ROOT_DIR, "backup")
-load_dotenv(os.path.join(ROOT_DIR, '.env'),verbose=True, override=True)
+load_dotenv(os.path.join(ROOT_DIR, '.env'), override=True)
 
 def get_client():
-    mongo_host     = os.getenv("MONGO_HOST")
-    mongo_auth_db  = os.getenv("MONGO_AUTH_DB", '')
-    mongo_user     = os.getenv("MONGO_USER", '')
-    mongo_pass     = os.getenv("MONGO_PASS", '')
-    if (mongo_user == '') or (mongo_pass == ''):
-        connection_string = f"mongodb://{mongo_host}"
-    else:
-        connection_string = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}{('/'+ mongo_auth_db) if mongo_auth_db !='' else ''}"
-    client = MongoClient(connection_string)  
+    mongo_connection = os.getenv("MONGO_CONNECTION")
+    client = MongoClient(mongo_connection)
     return client
-
 
 def dump(collections: list[str], client:MongoClient, db_name:str):
     """
