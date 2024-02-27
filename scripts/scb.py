@@ -36,8 +36,7 @@ class SCBinterface():
             scb.fetch_companies_from_api(
                 sni_start="00000",
                 sni_stop="02300", 
-                fetch_limit=10,
-                max_tries_per_code=5)
+                fetch_limit=10)
             ```
     """
     def __init__(self):
@@ -51,6 +50,10 @@ class SCBinterface():
     def _init_collection(self, collection, callback):
         """
         Check if vital collections are empty, if so, store the data
+        
+        params:
+        collection: collection name
+        callback: function to call if collection is empty
         """
         if self.mongo_client[Schema.DB][collection].count_documents({}) == 0:
             callback()
@@ -60,23 +63,11 @@ class SCBinterface():
         Saves the list of all 5-digit codes which are not filtered by "filtered_sni.json" to the mongodb database.
         The codes are saved inside the collection "SNI_codes".
         """
-        
-        r = self.wrapper.get("api/Je/KategorierMedKodtabeller")
 
-        with open(os.path.join(ROOT_DIR, 'assets', 'filtered_sni.json') , 'r', encoding='utf-8') as f:
+        with open(os.path.join(ROOT_DIR, 'assets', 'sni_include_list.json') , 'r', encoding='utf-8') as f:
             sni = json.load(f)
-            sni_list = [sni_code['Varde'] for sni_code in sni[0]['VardeLista']]
         
-        codes = []
-        
-        for code in r.json()[1]['VardeLista']:
-            if code['Varde'][0:2] in sni_list:
-                codes.append({
-                    'sni_code':code['Varde'],
-                    'description': code['Text']
-                    })
-        
-        self.mongo_client[Schema.DB][Schema.SNI].insert_many(codes)
+        self.mongo_client[Schema.DB][Schema.SNI].insert_many(sni)
         self.mongo_client[Schema.DB][Schema.SNI].create_index('sni_code')
 
     def fetch_codes(self):
@@ -168,9 +159,12 @@ class SCBinterface():
         last SNI code checked
         """
         last_company = self.mongo_client[Schema.DB][Schema.COMPANIES].find().sort([("_id", -1)]).limit(1) # Get the last company entered into the database
-        
-        if "branch_codes" in last_company[0]:
-            return last_company[0]["branch_codes"][0]
+
+        lc = list(last_company)
+        if not list(lc):
+            return None
+        if "branch_codes" in lc[0]:
+            return lc[0]["branch_codes"][0]
         return None
 
     def _filter_companies(self, companies):
@@ -179,6 +173,8 @@ class SCBinterface():
         
         params:
         companies: list of companies
+        returns:
+        list of filtered companies
         """
         filtered_companies = []
         for company in companies:
@@ -209,18 +205,18 @@ class SCBinterface():
                     
         return filtered_companies
 
-    def _fetch_companies_by_municipality(self, sni_code: str, fetch_limit = 50, max_tries_per_code = 15):
+    def _fetch_companies_by_municipality(self, sni_code: str, fetch_limit = 50):
         """
         Function for fetching companies by SNI code from random municipalities.
         
         params:
         sni_code: SNI code
         fetch_limit: maximum number of companies to fetch
-        max_tries_per_code: maximum number of tries to fetch companies from SNI code
+        returns:
+        list of companies
         """
         
         total_fetched = 0
-        tries = 0
         comp_arr = []
         logging.debug(f"Fetching from SNI: {sni_code}")
 
@@ -229,21 +225,14 @@ class SCBinterface():
 
         legal_forms = list(self.fetch_legal_forms().keys())
 
-        while total_fetched < fetch_limit:
-            if tries >= max_tries_per_code:
-                logging.debug(f"Failed to fetch {sni_code} too many times, skipping!")
-                break
+        while (total_fetched < fetch_limit) and (mun_codes):
 
             mun_code = mun_codes.pop()
-            found_count = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").count(False).json()
+            found_count = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").count(False)
             logging.debug(f"Municipality: {mun_code} - Companies: {found_count}")
 
-            if found_count == 0:
-                tries += 1
-                continue
             if found_count+total_fetched > fetch_limit:
                 logging.debug(f"Skipping {mun_code} too many companies!")
-                tries += 1
                 continue
 
             total_fetched += found_count
@@ -256,7 +245,7 @@ class SCBinterface():
         return comp_arr
 
 
-    def fetch_companies_from_api(self, start_sni, stop_sni, fetch_limit=50, max_tries_per_code=15):
+    def fetch_companies_from_api(self, start_sni, stop_sni, fetch_limit=50):
         """
         Fetch companies from the SCB API from random municipalities in the specified SNI code range.
         
@@ -264,7 +253,6 @@ class SCBinterface():
         start_sni: start SNI code
         stop_sni: stop SNI code
         fetch_limit: maximum number of companies to fetch
-        max_tries_per_code: maximum number of tries for each sni
         """
         last_code = self.last_code_checked()
         docs = self.mongo_client[Schema.DB][Schema.SNI].find({"sni_code": { "$ne": last_code }}).sort([("sni_code")])
@@ -274,8 +262,7 @@ class SCBinterface():
             if (doc["sni_code"] >= start_sni) and not (doc["sni_code"] > stop_sni):
                 companies = self._fetch_companies_by_municipality(
                     doc["sni_code"], 
-                    fetch_limit=fetch_limit, 
-                    max_tries_per_code=max_tries_per_code)
+                    fetch_limit=fetch_limit)
                 if len(companies) > 0:
                     self.mongo_client[Schema.DB][Schema.COMPANIES].insert_many(companies)
         
@@ -291,7 +278,6 @@ class SCBinterface():
         stop_sni="95290"
         
         self.fetch_companies_from_api(start_sni, stop_sni, fetch_limit=fetch_limit)
-        
 
     def _update_api_request_count(self, num_requests=1):
         """
@@ -301,7 +287,7 @@ class SCBinterface():
         """
         self.mongo_client[Schema.DB][Schema.API_COUNT].update_one({}, {"$inc": {"count": num_requests}}, upsert=True)
         
-    def fetch_companies_from_db(self, sni_code):
+    def fetch_companies_from_db(self, sni_code, no_url=False):
         """
         Fetch companies from the database based on the SNI code.
         params:
@@ -309,9 +295,12 @@ class SCBinterface():
         returns:
         list of companies
         """
-        companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
+        if no_url:
+            query = {"branch_codes": sni_code, "url": {"$eq": ""}}
+            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
+        else:
+            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
         return list(companies)
-
 
     def update_url_for_company(self, org_nr, url):
         """
@@ -321,3 +310,8 @@ class SCBinterface():
         url: URL to update
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
+
+if __name__ == "__main__":
+    #logging.basicConfig(level=logging.DEBUG)
+    scb = SCBinterface()
+    scb.fetch_all_companies_from_api(fetch_limit=50)

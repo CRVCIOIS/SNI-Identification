@@ -1,3 +1,6 @@
+"""
+Methods for abstracting communication with Mongodb
+"""
 import os
 from pathlib import Path
 from pymongo import MongoClient
@@ -6,21 +9,17 @@ from definitions import ROOT_DIR
 import bson
 
 BACKUP_PATH = os.path.join(ROOT_DIR, "backup")
-load_dotenv(os.path.join(ROOT_DIR, '.env'))
+load_dotenv(os.path.join(ROOT_DIR, '.env'), override=True)
 
 def get_client():
-    mongo_host     = os.getenv("MONGO_HOST")
-    mongo_auth_db  = os.getenv("MONGO_AUTH_DB", '')
-    mongo_user     = os.getenv("MONGO_USER", '')
-    mongo_pass     = os.getenv("MONGO_PASS", '')
-    if (mongo_user == '') or (mongo_pass == '') or (mongo_auth_db == ''):
-        CONNECTION_STRING = f"mongodb://{mongo_host}"
-    else:
-        CONNECTION_STRING = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}/{mongo_auth_db}"    
+    """
+    Creates a mongo client (based on the connection string env-var) and returns it.
     
-    client = MongoClient(CONNECTION_STRING)    
-    return client #client['db']['collection']
-
+    :returns: a MongoClient object.
+    """
+    mongo_connection = os.getenv("MONGO_CONNECTION")
+    client = MongoClient(mongo_connection)
+    return client
 
 def dump(collections: list[str], client:MongoClient, db_name:str):
     """

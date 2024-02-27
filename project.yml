@@ -46,7 +46,7 @@ workflows:
     - evaluate-accuracy-prod
 
   all:
-    # - SCB
+    - SCB
     - google
     - scrape
     - extract
@@ -56,7 +56,7 @@ workflows:
     - evaluate-prod
 
   train:
-    # - SCB
+    - SCB
     - google
     - scrape
     - extract
@@ -77,19 +77,23 @@ workflows:
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 
-  # - name: "SCB"
-  #   help: "Get data from SCB"
-  #   script: "" #TODO
+  - name: "SCB"
+    help: "Get data from SCB"
+    script: 
+      - "python scripts/scb.py"
+    deps:
+      - "scripts/mongo.py"
+      - "scripts/scb_wrapper.py"
+      - "scripts/scb.py"
+
   - name: "google"
     help: "Get company URL's by using Google search API"
     script:
-      - "python scripts/google_wrapper.py assets/${vars.scb_data_file_name}.json assets/${vars.scb_data_file_name}.json"
+      - "python scripts/google_wrapper.py"
     deps:
-      - "assets/${vars.scb_data_file_name}.json"
-      - "scrpits/google_wrapper.py"
+      - "scripts/mongo.py"
+      - "scripts/google_wrapper.py"
       - "scripts/google_search_api.py"
-    outputs:
-      - "assets/${vars.scb_data_file_name}.json"
 
   - name: "scrape"
     help: "Scrapes websites"
