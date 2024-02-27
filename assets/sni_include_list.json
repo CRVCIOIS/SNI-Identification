@@ -1,0 +1,462 @@
+[
+    {
+        "count": 310,
+        "description": "Utvinning av sand, grus och berg; utvinning av lera och kaolin",
+        "sni_code": "08120"
+    },
+    {
+        "count": 73,
+        "description": "Kreatursslakt",
+        "sni_code": "10111"
+    },
+    {
+        "count": 66,
+        "description": "Styckning av kött",
+        "sni_code": "10112"
+    },
+    {
+        "count": 157,
+        "description": "Beredning och hållbarhetsbehandling av fisk samt skal- och blötdjur",
+        "sni_code": "10200"
+    },
+    {
+        "count": 119,
+        "description": "Juice- och safttillverkning",
+        "sni_code": "10320"
+    },
+    {
+        "count": 132,
+        "description": "Annan beredning och hållbarhetsbehandling av frukt, bär och grönsaker",
+        "sni_code": "10390"
+    },
+    {
+        "count": 63,
+        "description": "Osttillverkning",
+        "sni_code": "10511"
+    },
+    {
+        "count": 86,
+        "description": "Glasstillverkning",
+        "sni_code": "10520"
+    },
+    {
+        "count": 835,
+        "description": "Tillverkning av mjukt matbröd och färska bakverk",
+        "sni_code": "10710"
+    },
+    {
+        "count": 76,
+        "description": "Tillverkning av sockerkonfektyrer",
+        "sni_code": "10821"
+    },
+    {
+        "count": 88,
+        "description": "Tillverkning av choklad och chokladkonfektyrer",
+        "sni_code": "10822"
+    },
+    {
+        "count": 94,
+        "description": "Framställning av te och kaffe",
+        "sni_code": "10830"
+    },
+    {
+        "count": 142,
+        "description": "Tillverkning av lagad mat och färdigrätter",
+        "sni_code": "10850"
+    },
+    {
+        "count": 135,
+        "description": "Destillering, rening och tillblandning av spritdrycker",
+        "sni_code": "11010"
+    },
+    {
+        "count": 421,
+        "description": "Framställning av öl",
+        "sni_code": "11050"
+    },
+    {
+        "count": 95,
+        "description": "Sömnad av gardiner, sängkläder och linnevaror",
+        "sni_code": "13921"
+    },
+    {
+        "count": 269,
+        "description": "Tillverkning av presenningar, tält, segel o.d.",
+        "sni_code": "13922"
+    },
+    {
+        "count": 125,
+        "description": "Övrig textilietillverkning",
+        "sni_code": "13990"
+    },
+    {
+        "count": 127,
+        "description": "Tillverkning av reseffekter, handväskor, sadel- och seldon m.m.",
+        "sni_code": "15120"
+    },
+    {
+        "count": 419,
+        "description": "Sågning av trä",
+        "sni_code": "16101"
+    },
+    {
+        "count": 187,
+        "description": "Hyvling av trä",
+        "sni_code": "16102"
+    },
+    {
+        "count": 395,
+        "description": "Tillverkning av monteringsfärdiga trähus",
+        "sni_code": "16231"
+    },
+    {
+        "count": 98,
+        "description": "Tillverkning av dörrar av trä",
+        "sni_code": "16232"
+    },
+    {
+        "count": 84,
+        "description": "Tillverkning av fönster av trä",
+        "sni_code": "16233"
+    },
+    {
+        "count": 191,
+        "description": "Träförpackningstillverkning",
+        "sni_code": "16240"
+    },
+    {
+        "count": 153,
+        "description": "Tillverkning av förädlade trädbränslen",
+        "sni_code": "16291"
+    },
+    {
+        "count": 269,
+        "description": "Övrig trävarutillverkning",
+        "sni_code": "16292"
+    },
+    {
+        "count": 51,
+        "description": "Övrig tillverkning av pappers- och pappförpackningar",
+        "sni_code": "17219"
+    },
+    {
+        "count": 89,
+        "description": "Tillverkning av färg, lack, tryckfärg m.m.",
+        "sni_code": "20300"
+    },
+    {
+        "count": 71,
+        "description": "Tillverkning av tvål, såpa, tvättmedel och polermedel",
+        "sni_code": "20410"
+    },
+    {
+        "count": 151,
+        "description": "Tillverkning av parfymer och toalettartiklar",
+        "sni_code": "20420"
+    },
+    {
+        "count": 111,
+        "description": "Tillverkning av läkemedel",
+        "sni_code": "21200"
+    },
+    {
+        "count": 122,
+        "description": "Annan gummivarutilllverkning",
+        "sni_code": "22190"
+    },
+    {
+        "count": 176,
+        "description": "Tillverkning av plasthalvfabrikat",
+        "sni_code": "22210"
+    },
+    {
+        "count": 115,
+        "description": "Plastförpackningstillverkning",
+        "sni_code": "22220"
+    },
+    {
+        "count": 137,
+        "description": "Byggplastvarutillverkning",
+        "sni_code": "22230"
+    },
+    {
+        "count": 482,
+        "description": "Annan plastvarutillverkning",
+        "sni_code": "22290"
+    },
+    {
+        "count": 56,
+        "description": "Tillverkning av buteljer, glasförpackningar och husgeråd av glas",
+        "sni_code": "23130"
+    },
+    {
+        "count": 146,
+        "description": "Tillverkning av keramiska hushålls- och prydnadsartiklar",
+        "sni_code": "23410"
+    },
+    {
+        "count": 153,
+        "description": "Tillverkning av betongvaror för byggändamål",
+        "sni_code": "23610"
+    },
+    {
+        "count": 140,
+        "description": "Huggning, formning och slutlig bearbetning av sten för byggnadsändamål",
+        "sni_code": "23701"
+    },
+    {
+        "count": 80,
+        "description": "Huggning, formning och slutlig bearbetning av sten för prydnadsändamål",
+        "sni_code": "23709"
+    },
+    {
+        "count": 507,
+        "description": "Tillverkning av metallstommar och delar därav",
+        "sni_code": "25110"
+    },
+    {
+        "count": 255,
+        "description": "Tillverkning av dörrar och fönster av metall",
+        "sni_code": "25120"
+    },
+    {
+        "count": 265,
+        "description": "Smidning, pressning, prägling och valsning av metall; pulvermetallurgi",
+        "sni_code": "25500"
+    },
+    {
+        "count": 3293,
+        "description": "Metallegoarbeten",
+        "sni_code": "25620"
+    },
+    {
+        "count": 71,
+        "description": "Tillverkning av lås och gångjärn",
+        "sni_code": "25720"
+    },
+    {
+        "count": 354,
+        "description": "Tillverkning av verktyg och redskap",
+        "sni_code": "25730"
+    },
+    {
+        "count": 95,
+        "description": "Tillverkning av metalltrådvaror, kedjor och fjädrar",
+        "sni_code": "25930"
+    },
+    {
+        "count": 198,
+        "description": "Tillverkning av elektroniska komponenter",
+        "sni_code": "26110"
+    },
+    {
+        "count": 79,
+        "description": "Tillverkning av kretskort",
+        "sni_code": "26120"
+    },
+    {
+        "count": 97,
+        "description": "Tillverkning av datorer och kringutrustning",
+        "sni_code": "26200"
+    },
+    {
+        "count": 168,
+        "description": "Tillverkning av kommunikationsutrustning",
+        "sni_code": "26300"
+    },
+    {
+        "count": 109,
+        "description": "Tillverkning av hemelektronik",
+        "sni_code": "26400"
+    },
+    {
+        "count": 342,
+        "description": "Tillverkning av instrument och apparater för mätning, provning och navigering",
+        "sni_code": "26510"
+    },
+    {
+        "count": 57,
+        "description": "Tillverkning av strålningsutrustning samt elektromedicinsk och elektroterapeutisk utrustning",
+        "sni_code": "26600"
+    },
+    {
+        "count": 52,
+        "description": "Tillverkning av optiska instrument och fotoutrustning",
+        "sni_code": "26700"
+    },
+    {
+        "count": 83,
+        "description": "Tillverkning av elmotorer, generatorer och transformatorer",
+        "sni_code": "27110"
+    },
+    {
+        "count": 175,
+        "description": "Tillverkning av eldistributions- och elkontrollapparater",
+        "sni_code": "27120"
+    },
+    {
+        "count": 172,
+        "description": "Tillverkning av belysningsarmatur",
+        "sni_code": "27400"
+    },
+    {
+        "count": 56,
+        "description": "Tillverkning av motorer och turbiner utom för luftfartyg och fordon",
+        "sni_code": "28110"
+    },
+    {
+        "count": 68,
+        "description": "Tillverkning av fluidteknisk utrustning",
+        "sni_code": "28120"
+    },
+    {
+        "count": 230,
+        "description": "Tillverkning av lyft- och godshanteringsanordningar",
+        "sni_code": "28220"
+    },
+    {
+        "count": 177,
+        "description": "Tillverkning av maskiner och apparater för kyla och ventilation utom för hushåll",
+        "sni_code": "28250"
+    },
+    {
+        "count": 343,
+        "description": "Övrig tillverkning av maskiner för allmänt ändamål",
+        "sni_code": "28290"
+    },
+    {
+        "count": 143,
+        "description": "Tillverkning av jord- och skogsbruksmaskiner",
+        "sni_code": "28300"
+    },
+    {
+        "count": 123,
+        "description": "Tillverkning av verktygsmaskiner för metallbearbetning",
+        "sni_code": "28410"
+    },
+    {
+        "count": 116,
+        "description": "Tillverkning av gruv-, bergbrytnings- och byggmaskiner",
+        "sni_code": "28920"
+    },
+    {
+        "count": 82,
+        "description": "Tillverkning av maskiner för framställning av livsmedel, drycker och tobaksvaror",
+        "sni_code": "28930"
+    },
+    {
+        "count": 201,
+        "description": "Tillverkning av karosserier för motorfordon; tillverkning av släpfordon och påhängsvagnar",
+        "sni_code": "29200"
+    },
+    {
+        "count": 78,
+        "description": "Tillverkning av elektrisk och elektronisk utrustning för motorfordon",
+        "sni_code": "29310"
+    },
+    {
+        "count": 131,
+        "description": "Byggande av fartyg och flytande materiel",
+        "sni_code": "30110"
+    },
+    {
+        "count": 312,
+        "description": "Byggande av fritidsbåtar",
+        "sni_code": "30120"
+    },
+    {
+        "count": 57,
+        "description": "Tillverkning av cyklar och invalidfordon",
+        "sni_code": "30920"
+    },
+    {
+        "count": 227,
+        "description": "Tillverkning av kontors- och butiksmöbler",
+        "sni_code": "31011"
+    },
+    {
+        "count": 199,
+        "description": "Tillverkning av kontors- och butiksinredningar",
+        "sni_code": "31012"
+    },
+    {
+        "count": 146,
+        "description": "Tillverkning av köksmöbler",
+        "sni_code": "31021"
+    },
+    {
+        "count": 206,
+        "description": "Tillverkning av köksinredningar",
+        "sni_code": "31022"
+    },
+    {
+        "count": 281,
+        "description": "Tillverkning av smycken, guld- och silversmedsvaror",
+        "sni_code": "32120"
+    },
+    {
+        "count": 78,
+        "description": "Tillverkning av musikinstrument",
+        "sni_code": "32200"
+    },
+    {
+        "count": 230,
+        "description": "Tillverkning av sportartiklar",
+        "sni_code": "32300"
+    },
+    {
+        "count": 150,
+        "description": "Tillverkning av spel och leksaker",
+        "sni_code": "32400"
+    },
+    {
+        "count": 321,
+        "description": "Tillverkning av medicinska och dentala instrument och tillbehör",
+        "sni_code": "32501"
+    },
+    {
+        "count": 331,
+        "description": "Tillverkning av tandproteser",
+        "sni_code": "32502"
+    },
+    {
+        "count": 1662,
+        "description": "Generering av elektricitet",
+        "sni_code": "35110"
+    },
+    {
+        "count": 233,
+        "description": "Distribution av elektricitet",
+        "sni_code": "35130"
+    },
+    {
+        "count": 296,
+        "description": "Handel med elektricitet",
+        "sni_code": "35140"
+    },
+    {
+        "count": 67,
+        "description": "Framställning av gas",
+        "sni_code": "35210"
+    },
+    {
+        "count": 224,
+        "description": "Försörjning av värme och kyla",
+        "sni_code": "35300"
+    },
+    {
+        "count": 248,
+        "description": "Insamling av icke-farligt avfall",
+        "sni_code": "38110"
+    },
+    {
+        "count": 130,
+        "description": "Behandling och bortskaffande av icke-farligt avfall",
+        "sni_code": "38210"
+    },
+    {
+        "count": 276,
+        "description": "Återvinning av källsorterat material",
+        "sni_code": "38320"
+    }
+]

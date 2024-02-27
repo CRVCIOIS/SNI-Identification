@@ -341,8 +341,14 @@ class SCBapi():
         :returns: the response object.
         """
         r = self.fetch("api/Je/RaknaForetag",keep_json)
-        return r
-    
+        try:
+            return r.json()
+        except json.decoder.JSONDecodeError as exc:
+            logging.debug("Following query failed:%s", self.json)
+            if keep_json:
+                logging.exception("Your query caused an exception, and you have \"keep_json\" set to True. Make sure that you are not accumulating queries.")
+                raise exc
+
     def fetch_data(self, r_address, body=None):
         """
         General method for creating requests against SCB API.
