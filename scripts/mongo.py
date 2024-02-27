@@ -1,3 +1,6 @@
+"""
+Methods for abstracting communication with Mongodb
+"""
 import os
 from pathlib import Path
 from pymongo import MongoClient
@@ -9,6 +12,11 @@ BACKUP_PATH = os.path.join(ROOT_DIR, "backup")
 load_dotenv(os.path.join(ROOT_DIR, '.env'), override=True)
 
 def get_client():
+    """
+    Creates a mongo client (based on the connection string env-var) and returns it.
+    
+    :returns: a MongoClient object.
+    """
     mongo_connection = os.getenv("MONGO_CONNECTION")
     client = MongoClient(mongo_connection)
     return client

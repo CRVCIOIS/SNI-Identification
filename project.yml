@@ -79,7 +79,8 @@ workflows:
 
   - name: "SCB"
     help: "Get data from SCB"
-    script: "python scripts/scb.py"
+    script: 
+      - "python scripts/scb.py"
     deps:
       - "scripts/mongo.py"
       - "scripts/scb_wrapper.py"
