@@ -45,6 +45,7 @@ class SCBapi():
         self.api_base = 'https://privateapi.scb.se/nv0101/v1/sokpavar'
         self.api_pass = os.getenv("SCB_API_PASS")
         self.cert_path = cert_path
+        self.session = self.init_session()
         self.owned_vars_from_api = {}
         self.variables_from_api = {}
         self.operator_map = {
@@ -66,6 +67,15 @@ class SCBapi():
         self.json = {}
         self.update_owned_vars()
         self.reset_json()
+        
+    def init_session(self):
+        """
+        Initializes a session with the SCB API.
+        returns: a session object.
+        """
+        with Session() as s:
+            s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
+        return s
     
     def __str__(self):
         """
@@ -357,12 +367,11 @@ class SCBapi():
         :param body: the body to be sent with POST requests
         :returns: a response object
         """
-        with Session() as s:
-            s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
-            if (body is None):   
-                r = s.get(f'{self.api_base}/{r_address}') # En request
-            else :
-                r = s.post(f'{self.api_base}/{r_address}', json=body)
+        s = self.session
+        if (body is None):   
+            r = s.get(f'{self.api_base}/{r_address}') # En request
+        else :
+            r = s.post(f'{self.api_base}/{r_address}', json=body)
         return r
 
     def _post_request(self, r_address, body):
