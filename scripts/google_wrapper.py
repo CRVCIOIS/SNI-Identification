@@ -39,8 +39,15 @@ def main():
                 name = _filter(company['name'], FILTER_LIST)
                 logging.debug("Searching on Google for %s", name)
                 company["url"] = google.search(name)
-                interface.update_url_for_company(company["org_nr"], company["url"])
+                
+                # If the url is found and not from allabolag.se, update the DB
+                if company["url"] is not None and "allabolag.se" not in company["url"] :
+                    logging.debug("Updating URL for %s to %s", company["name"], company["url"])
+                    interface.update_url_for_company(company["org_nr"], company["url"])
+                else:
+                    logging.debug("No URL found for %s, or the url is to allabolag.se. Deleting from DB", company["name"])
+                    interface.delete_company_from_db(company["org_nr"])
 
 if __name__ == "__main__":
-    #logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
     typer.run(main)
