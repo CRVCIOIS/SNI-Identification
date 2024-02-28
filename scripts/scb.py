@@ -236,7 +236,15 @@ class SCBinterface():
                 continue
 
             total_fetched += found_count
-            companies = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch().json()
+            response = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch()
+            
+            if response.status_code != 200:
+                logging.error(f"Error fetching companies from SNI {sni_code} in municipality {mun_code}")
+                logging.error(f"Status code: {response.status_code}")
+                logging.error(f"Reason: {response.reason}")
+                continue
+            companies = response.json()
+            
             comp_arr.extend(self._filter_companies(companies))
 
         logging.debug(f"Total companies fetched: {total_fetched}")
@@ -312,6 +320,6 @@ class SCBinterface():
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
 
 if __name__ == "__main__":
-    #logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.ERROR)
     scb = SCBinterface()
     scb.fetch_all_companies_from_api(fetch_limit=50)
