@@ -166,6 +166,27 @@ class SCBinterface():
         if "branch_codes" in lc[0]:
             return lc[0]["branch_codes"][0]
         return None
+    
+    def _fetch_retry(self, sni_code, mun_code, legal_forms):
+        """
+        Retries fetching companies from the SCB API.
+        
+        params:
+        sni_code: SNI code
+        mun_code: municipality code
+        legal_forms: list of legal forms
+        returns:
+        response from the SCB API
+        """
+        
+        if self.wrapper.session is not None:
+            self.wrapper.session.close()
+        self.wrapper = SCBapi()
+        response = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch()
+        if response.status_code != 200:
+            raise Exception("Error fetching companies from SNI {sni_code} in municipality {mun_code} on 2nd try, aborting...")
+        return response
+        
 
     def _filter_companies(self, companies):
         """
@@ -236,15 +257,7 @@ class SCBinterface():
                 continue
 
             total_fetched += found_count
-            response = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch()
-            
-            if response.status_code != 200:
-                logging.error(f"Error fetching companies from SNI {sni_code} in municipality {mun_code}")
-                logging.error(f"Status code: {response.status_code}")
-                logging.error(f"Reason: {response.reason}")
-                continue
-            companies = response.json()
-            
+            companies = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch().json()
             comp_arr.extend(self._filter_companies(companies))
 
         logging.debug(f"Total companies fetched: {total_fetched}")
@@ -273,6 +286,7 @@ class SCBinterface():
                     fetch_limit=fetch_limit)
                 if len(companies) > 0:
                     self.mongo_client[Schema.DB][Schema.COMPANIES].insert_many(companies)
+        self.wrapper.session.close()
         
 
     def fetch_all_companies_from_api(self, fetch_limit=50):
