@@ -416,7 +416,7 @@ class SCBapi():
             if self.session is not None:
                 self.session.close()
             self.get_session()
-            self.fetch_data(r_address, body, retries - 1)
+            r = self.fetch_data(r_address, body, retries - 1)
         
         return r
 
