@@ -2,6 +2,7 @@
 SCB API Wrapper and related exceptions.
 """
 import os
+import sys
 import logging
 import copy
 import json
@@ -390,10 +391,10 @@ class SCBapi():
             logging.error("Response Text: %s", r.text)
             logging.error("====================")
             if (retries == 0):
-                raise Exception("Retries exhausted, request failed!")
+                sys.exit("Retries exhausted, request failed!")
             logging.error("Retrying request...")
             self.get_session()
-            r = self.fetch_data(r_address, body, retries - 1)
+            r = self.fetch_data(r_address, body=body, retries=(retries - 1))
         
         return r
 
