@@ -361,30 +361,6 @@ class SCBapi():
             if keep_json:
                 logging.exception("Your query caused an exception, and you have \"keep_json\" set to True. Make sure that you are not accumulating queries.")
                 raise exc
-            
-    def _check_response(self, r: Response, r_address, body, retries=1):
-        """
-        Recursive function that checks if the response is valid. Retries the request if it fails for number of retries specified.
-        
-        :param r: the response object to be checked.
-        :param r_address: the suffix of the address of the specific request.
-        :param body: the body to be sent with POST requests
-        :param retries: the number of retries to be made if the request fails.
-        """
-        if (retries == 0):
-            logging.error("Retries exhausted, request failed.")
-            return
-        if r.status_code != 200:
-            logging.error("Request failed with status code %s", r.status_code)
-            if body is not None:
-                logging.error("Request Body: %s", body)
-            logging.error("Response Text: %s", r.text)
-            logging.error("====================")
-            logging.error("Retrying request...")
-            if self.session is not None:
-                self.session.close()
-            self.get_session()
-            self.fetch_data(r_address, body, retries - 1)   
                     
 
     def fetch_data(self, r_address, body=None, retries=1):
