@@ -41,6 +41,7 @@ workflows:
   evaluate-dev:
     - evaluate-speed-dev
     - evaluate-accuracy-dev
+
   evaluate-prod:
     - evaluate-speed-prod
     - evaluate-accuracy-prod
@@ -52,7 +53,7 @@ workflows:
     - extract
     - divide
     - preprocess
-    - train
+    - train-models
     - evaluate-prod
 
   train:
@@ -76,7 +77,7 @@ workflows:
 # pipelines). The name is the command name that lets you trigger the command
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
-
+commands:
   - name: "SCB"
     help: "Get data from SCB"
     script: 
@@ -108,13 +109,10 @@ workflows:
   - name: "extract"
     help: "Extacts valuable the valuable data from the scraped website"
     script:
-      - "python scripts/extract_wrapper.py assets/${vars.scb_data_file_name}.json assets/${vars.scraped_data_file_name}.json assets/${vars.train}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
+      - "python scripts/extract_wrapper.py assets/${vars.scraped_data_file_name}.json ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
     deps:
-      - "assets/${vars.scb_data_file_name}.json"
       - "assets/${vars.scraped_data_file_name}.json"
       - "scripts/extract_wrapper.py"
-    outputs:
-      - "assets/${vars.train}.json"
 
   - name: "divide"
     help: "Divides the dataset into two, one smaller for cross-validation and a larger for training"
@@ -130,7 +128,7 @@ workflows:
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/preprocess.py ${vars.extracted_path}.json corpus/${vars.train}.spacy "
+      - "python scripts/preprocess.py corpus/${vars.train}.spacy "
       - "python scripts/preprocess.py ${vars.dev}.json corpus/${vars.dev}.spacy "
     deps:
       - "assets/${vars.train}.json"
@@ -152,18 +150,7 @@ workflows:
     outputs:
       - "training/model-best"
 
-  # Deprecated
-  # - name: "evaluate"
-  #   help: "Evaluate the model and export metrics"
-  #   script:
-  #     - "python -m spacy evaluate training/model-best corpus/${vars.dev}.spacy --output training/metrics.json --gpu-id ${vars.gpu_id}"
-  #   deps:
-  #     - "corpus/${vars.dev}.spacy"
-  #     - "training/model-best"
-  #   outputs:
-  #     - "training/metrics.json"
 
-  
   - name: "evaluate-accuracy-prod"
     help: "Evaluate the prod model for accuracy and export metrics"
     script:
@@ -197,7 +184,6 @@ workflows:
       - "training/metrics-accuracy-dev-${vars.train}.json"
       - "training/displacy/accuracy-dev-${vars.train}.html"
       
-  
   - name: "evaluate-speed-dev"
     help: "Evaluate the dev model for and export metrics"
     script:

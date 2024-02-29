@@ -6,7 +6,6 @@ import logging
 from pathlib import Path
 from scripts.extract import DataExtractor
 import typer
-import tldextract
 from typing_extensions import Annotated
 from scripts.scb import SCBinterface
 from datetime import datetime
@@ -41,17 +40,12 @@ def extract_wrapper(
     methods = [extract_meta,extract_body,p_only]
 
     for scraped_item in scraped_data:
-        """
-        Extracts the domain from the URL in the form: domain.suffix, 
-        for identifying the company.
-        """
-        domain = tldextract.extract(scraped_item["url"]).fqdn
-        interface.add_scraped_data_by_url(domain, scraped_item["url"], scraped_item['raw_html'], timestamp)
+        interface.add_data_by_url(scraped_item['raw_html'], timestamp, scraped_item["url"])
         logging.info("Added scraped data from %s", scraped_item["url"])
         
         extractor.create_soup_from_string(scraped_item['raw_html'])
         extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-        interface.add_extracted_data_by_url(domain, scraped_item["url"], extracted_text, methods, timestamp)
+        interface.add_data_by_url(extracted_text, timestamp, scraped_item["url"], methods)
         logging.info("Added extracted data from %s", scraped_item["url"])
 
 

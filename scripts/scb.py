@@ -9,6 +9,7 @@ from enum import StrEnum
 from scripts.scb_wrapper import SCBapi
 from definitions import ROOT_DIR 
 from scripts.mongo import get_client
+import tldextract
 
 # MongoDB definitions ("schema")
 
@@ -26,8 +27,10 @@ class Schema(StrEnum):
     API_COUNT       = "api_count"
     LEGAL_FORMS     = "legal_forms"
     
-    # Documents
+    
+    # Fields
     URL             = "url"
+    DATA            = "data"
     SCRAPED_DATA    = "scraped_data"
     EXTRACTED_DATA  = "extracted_data"
     TIMESTAMP       = "timestamp"
@@ -319,33 +322,27 @@ class SCBinterface():
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
     
-    def add_scraped_data_by_url(self, domain, url, data, timestamp):
+   
+    def add_data_by_url(self, data, timestamp, url, methods=None):
         """
-        Add scraped data to the database.
+        Add data, scraped or extracted, to the database.
+        
         params:
         domain: domain to identify the company from the URL in the form: domain.suffix
-        url: URL of the scraped data
-        data: scraped data in raw HTML
-        timestamp: timestamp of the scraped data
+        url: URL of the data
+        data: data in raw HTML or extracted text
+        timestamp: timestamp of the data
+        methods: methods used to extract the data, if None, the data is scraped
         """
-        self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.SCRAPED_DATA}.{timestamp}": {url: data}}})
-    
-    def add_extracted_data_by_url(self, domain, url, data, methods, timestamp):
-        """
-        Add extracted data to the database.
-        params:
-        domain: domain to identify the company from the URL in the form: domain.suffix
-        url: URL of the scraped data
-        data: scraped data in raw HTML
-        methods: methods used to extract the data
-        timestamp: timestamp of the scraped data
-        """
-        method_exists = self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({f"{Schema.URL}": {"$regex": domain}, f"{Schema.EXTRACTED_DATA}.{timestamp}.{Schema.METHODS}": methods})
-        if not method_exists:
-            self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.EXTRACTED_DATA}.{timestamp}.{Schema.METHODS}": methods}})
-        self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.EXTRACTED_DATA}.{timestamp}": {url: data}}})
-    
-if __name__ == "__main__":
-    #logging.basicConfig(level=logging.DEBUG)
-    scb = SCBinterface()
-    scb.fetch_all_companies_from_api(fetch_limit=50)
+        domain = tldextract.extract(url).fqdn # Get the domain from the URL, for company identification
+        url = url.replace('.', '__') # Needed to avoid dot notation in MongoDB
+        
+        # Check if the data is scraped or extracted
+        if methods is not None:
+            method_exists = self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({f"{Schema.URL}": {"$regex": domain}, f"{Schema.DATA}.{timestamp}.{Schema.EXTRACTED_DATA}.{Schema.METHODS}": methods})
+            if method_exists is None:
+                self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.DATA}.{timestamp}.{Schema.EXTRACTED_DATA}.{Schema.METHODS}": methods}})
+            self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.DATA}.{timestamp}.{Schema.EXTRACTED_DATA}.{url}" : data}})
+        else:
+            self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.DATA}.{timestamp}.{Schema.SCRAPED_DATA}.{url}" : data}})
+   
