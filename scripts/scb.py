@@ -165,28 +165,7 @@ class SCBinterface():
             return None
         if "branch_codes" in lc[0]:
             return lc[0]["branch_codes"][0]
-        return None
-    
-    def _fetch_retry(self, sni_code, mun_code, legal_forms):
-        """
-        Retries fetching companies from the SCB API.
-        
-        params:
-        sni_code: SNI code
-        mun_code: municipality code
-        legal_forms: list of legal forms
-        returns:
-        response from the SCB API
-        """
-        
-        if self.wrapper.session is not None:
-            self.wrapper.session.close()
-        self.wrapper = SCBapi()
-        response = self.wrapper.sni([sni_code]).category([mun_code]).category(legal_forms, "Juridisk form").fetch()
-        if response.status_code != 200:
-            raise Exception("Error fetching companies from SNI {sni_code} in municipality {mun_code} on 2nd try, aborting...")
-        return response
-        
+        return None    
 
     def _filter_companies(self, companies):
         """
