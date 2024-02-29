@@ -373,6 +373,8 @@ class SCBapi():
         :returns: a response object
         """
         
+        if self.session is None:
+            self.get_session()
         s = self.session
         
         if (body is None):   
