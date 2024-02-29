@@ -65,16 +65,22 @@ class SCBapi():
             "Kategorier": []
         }
         self.json = {}
+        self.get_session()
         self.update_owned_vars()
         self.reset_json()
-        self.get_session()
+        
         
     def get_session(self):
         """
         Initializes a session with the SCB API.
         returns: a session object.
         """
-        if self.session is None:
+        if not hasattr(self, 'session'):
+            with Session() as s:
+                s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
+            self.session = s
+        else :
+            self.session.close()
             with Session() as s:
                 s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
             self.session = s
@@ -386,8 +392,6 @@ class SCBapi():
             if (retries == 0):
                 raise Exception("Retries exhausted, request failed!")
             logging.error("Retrying request...")
-            if self.session is not None:
-                self.session.close()
             self.get_session()
             r = self.fetch_data(r_address, body, retries - 1)
         
