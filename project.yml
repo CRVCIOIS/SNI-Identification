@@ -97,9 +97,8 @@ workflows:
   - name: "scrape"
     help: "Scrapes websites"
     script:
-      - "python scripts/scraping_wrapper.py assets/${vars.scb_data_file_name}.json assets/${vars.scraped_data_file_name}.json"
+      - "python scripts/scraping_wrapper.py assets/${vars.scraped_data_file_name}.json"
     deps:
-      - "${vars.scb_data_file_name}"
       - "scripts/scraping_wrapper.py"
     outputs:
       - "assets/${vars.scraped_data_file_name}.json"
