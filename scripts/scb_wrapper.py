@@ -78,7 +78,6 @@ class SCBapi():
             with Session() as s:
                 s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
             self.session = s
-        return self.session
     
     def __str__(self):
         """
@@ -373,14 +372,10 @@ class SCBapi():
         :returns: a response object
         """
         
-        if self.session is None:
-            self.get_session()
-        s = self.session
-        
         if (body is None):   
-            r = s.get(f'{self.api_base}/{r_address}') # En request
+            r = self.session.get(f'{self.api_base}/{r_address}') # En request
         else :
-            r = s.post(f'{self.api_base}/{r_address}', json=body)
+            r = self.session.post(f'{self.api_base}/{r_address}', json=body)
         
         if r.status_code != 200:
             logging.error("Request failed with status code %s", r.status_code)
