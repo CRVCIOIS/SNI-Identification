@@ -7,6 +7,7 @@ import copy
 import json
 from dotenv import load_dotenv
 from requests import Session
+from requests.models import Response
 from requests_pkcs12 import Pkcs12Adapter
 from definitions import ROOT_DIR
 
@@ -45,7 +46,6 @@ class SCBapi():
         self.api_base = 'https://privateapi.scb.se/nv0101/v1/sokpavar'
         self.api_pass = os.getenv("SCB_API_PASS")
         self.cert_path = cert_path
-        self.session = self.init_session()
         self.owned_vars_from_api = {}
         self.variables_from_api = {}
         self.operator_map = {
@@ -67,15 +67,18 @@ class SCBapi():
         self.json = {}
         self.update_owned_vars()
         self.reset_json()
+        self.get_session()
         
-    def init_session(self):
+    def get_session(self):
         """
         Initializes a session with the SCB API.
         returns: a session object.
         """
-        with Session() as s:
-            s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
-        return s
+        if self.session is None:
+            with Session() as s:
+                s.mount(self.api_base, Pkcs12Adapter(pkcs12_filename=self.cert_path, pkcs12_password=self.api_pass))
+            self.session = s
+        return self.session
     
     def __str__(self):
         """
@@ -358,20 +361,63 @@ class SCBapi():
             if keep_json:
                 logging.exception("Your query caused an exception, and you have \"keep_json\" set to True. Make sure that you are not accumulating queries.")
                 raise exc
-
-    def fetch_data(self, r_address, body=None):
+            
+    def _check_response(self, r: Response, r_address, body, retries=1):
         """
-        General method for creating requests against SCB API.
+        Recursive function that checks if the response is valid. Retries the request if it fails for number of retries specified.
+        
+        :param r: the response object to be checked.
+        :param r_address: the suffix of the address of the specific request.
+        :param body: the body to be sent with POST requests
+        :param retries: the number of retries to be made if the request fails.
+        """
+        if (retries == 0):
+            logging.error("Retries exhausted, request failed.")
+            return
+        if r.status_code != 200:
+            logging.error("Request failed with status code %s", r.status_code)
+            if body is not None:
+                logging.error("Request Body: %s", body)
+            logging.error("Response Text: %s", r.text)
+            logging.error("====================")
+            logging.error("Retrying request...")
+            if self.session is not None:
+                self.session.close()
+            self.get_session()
+            self.fetch_data(r_address, body, retries - 1)   
+                    
+
+    def fetch_data(self, r_address, body=None, retries=1):
+        """
+        General method for creating requests against SCB API. Recursively retries the request if it fails for number of retries specified.
         
         :param r_address: the suffix of the address of the specific request.
         :param body: the body to be sent with POST requests
+        :param retries: the number of retries to be made if the request fails.
         :returns: a response object
         """
+        
         s = self.session
+        
         if (body is None):   
             r = s.get(f'{self.api_base}/{r_address}') # En request
         else :
             r = s.post(f'{self.api_base}/{r_address}', json=body)
+        
+        if r.status_code != 200:
+            logging.error("Request failed with status code %s", r.status_code)
+            if body is not None:
+                logging.error("Request Body: %s", body)
+            logging.error("Response Text: %s", r.text)
+            logging.error("====================")
+            if (retries == 0):
+                raise Exception("Retries exhausted, request failed!")
+            logging.error("Retrying request...")
+            if self.session is not None:
+                self.session.close()
+            self.get_session()
+            self.fetch_data(r_address, body, retries - 1)
+        
         return r
 
     def _post_request(self, r_address, body):
