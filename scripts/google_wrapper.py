@@ -29,8 +29,13 @@ def _filter(original, filter_list):
 def main(regenerate_urls: Annotated[bool, typer.Argument()] = False):
     """
     Process the input data file, search for company URLs on Google, and update the DB.
-    """
 
+    Args:
+        regenerate_urls (bool): Flag indicating whether to regenerate URLs or not.
+
+    Returns:
+        None
+    """
     interface = SCBinterface()
     sni_codes = interface.fetch_codes()
     
