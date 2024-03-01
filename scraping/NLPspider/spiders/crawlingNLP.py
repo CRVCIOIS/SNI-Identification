@@ -67,7 +67,6 @@ class CrawlingnlpSpider(CrawlSpider):
             dict: The scraped item.
         """
         item = NLPspiderItem()
-        item['domain'] = f'{tldextract.extract(response.url).domain}.{tldextract.extract(response.url).suffix}'
         item["url"] = response.url
         item["raw_html"] = response.text
 

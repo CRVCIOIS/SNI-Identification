@@ -9,7 +9,6 @@ from enum import StrEnum
 from scripts.scb_wrapper import SCBapi
 from definitions import ROOT_DIR 
 from scripts.mongo import get_client
-import tldextract
 
 # MongoDB definitions ("schema")
 
@@ -26,15 +25,6 @@ class Schema(StrEnum):
     MUNICIPALITIES  = "municipalities"
     API_COUNT       = "api_count"
     LEGAL_FORMS     = "legal_forms"
-    
-    
-    # Fields
-    URL             = "url"
-    DATA            = "data"
-    SCRAPED_DATA    = "scraped_data"
-    EXTRACTED_DATA  = "extracted_data"
-    TIMESTAMP       = "timestamp"
-    METHODS         = "methods"
     
 
 class SCBinterface():
@@ -130,7 +120,7 @@ class SCBinterface():
         
         r = self.wrapper.get("api/Je/KategorierMedKodtabeller").json()
         
-        with open(os.path.join(ROOT_DIR, 'assets', 'filtered_legal_forms.json') , 'r', encoding='utf-8') as f:
+        with open(os.path.join(ROOT_DIR, 'assets', 'legal_forms_include_list.json') , 'r', encoding='utf-8') as f:
             filter_list = json.load(f)
         
         filter_list = [form['Varde'] for form in filter_list]
@@ -321,28 +311,13 @@ class SCBinterface():
         url: URL to update
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
-    
-   
-    def add_data_by_url(self, data, timestamp, url, methods=None):
-        """
-        Add data, scraped or extracted, to the database.
         
+    def get_company_by_url(self, url):
+        """
+        Get company by URL.
         params:
-        domain: domain to identify the company from the URL in the form: domain.suffix
-        url: URL of the data
-        data: data in raw HTML or extracted text
-        timestamp: timestamp of the data
-        methods: methods used to extract the data, if None, the data is scraped
+        url: URL
+        returns:
+        company
         """
-        domain = tldextract.extract(url).fqdn # Get the domain from the URL, for company identification
-        url = url.replace('.', '__') # Needed to avoid dot notation in MongoDB
-        
-        # Check if the data is scraped or extracted
-        if methods is not None:
-            method_exists = self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({f"{Schema.URL}": {"$regex": domain}, f"{Schema.DATA}.{timestamp}.{Schema.EXTRACTED_DATA}.{Schema.METHODS}": methods})
-            if method_exists is None:
-                self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.DATA}.{timestamp}.{Schema.EXTRACTED_DATA}.{Schema.METHODS}": methods}})
-            self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.DATA}.{timestamp}.{Schema.EXTRACTED_DATA}.{url}" : data}})
-        else:
-            self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({f"{Schema.URL}": {"$regex": domain}}, {"$set": {f"{Schema.DATA}.{timestamp}.{Schema.SCRAPED_DATA}.{url}" : data}})
-   
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})

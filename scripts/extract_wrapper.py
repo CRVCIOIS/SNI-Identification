@@ -3,13 +3,28 @@ This module contains a wrapper function for extracting text from raw HTML in the
 """
 import json
 import logging
-from pathlib import Path
-from scripts.extract import DataExtractor
-import typer
-from typing_extensions import Annotated
-from scripts.scb import SCBinterface
 from datetime import datetime
+from enum import StrEnum
+from pathlib import Path
+import tldextract
+import typer
+from mongo import get_client
+from typing_extensions import Annotated
+from scripts.extract import DataExtractor
+from scripts.scb import SCBinterface
 
+
+class Schema(StrEnum):
+    """
+    Used to loosely enforce a schema for MongoDB.
+        Defines database name and collection names. 
+    """
+    # Database
+    DB              = "SCB"
+    # Collections
+    SCRAPED_DATA    = "scraped_data"
+    EXTRACTED_DATA  = "extracted_data"
+    METHODS         = "methods"
 
 def extract_wrapper(    
             input_path: Annotated[Path, typer.Argument(
@@ -33,20 +48,80 @@ def extract_wrapper(
     :param extract_body (bool): If true, extracts body.
     :param p_only (bool): If true, extracts only paragraphs from body.
     """
+    mongo_client = get_client()
+    mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('company_id')
+    mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('timestamp')
+    mongo_client[Schema.DB][Schema.EXTRACTED_DATA].create_index('scraped_id')
+    
     interface = SCBinterface()
     extractor = DataExtractor()
     scraped_data = _open_json(input_path)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    methods = [extract_meta,extract_body,p_only]
+    method = [extract_meta,extract_body,p_only]
 
     for scraped_item in scraped_data:
-        interface.add_data_by_url(scraped_item['raw_html'], timestamp, scraped_item["url"])
+        scraped_id = insert_scraped_data(scraped_item['raw_html'], timestamp, scraped_item["url"], interface)
         logging.info("Added scraped data from %s", scraped_item["url"])
         
         extractor.create_soup_from_string(scraped_item['raw_html'])
         extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-        interface.add_data_by_url(extracted_text, timestamp, scraped_item["url"], methods)
+        insert_extracted_data(scraped_id, extracted_text, scraped_item["url"], method)
         logging.info("Added extracted data from %s", scraped_item["url"])
+
+
+def insert_scraped_data(scraped_data, timestamp, url, interface):
+    """
+    Inserts the scraped data into the mongo database.
+    
+    :param scraped_data (str): The scraped data.
+    :param timestamp (str): The timestamp of the scrape.
+    :param url (str): The URL of the scraped data.
+    :param interface (SCBinterface): An interface to the SCB database.
+    """
+    parsed_url = f"{tldextract.extract(url).domain}.{tldextract.extract(url).suffix}" # Clean the URL, into the form subdomain.domain.tld
+    company = interface.get_company_by_url(parsed_url)
+    client = get_client()
+    
+    scraped_id = client[Schema.DB][Schema.SCRAPED_DATA].update_one(
+        {
+            'company_id':company['_id'],
+            'date':timestamp
+        },                
+            {
+                "$push": 
+                {
+                    f"data" : {'url':url,'data':scraped_data}
+                }
+            } 
+        ,
+        upsert=True).upserted_id
+    
+    if scraped_id is None:
+        company = client[Schema.DB][Schema.SCRAPED_DATA].find_one({'company_id':company['_id'],'date':timestamp})
+        return company['_id']
+    return scraped_id
+
+def insert_extracted_data(scraped_id, extracted_data, url, method):
+    """
+    Inserts the extracted data into the mongo database.
+    
+    :param scraped_id (ObjectId): The ID of the scraped data.
+    :param extracted_data (str): The extracted data.
+    :param url (str): The URL of the extracted data.
+    """
+    client = get_client()
+    client[Schema.DB][Schema.EXTRACTED_DATA].update_one(
+        {
+            'scraped_id':scraped_id
+        },                
+            {
+                "$push": 
+                {
+                    f"data" : {'url':url,'method':method,'data':extracted_data}
+                }
+            } 
+        ,
+        upsert=True)
 
 
 def _open_json(file_path):
