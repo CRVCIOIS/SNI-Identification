@@ -41,7 +41,6 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False):
             if (
                 (company["url"] == "" or company["url"] is None) and 
                 (company["name"] != "" or company["name"] is not None) or 
-                (regenerate_urls and company["name"] != "" or company["name"] is not None)
                 ):
                 name = _filter(company['name'], FILTER_LIST)
                 logging.debug("Searching on Google for %s", name)
