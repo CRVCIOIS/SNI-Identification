@@ -36,7 +36,7 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False):
     
     google = GoogleSearchAPI()
     for code in sni_codes.keys():
-        data = interface.fetch_companies_from_db(code, no_url=True)
+        data = interface.fetch_companies_from_db(code, no_url=not regenerate_urls)
         for company in data:
             if (
                 (company["url"] == "" or company["url"] is None) and 
