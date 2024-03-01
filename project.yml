@@ -17,6 +17,7 @@ vars:
   extract_p_only: "False"
   scb_data_file_name: "scb_data"
   nr_of_each_sni: 10
+  regenerate_company_urls: false
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -89,7 +90,7 @@ workflows:
   - name: "google"
     help: "Get company URL's by using Google search API"
     script:
-      - "python scripts/google_wrapper.py"
+      - "python scripts/google_wrapper.py ${vars.regenerate_company_urls}"
     deps:
       - "scripts/mongo.py"
       - "scripts/google_wrapper.py"
