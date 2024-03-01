@@ -166,7 +166,7 @@ class SCBinterface():
             return None
         if "branch_codes" in lc[0]:
             return lc[0]["branch_codes"][0]
-        return None
+        return None    
 
     def _filter_companies(self, companies):
         """
@@ -266,6 +266,7 @@ class SCBinterface():
                     fetch_limit=fetch_limit)
                 if len(companies) > 0:
                     self.mongo_client[Schema.DB][Schema.COMPANIES].insert_many(companies)
+        self.wrapper.session.close()
         
 
     def fetch_all_companies_from_api(self, fetch_limit=50):
@@ -311,6 +312,7 @@ class SCBinterface():
         url: URL to update
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
+
         
     def get_company_by_url(self, url):
         """
@@ -321,3 +323,17 @@ class SCBinterface():
         company
         """
         return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})
+    
+    def delete_company_from_db(self, org_nr):
+        """
+        Deletes a company from the database based on the organization number.
+        params:
+        org_nr: organization number
+        """
+        self.mongo_client[Schema.DB][Schema.COMPANIES].delete_one({"org_nr": org_nr})
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.ERROR)
+    scb = SCBinterface()
+    scb.fetch_all_companies_from_api(fetch_limit=50)
+
