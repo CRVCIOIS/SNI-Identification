@@ -38,7 +38,7 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False):
     for code in sni_codes.keys():
         data = interface.fetch_companies_from_db(code, no_url=not regenerate_urls)
         for company in data:
-            if (
+            if 'name' in company.keys() and company["name"] != "":
                 (company["url"] == "" or company["url"] is None) and 
                 (company["name"] != "" or company["name"] is not None) or 
                 ):
