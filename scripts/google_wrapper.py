@@ -6,7 +6,6 @@ import logging
 from typing import Annotated
 
 import typer
-
 from scripts.google_search_api import GoogleSearchAPI
 from scripts.scb import SCBinterface
 
@@ -14,6 +13,14 @@ FILTER_LIST = [
     'aktiebolag',
     'handelsbolag'
 ]
+
+BLACKLIST = [
+    'allabolag.se',
+    'facebook.com',
+    'facebook.se',
+    'linkedin.com',
+]
+
 
 def _filter(original, filter_list):
     """
@@ -48,14 +55,14 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False):
                 logging.debug("Searching on Google for %s", name)
                 company["url"] = google.search(name)
                 
-                # If the url is found and not from allabolag.se, update the DB
-                if company["url"] is not None and "allabolag.se" not in company["url"] :
+                if (company["url"] and not any(bl in company["url"] for bl in BLACKLIST)):
+                    # If the url is found and does not contain, update the DB
                     logging.debug("Updating URL for %s to %s", company["name"], company["url"])
                     interface.update_url_for_company(company["org_nr"], company["url"])
                 else:
-                    logging.debug("No URL found for %s, or the url is to allabolag.se. Deleting from DB", company["name"])
+                    logging.debug("No URL found for %s, or the url is in BLACKLIST. Deleting from DB", company["name"])
                     interface.delete_company_from_db(company["org_nr"])
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    # logging.basicConfig(level=logging.DEBUG)
     typer.run(main)

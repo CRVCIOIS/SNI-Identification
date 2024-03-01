@@ -11,38 +11,70 @@
     python preprocess.py input.json output.spacy
 """
 
+from copy import copy
 from pathlib import Path
+
 import spacy
 import srsly
 import typer
+from spacy.language import Language
 from spacy.tokens import DocBin
-from copy import copy
+
+from scripts.scb import SCBinterface
+
+
+def create_doc_for_company(labels: dict, company: dict, page: dict, nlp: Language, multi_label=False):
+    """
+    Create a spacy Doc object with the given labels and company data.
+    :param labels (dict): Dictionary of labels.
+    :param company (dict): Company to process.
+    :param nlp (spacy.Language): Language model to use for processing.
+    :param multi_label (bool): Whether to use multi-label classification.
+    :return (spacy.Doc): Processed Doc object.
+    """
+    
+    
+    doc = nlp.make_doc(page["data"])
+    
+    if multi_label:
+        for company_code in company["branch_codes"]:
+                labels[company_code] = 1
+        doc.cats = labels
+    else:
+        labels[company["branch_codes"][0]] = 1
+        doc.cats = labels
+    return doc
 
 def main(
-        input_path: Path = typer.Argument(..., exists=True, dir_okay=False),
-        output_path: Path = typer.Argument(..., dir_okay=False),
+        output_train_path: Path = typer.Argument(..., dir_okay=False),
+        output_dev_path: Path = typer.Argument(..., dir_okay=False),
 ):
     """
     Preprocesses the input data and saves the processed labeled documents in binary form to the output path.
-    :param input_path (Path): Path to the input data file.
     :param output_path (Path): Path to save the processed documents.
     """
     
     nlp = spacy.blank("sv")
-    doc_bin = DocBin()
-    records = srsly.read_json(input_path)
-    labels = {}
-    for record in records:
-        if labels.get(record["SNI"]) is None:
-            labels[record["SNI"]] = 0
-        
-    for record in records:
-        doc_label = copy(labels)
-        doc_label[record["SNI"]] = 1
-        doc = nlp.make_doc(record["text"])
-        doc.cats = doc_label
-        doc_bin.add(doc)
+    doc_train = DocBin()
+    doc_eval = DocBin()
     
-    doc_bin.to_disk(output_path)
+    scb = SCBinterface()
+    
+    codes = {}
+    for code in scb.fetch_codes():
+        codes[code["sni_code"]] = 0
+        
+    for company in scb.fetch_train_set():
+        for page in company["data"]:
+            doc = create_doc_for_company(codes, company, page, nlp, multi_label=False)
+            doc_train.add(doc)
+            
+    for company in scb.fetch_dev_set():
+        for page in company["data"]:
+            doc = create_doc_for_company(codes, company, page, nlp, multi_label=False)
+            doc_eval.add(doc)
+
+    doc_train.to_disk(output_train_path)
+    doc_eval.to_disk(output_dev_path)
 if __name__ == "__main__":
     typer.run(main)

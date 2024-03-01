@@ -130,11 +130,8 @@ workflows:
   - name: "preprocess"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/preprocess.py ${vars.extracted_path}.json corpus/${vars.train}.spacy "
-      - "python scripts/preprocess.py ${vars.dev}.json corpus/${vars.dev}.spacy "
+      - "python scripts/preprocess.py corpus/${vars.dev}.spacy corpus/${vars.train}.spacy "
     deps:
-      - "assets/${vars.train}.json"
-      - "assets/${vars.dev}.json"
       - "scripts/preprocess.py"
 
     outputs:
