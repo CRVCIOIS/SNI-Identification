@@ -25,6 +25,7 @@ class Schema(StrEnum):
     MUNICIPALITIES  = "municipalities"
     API_COUNT       = "api_count"
     LEGAL_FORMS     = "legal_forms"
+    
 
 class SCBinterface():
     """
@@ -119,7 +120,7 @@ class SCBinterface():
         
         r = self.wrapper.get("api/Je/KategorierMedKodtabeller").json()
         
-        with open(os.path.join(ROOT_DIR, 'assets', 'filtered_legal_forms.json') , 'r', encoding='utf-8') as f:
+        with open(os.path.join(ROOT_DIR, 'assets', 'legal_forms_include_list.json') , 'r', encoding='utf-8') as f:
             filter_list = json.load(f)
         
         filter_list = [form['Varde'] for form in filter_list]
@@ -311,6 +312,17 @@ class SCBinterface():
         url: URL to update
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
+
+        
+    def get_company_by_url(self, url):
+        """
+        Get company by URL.
+        params:
+        url: URL
+        returns:
+        company
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})
     
     def delete_company_from_db(self, org_nr):
         """
@@ -324,3 +336,4 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)
     scb = SCBinterface()
     scb.fetch_all_companies_from_api(fetch_limit=50)
+

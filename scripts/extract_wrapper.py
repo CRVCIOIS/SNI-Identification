@@ -1,83 +1,130 @@
 """
-This module contains a wrapper function for extracting text from raw HTML in the scraped data and inserting it into a dataset.
-
-The `extract_wrapper` function performs the following steps:
-1. Opens the input dataset file and the input scraped data file.
-2. Extracts text from raw HTML in the scraped data and stores it in a dictionary, where the keys are the domains and the values are the extracted text.
-3. Updates the dataset with the extracted text based on the domain.
-4. Writes the updated dataset to the output data file.
+This module contains a wrapper function for extracting text from raw HTML in the scraped data and inserting it into the mongo database.
 """
 import json
 import logging
+from datetime import datetime
+from enum import StrEnum
 from pathlib import Path
-from scripts.extract import DataExtractor
-import typer
 import tldextract
+import typer
+from mongo import get_client
 from typing_extensions import Annotated
+from scripts.extract import DataExtractor
+from scripts.scb import SCBinterface
 
 
-def extract_wrapper(
-    input_path_dataset: Annotated[Path, typer.Argument(
-            exists=True, 
-            file_okay=True, 
-            dir_okay=False, 
-            readable=True, 
-            resolve_path=True, 
-            formats=["json"], 
-            help="The path to the input dataset file."
-            )], 
-    input_path_scraped: Annotated[Path, typer.Argument(
-            exists=True, 
-            file_okay=True, 
-            dir_okay=False, 
-            readable=True, 
-            resolve_path=True, 
-            formats=["json"], 
-            help="The path to the input scraped data file."
-            )], 
-    output_path: Annotated[Path, typer.Argument(
-            exists=False, 
-            file_okay=True, 
-            dir_okay=False, 
-            resolve_path=True, 
-            formats=["json"], 
-            help="The path to the output data file."
-            )],
-    extract_meta: Annotated[bool, typer.Argument()],
-    extract_body: Annotated[bool, typer.Argument()],
-    p_only: Annotated[bool, typer.Argument()]):
+class Schema(StrEnum):
+    """
+    Used to loosely enforce a schema for MongoDB.
+        Defines database name and collection names. 
+    """
+    # Database
+    DB              = "SCB"
+    # Collections
+    SCRAPED_DATA    = "scraped_data"
+    EXTRACTED_DATA  = "extracted_data"
+    METHODS         = "methods"
+
+def extract_wrapper(    
+            input_path: Annotated[Path, typer.Argument(
+                exists=True, 
+                file_okay=True, 
+                dir_okay=False, 
+                readable=True, 
+                resolve_path=True, 
+                formats=["json"], 
+                help="The path to the input scraped data file."
+                )],     
+            extract_meta: Annotated[bool, typer.Argument()],
+            extract_body: Annotated[bool, typer.Argument()],
+            p_only: Annotated[bool, typer.Argument()]):
     """
     Wrapper for the extract class. Extracts text from raw HTML in the scraped data
-    and inserts it into the dataset.
+    and inserts it into the mongodb.
 
-    :param input_path_dataset (Path): Path to the dataset input file.
-    :param input_path_scraped (Path): Path to the scraped data input file.
-    :param output_path (Path): Path to the output file.
-    :param extract_meta (bool): Argument for extracting meta.
-    :param extract_body (bool): Argument for extracting body.
-    :param p_only (bool): Argument for extracting only paragraphs.
+    :param input_path (Path): Path to the scraped data input file.
+    :param extract_meta (bool): If true, extracts meta.
+    :param extract_body (bool): If true, extracts body.
+    :param p_only (bool): If true, extracts only paragraphs from body.
     """
-    dataset = open_json(input_path_dataset)
-    scraped_data = open_json(input_path_scraped)
+    mongo_client = get_client()
+    mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('company_id')
+    mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('timestamp')
+    mongo_client[Schema.DB][Schema.EXTRACTED_DATA].create_index('scraped_id')
+    
+    interface = SCBinterface()
+    extractor = DataExtractor()
+    scraped_data = _open_json(input_path)
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    method = [extract_meta,extract_body,p_only]
 
-    if (dataset is not None) and (scraped_data is not None):
-        extractor = DataExtractor()
-        domain_text = {}  # Dictionary to store extracted text: {domain: text}
+    for scraped_item in scraped_data:
+        scraped_id = insert_scraped_data(scraped_item['raw_html'], timestamp, scraped_item["url"], interface)
+        logging.info("Added scraped data from %s", scraped_item["url"])
         
-        for scraped_item in scraped_data:
-            extractor.create_soup_from_string(scraped_item['raw_html'])
-            extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-            domain_text[scraped_item['domain']] = f'{domain_text.get(scraped_item["domain"], "")} {extracted_text}'
-        
-        for data_point in dataset:
-            domain = f'{tldextract.extract(data_point["url"]).domain}.{tldextract.extract(data_point["url"]).suffix}'
-            if domain in domain_text:
-                data_point['text'] = domain_text[domain]
-
-        write_to_json(dataset, output_path)
+        extractor.create_soup_from_string(scraped_item['raw_html'])
+        extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
+        insert_extracted_data(scraped_id, extracted_text, scraped_item["url"], method)
+        logging.info("Added extracted data from %s", scraped_item["url"])
 
 
-def open_json(file_path):
+def insert_scraped_data(scraped_data, timestamp, url, interface):
+    """
+    Inserts the scraped data into the mongo database.
+    
+    :param scraped_data (str): The scraped data.
+    :param timestamp (str): The timestamp of the scrape.
+    :param url (str): The URL of the scraped data.
+    :param interface (SCBinterface): An interface to the SCB database.
+    """
+    parsed_url = f"{tldextract.extract(url).domain}.{tldextract.extract(url).suffix}" # Clean the URL, into the form subdomain.domain.tld
+    company = interface.get_company_by_url(parsed_url)
+    client = get_client()
+    
+    scraped_id = client[Schema.DB][Schema.SCRAPED_DATA].update_one(
+        {
+            'company_id':company['_id'],
+            'date':timestamp
+        },                
+            {
+                "$push": 
+                {
+                    f"data" : {'url':url,'data':scraped_data}
+                }
+            } 
+        ,
+        upsert=True).upserted_id
+    
+    if scraped_id is None:
+        company = client[Schema.DB][Schema.SCRAPED_DATA].find_one({'company_id':company['_id'],'date':timestamp})
+        return company['_id']
+    return scraped_id
+
+def insert_extracted_data(scraped_id, extracted_data, url, method):
+    """
+    Inserts the extracted data into the mongo database.
+    
+    :param scraped_id (ObjectId): The ID of the scraped data.
+    :param extracted_data (str): The extracted data.
+    :param url (str): The URL of the extracted data.
+    """
+    client = get_client()
+    client[Schema.DB][Schema.EXTRACTED_DATA].update_one(
+        {
+            'scraped_id':scraped_id
+        },                
+            {
+                "$push": 
+                {
+                    f"data" : {'url':url,'method':method,'data':extracted_data}
+                }
+            } 
+        ,
+        upsert=True)
+
+
+def _open_json(file_path):
     """
     Opens the specified file and returns its contents as a JSON object.
 
@@ -93,18 +140,6 @@ def open_json(file_path):
     except json.JSONDecodeError:
         logging.error("File is not a valid JSON file: %s", file_path)
     return None
-
-
-def write_to_json(output: list, output_path: Path):
-    """
-    Writes the output data to a JSON file.
-
-    :param output (list): The data to be written.
-    :param output_path (Path): Path to the output file.
-    """
-    with open(Path(output_path), 'w', encoding='utf-8') as f:
-        json.dump(output, f, indent=4, ensure_ascii=False)
-    logging.info("Data written to %s", output_path)
 
 
 if __name__ == '__main__':
