@@ -34,6 +34,8 @@ def main(
             company_scraped_data = interface.fetch_company_extracted_data(company)
             if company_scraped_data is None:
                 continue
+            company_scraped_data.pop("_id")
+            
             company_data = interface.fetch_company_by_id(company)
             company_scraped_data["branch_codes"] = company_data["branch_codes"]
             if company_data["branch_codes"][0] not in stored_sni.keys()  or stored_sni[company_data["branch_codes"][0]] < nr_of_cross_validation_companies:
@@ -49,4 +51,4 @@ def main(
  
    
 if __name__ == "__main__":
-    typer.run(main)
+    typer.run(main(10))

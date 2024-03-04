@@ -45,7 +45,6 @@ workflows:
         - evaluate-speed-prod
         - evaluate-accuracy-prod
     test:
-        - extract
         - divide
 
     all:

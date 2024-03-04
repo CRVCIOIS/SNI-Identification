@@ -400,7 +400,6 @@ class SCBinterface():
         Returns:
             None
         """
-        data.pop('_id')
         self.mongo_client[Schema.DB][Schema.TRAIN_SET].insert_one(data)
         
     def insert_to_dev_set(self, data):
@@ -413,7 +412,6 @@ class SCBinterface():
         Returns:
             None
         """
-        data.pop('_id')
         self.mongo_client[Schema.DB][Schema.DEV_SET].insert_one(data)
     
     def fetch_train_set(self):
