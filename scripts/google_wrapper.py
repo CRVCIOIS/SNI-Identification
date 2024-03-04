@@ -66,7 +66,6 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
                 name = _filter(company['name'], FILTER_LIST)
                 logging.debug("Searching on Google for %s", name)
                 company["url"] = google.search(name)
-                totalSearches += 1
                 count += 1
                 
                 if (company["url"] and not any(bl in company["url"] for bl in BLACKLIST)):
