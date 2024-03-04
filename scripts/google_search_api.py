@@ -34,7 +34,7 @@ class GoogleSearchAPI:
         try:
             res = service.cse().list(q=query, cx=self.search_engine_id, hl="sv", gl="sv", lr="lang_sv", cr="sv", num=1).execute()
         except HttpError as e:
-            if e.status_code is 429: 
+            if e.status_code == 429: 
                 time.sleep(backoff_time)
                 backoff_time *= 2
                 logging.error("Quota exceeded, backing off and sleeping for %s seconds", backoff_time)

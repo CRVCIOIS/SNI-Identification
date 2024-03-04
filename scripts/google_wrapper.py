@@ -77,5 +77,5 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
                     interface.delete_company_from_db(company["org_nr"])
 
 if __name__ == "__main__":
-    # logging.basicConfig(level=logging.DEBUG)
-    typer.run(main)
+    logging.basicConfig(level=logging.DEBUG)
+    typer.run(main(False, 2))
