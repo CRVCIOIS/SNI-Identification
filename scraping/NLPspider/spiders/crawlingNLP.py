@@ -76,9 +76,15 @@ class CrawlingnlpSpider(CrawlSpider):
             item['domain'] = f'{tldextract.extract(response.url).domain}.{tldextract.extract(response.url).suffix}'
             item["url"] = response.url
             item["raw_html"] = response.text
+            
+            # If the respone url contains "/en/" the item is not yielded
+            if "/en/" in item["url"]:
+                self.logger.info(f"Skipping {item['url']} because it is in English")
+                return
 
             # Check if the domain has reached the maximum number of items
             if self.item_count_per_domain.get(item['domain'], 0) >= int(self.max_items_per_domain):
+                self.logger.debug(f"Skipping {item['url']} because the domain has reached the maximum number of items")
                 return
             self.item_count_per_domain[item['domain']] = int(self.item_count_per_domain.get(item['domain'], 0) + 1)
 
