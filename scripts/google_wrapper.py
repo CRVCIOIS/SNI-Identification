@@ -4,6 +4,7 @@ and write the updated data to an output file.
 """
 import logging
 from typing import Annotated
+import time
 
 import typer
 from scripts.google_search_api import GoogleSearchAPI
@@ -54,6 +55,8 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
     interface = SCBinterface()
     sni_codes = interface.fetch_codes()
     
+    totalSearches = 0
+    
     google = GoogleSearchAPI()
     for code in sni_codes.keys():
         count = 0
@@ -64,8 +67,12 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
             if 'name' in company.keys() and company["name"] != "":
                 name = _filter(company['name'], FILTER_LIST)
                 logging.debug("Searching on Google for %s", name)
+                if totalSearches >= 100:
+                    logging.warning("Reached the limit of 100 searches, waiting for 60 seconds.")
+                    time.sleep(60)
+                    totalSearches = 0
                 company["url"] = google.search(name)
-                
+                totalSearches += 1
                 count += 1
                 
                 if (company["url"] and not any(bl in company["url"] for bl in BLACKLIST)):
