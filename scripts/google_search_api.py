@@ -19,7 +19,7 @@ class GoogleSearchAPI:
         self.api_key = os.environ.get('GOOGLE_SEARCH_API_KEY')
         self.search_engine_id = os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
 
-    def search(self, query, backoff_time=1):
+    def search(self, query, backoff_time=4):
         """
         Performs a search using the Google Custom Search API.
 
