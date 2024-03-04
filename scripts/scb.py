@@ -124,7 +124,7 @@ class SCBinterface():
         
         r = self.wrapper.get("api/Je/KategorierMedKodtabeller").json()
         
-        with open(os.path.join(ROOT_DIR, 'assets', 'filtered_legal_forms.json') , 'r', encoding='utf-8') as f:
+        with open(os.path.join(ROOT_DIR, 'assets', 'legal_forms_include_list.json') , 'r', encoding='utf-8') as f:
             filter_list = json.load(f)
         
         filter_list = [form['Varde'] for form in filter_list]
@@ -375,8 +375,21 @@ class SCBinterface():
         returns:
         scraped data for the company
         """
-        return self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({'date': -1}).limit(1)[0]
+        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({'date': -1}).limit(1)
+        company = list(company)
+        if len(company) == 0:
+            return None
+        return company[0]
     
+    def fetch_company_by_id(self, id):
+        """
+        Fetch company from the database by MongoDB ObjectId.
+        params:
+        id: MongoDB ObjectId
+        returns:
+        company
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"_id": id})
     def insert_to_train_set(self, data):
         """
         Inserts the given data into the train set collection in the MongoDB database.
@@ -387,6 +400,7 @@ class SCBinterface():
         Returns:
             None
         """
+        data.pop('_id')
         self.mongo_client[Schema.DB][Schema.TRAIN_SET].insert_one(data)
         
     def insert_to_dev_set(self, data):
@@ -399,6 +413,7 @@ class SCBinterface():
         Returns:
             None
         """
+        data.pop('_id')
         self.mongo_client[Schema.DB][Schema.DEV_SET].insert_one(data)
     
     def fetch_train_set(self):

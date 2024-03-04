@@ -19,7 +19,7 @@ from scripts.scb import Schema
 
 def main(
         output_path: Annotated[Path, typer.Argument(
-            exists=True, 
+            exists=False, 
             file_okay=True, 
             dir_okay=False, 
             readable=True, 
@@ -28,29 +28,31 @@ def main(
             help="The path to the output data file."
             )],
         ):
-        
         client = get_client()
-        query = {"url": { "$regex" : "^(?!\\s*$).+" }}
+        query = {"url": {"$regex": r"/\S"}}
         
-    
+        logging.debug("Querying the database with the following query: %s", query)
         documents = client[Schema.DB][Schema.COMPANIES].find(query)
 
         start_urls: str = ""
-        document_length = len(list(documents))
+        documents = list(documents)
+        document_length = len(documents)
+        logging.debug("Found %s documents in the database.", document_length)
         
         for index, company in enumerate(documents):
             if index == document_length - 1:
-                start_urls += f'"{company["url"]}"'
+                start_urls += f'{company["url"]}'
             else:
-                start_urls += f'"{company["url"]}",'
+                start_urls += f'{company["url"]},'
             
             
 
 
-        output_path = ROOT_DIR / output_path
+        output_path = Path(ROOT_DIR) / Path(output_path)
         command = f'scrapy crawl crawlingNLP -a start_urls={start_urls} -o {output_path}:json'.split(" ")
         logging.info("Running Scrapy crawler with the following command: %s", " ".join(command))
         subprocess.check_call(command, cwd=Path('scraping'))
     
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     typer.run(main)

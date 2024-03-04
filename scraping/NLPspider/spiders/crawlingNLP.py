@@ -1,12 +1,13 @@
 """
 This module contains the CrawlingnlpSpider class, which is a Scrapy spider for crawling and scraping websites for the NLP project.
 """
+from urllib.parse import urlparse
+
 import scrapy
+import tldextract
+from NLPspider.items import NLPspiderItem
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from urllib.parse import urlparse
-from NLPspider.items import NLPspiderItem
-import tldextract
 
 
 class CrawlingnlpSpider(CrawlSpider):
@@ -66,9 +67,13 @@ class CrawlingnlpSpider(CrawlSpider):
         Yields:
             dict: The scraped item.
         """
-        item = NLPspiderItem()
-        item['domain'] = f'{tldextract.extract(response.url).domain}.{tldextract.extract(response.url).suffix}'
-        item["url"] = response.url
-        item["raw_html"] = response.text
+        try:
+            item = NLPspiderItem()
+            item['domain'] = f'{tldextract.extract(response.url).domain}.{tldextract.extract(response.url).suffix}'
+            item["url"] = response.url
+            item["raw_html"] = response.text
 
-        yield item
+            yield item
+        except Exception as e:
+            self.logger.error(f"Error parsing item: {e}")
+            yield

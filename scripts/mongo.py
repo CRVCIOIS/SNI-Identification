@@ -32,7 +32,7 @@ def dump(collections: list[str], client:MongoClient, db_name:str):
     """
     db = client[db_name]
     for coll in collections:
-        Path().mkdir(parents=True, exist_ok=True)
+        Path(BACKUP_PATH).mkdir(parents=True, exist_ok=True)
         with open(os.path.join(BACKUP_PATH, coll + ".json"), "wb+") as f:
             for doc in db[coll].find():
                 f.write(bson.BSON.encode(doc))
