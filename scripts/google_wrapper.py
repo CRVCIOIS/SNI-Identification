@@ -78,4 +78,4 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    typer.run(main(False, 2))
+    typer.run(main)
