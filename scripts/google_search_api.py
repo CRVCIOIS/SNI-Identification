@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from dotenv import load_dotenv
 from googleapiclient.errors import HttpError
 import logging
-
+import time
 
 load_dotenv()
 
@@ -34,9 +34,8 @@ class GoogleSearchAPI:
         try:
             res = service.cse().list(q=query, cx=self.search_engine_id, hl="sv", gl="sv", lr="lang_sv", cr="sv", num=1).execute()
         except HttpError as e:
-            if e.status_code is 429:
-                
-                self.sleep(backoff_time)
+            if e.status_code is 429: 
+                time.sleep(backoff_time)
                 backoff_time *= 2
                 logging.error("Quota exceeded, backing off and sleeping for %s seconds", backoff_time)
                 return self.search(query, backoff_time)
