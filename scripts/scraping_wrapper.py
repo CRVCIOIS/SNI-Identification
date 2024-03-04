@@ -29,7 +29,7 @@ def main(
             )],
         item_limit: Annotated[int, typer.Argument(
             help="The maximum number of items to scrape per domain."
-        )]
+        )] = 1
         ):
         client = get_client()
         query = {"url": {"$regex": r"/\S"}}
