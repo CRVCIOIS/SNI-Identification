@@ -36,7 +36,7 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_lab
     Concatenate all data points (data per url) into one document per company
     """
     for data_point in company["data"]:
-        data += data_point["data"]
+        data = f"{data} {data_point["data"]}"
     
     doc = nlp.make_doc(data)
     
