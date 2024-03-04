@@ -50,7 +50,7 @@ class CrawlingnlpSpider(CrawlSpider):
         self.logger.debug(f"Allowed domains: {self.allowed_domains}")
         self.rules = (
             Rule(LinkExtractor(allow_domains=self.allowed_domains),
-                 callback="parse_item", follow=True),
+                 callback="parse_item", follow=False),
         )
         # This is needed to compile the rules after we have changed them
         super(CrawlingnlpSpider, self)._compile_rules()

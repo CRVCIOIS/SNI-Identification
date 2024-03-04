@@ -10,15 +10,16 @@ vars:
     version: "0.0.1"
     train: "docs_nace_training"
     dev: "docs_nace_eval"
-    gpu_id: -1
+    gpu_id: 0
     scraped_data_file_name: "scraped_data"
     extract_meta: "True"
-    extract_body: "False"
+    extract_body: "True"
     extract_p_only: "False"
     scb_data_file_name: "scb_data"
     nr_of_each_sni: 10
     regenerate_company_urls: false
-    percentage_dev: 30
+    percentage_dev: 50
+    google_limit: 2
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -44,8 +45,6 @@ workflows:
     evaluate-prod:
         - evaluate-speed-prod
         - evaluate-accuracy-prod
-    test:
-        - divide
 
     all:
         - SCB
@@ -66,10 +65,8 @@ workflows:
         - train-models
 
     test_without_training:
-        - google
-        - scrape
-        - extract
-        - divide
+        - preprocess
+        - train-models
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
@@ -88,7 +85,7 @@ commands:
     - name: "google"
       help: "Get company URL's by using Google search API"
       script:
-          - "python scripts/google_wrapper.py ${vars.regenerate_company_urls}"
+          - "python scripts/google_wrapper.py ${vars.regenerate_company_urls} ${vars.google_limit}"
       deps:
           - "scripts/mongo.py"
           - "scripts/google_wrapper.py"
@@ -117,9 +114,6 @@ commands:
           - "python scripts/divide_dataset.py  ${vars.percentage_dev}"
       deps:
           - "scripts/divide_dataset.py"
-      outputs:
-          - "assets/${vars.train}.json"
-          - "assets/${vars.dev}.json"
 
     - name: "preprocess"
       help: "Convert the data to spaCy's binary format"

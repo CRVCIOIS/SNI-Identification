@@ -347,22 +347,28 @@ class SCBinterface():
                 - count: number of companies
         """
         return list(self.mongo_client[Schema.DB][Schema.COMPANIES].aggregate([
-            {
-                '$group': {
-                    '_id': {
-                        '$arrayElemAt': [
-                            '$branch_codes', 0
-                        ]
-                    }, 
-                    'companies': {
-                        '$push': '$_id'
-                    }, 
-                    'count': {
-                        '$count': {}
-                    }
-                }
+    {
+        '$match': {
+            'url': {
+                '$regex': '\\S'
             }
-        ]))
+        }
+    }, {
+        '$group': {
+            '_id': {
+                '$arrayElemAt': [
+                    '$branch_codes', 0
+                ]
+            }, 
+            'companies': {
+                '$push': '$_id'
+            }, 
+            'count': {
+                '$count': {}
+            }
+        }
+    }
+]))
         
     
     
@@ -422,6 +428,15 @@ class SCBinterface():
             the training set
         """
         return self.mongo_client[Schema.DB][Schema.TRAIN_SET].find()
+    
+    def fetch_dev_set(self):
+        """
+        Fetch the training set from the database.
+
+        returns:
+            the training set
+        """
+        return self.mongo_client[Schema.DB][Schema.DEV_SET].find()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)

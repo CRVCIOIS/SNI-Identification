@@ -33,7 +33,7 @@ def _filter(original, filter_list):
         name = name.replace(f,'')
     return name
 
-def main(regenerate_urls: Annotated[bool, typer.Argument()] = False):
+def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Annotated[int, typer.Argument()] = 2):
     """
     Process the input data file, search for company URLs on Google, and update the DB.
 
@@ -48,12 +48,17 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False):
     
     google = GoogleSearchAPI()
     for code in sni_codes.keys():
+        count = 0
         data = interface.fetch_companies_from_db(code, no_url=not regenerate_urls)
         for company in data:
+            if count >= limit:
+                break
             if 'name' in company.keys() and company["name"] != "":
                 name = _filter(company['name'], FILTER_LIST)
                 logging.debug("Searching on Google for %s", name)
                 company["url"] = google.search(name)
+                
+                count += 1
                 
                 if (company["url"] and not any(bl in company["url"] for bl in BLACKLIST)):
                     # If the url is found and does not contain, update the DB
