@@ -19,6 +19,14 @@ BLACKLIST = [
     'facebook.com',
     'facebook.se',
     'linkedin.com',
+    'kompass.com',
+    'apple.com',
+    'orebro.se',
+    'worldsbiggestcompanies.com',
+    'kreditrapporten.se',
+    'utsidan.se',
+    'lansstyrelsen.se',
+    'barometern.se'
 ]
 
 
