@@ -20,6 +20,7 @@ vars:
     regenerate_company_urls: false
     percentage_dev: 50
     google_limit: 2
+    scrapy_limit: 2
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -94,7 +95,7 @@ commands:
     - name: "scrape"
       help: "Scrapes websites"
       script:
-          - "python scripts/scraping_wrapper.py assets/${vars.scraped_data_file_name}.json"
+          - "python scripts/scraping_wrapper.py assets/${vars.scraped_data_file_name}.json ${vars.scrapy_limit}"
       deps:
           - "scripts/scraping_wrapper.py"
       outputs:
