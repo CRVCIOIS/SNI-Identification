@@ -91,6 +91,11 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
         logging.error("No company found for URL: %s", url)
         return None
     
+    # Spacy has a limit of 1000000 characters, so we truncate the data if it exceeds this limit
+    if len(extracted_data) >= 1000000:
+        extracted_data = extracted_data[:1000000]
+    
+    
     client[Schema.DB][Schema.EXTRACTED_DATA].update_one(
             {
                 'company_id':company['_id'],

@@ -33,10 +33,6 @@ def create_doc_for_company(labels: dict, company: dict, page: dict, nlp: Languag
     :return (spacy.Doc): Processed Doc object.
     """
     
-    
-    if len(page["data"]) >= 1000000:
-        page["data"] = page["data"][:1000000]
-    
     doc = nlp.make_doc(page["data"])
     
     if multi_label:
