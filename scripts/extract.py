@@ -79,14 +79,13 @@ class DataExtractor:
         Extracts text and creates a string from a scraped HTML page.
         :param filter_: if True (default), then the data is also filtered.
         :param p_only: if True, then only paragraphs will be scraped from the body.
-
         :param extract_meta: if True, then meta will be extracted.
         :param extract_body: if True, then body will be extracted. 
         :returns: a string
         """
         s = ""
         
-        if extract_body:
+        if (extract_body or p_only):
             body = self._extract_body(filter_, p_only)
             if filter_:
                 self._filter_list(body)
