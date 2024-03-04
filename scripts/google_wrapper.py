@@ -69,7 +69,7 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
                 logging.debug("Searching on Google for %s", name)
                 if totalSearches >= 100:
                     logging.warning("Reached the limit of 100 searches, waiting for 60 seconds.")
-                    time.sleep(60)
+                    time.sleep(100)
                     totalSearches = 0
                 company["url"] = google.search(name)
                 totalSearches += 1
