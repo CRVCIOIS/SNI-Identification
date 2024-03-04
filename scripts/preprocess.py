@@ -10,12 +10,10 @@
     Example usage:
     python preprocess.py input.json output.spacy
 """
-
 from copy import copy
 from pathlib import Path
 
 import spacy
-import srsly
 import typer
 from spacy.language import Language
 from spacy.tokens import DocBin
@@ -23,7 +21,7 @@ from spacy.tokens import DocBin
 from scripts.scb import SCBinterface
 
 
-def create_doc_for_company(labels: dict, company: dict, page: dict, nlp: Language, multi_label=False):
+def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_label=False):
     """
     Create a spacy Doc object with the given labels and company data.
     :param labels (dict): Dictionary of labels.
@@ -32,8 +30,15 @@ def create_doc_for_company(labels: dict, company: dict, page: dict, nlp: Languag
     :param multi_label (bool): Whether to use multi-label classification.
     :return (spacy.Doc): Processed Doc object.
     """
+    data = str()
     
-    doc = nlp.make_doc(page["data"])
+    """
+    Concatenate all data points (data per url) into one document per company
+    """
+    for data_point in company["data"]:
+        data += data_point["data"]
+    
+    doc = nlp.make_doc(data)
     
     if multi_label:
         for company_code in company["branch_codes"]:
@@ -65,14 +70,14 @@ def main(
         codes[code] = 0
         
     for company in scb.fetch_train_set():
-        for page in company["data"]:
-            doc = create_doc_for_company(codes, company, page, nlp, multi_label=False)
-            doc_train.add(doc)
+        labels = copy(codes) # Copy needed to avoid reference to same dictionary
+        doc = create_doc_for_company(labels, company, nlp, multi_label=False)
+        doc_train.add(doc)
             
     for company in scb.fetch_dev_set():
-        for page in company["data"]:
-            doc = create_doc_for_company(codes, company, page, nlp, multi_label=False)
-            doc_eval.add(doc)
+        labels = copy(codes) # Copy needed to avoid reference to same dictionary
+        doc = create_doc_for_company(labels, company, nlp, multi_label=False)
+        doc_eval.add(doc)
 
     doc_train.to_disk(output_train_path)
     doc_eval.to_disk(output_dev_path)
