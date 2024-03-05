@@ -48,8 +48,10 @@ def main(
             else:
                 start_urls += f'{company["url"]},'
             
-            
-
+        # Check if ouput file exists, then delete it
+        file = Path(output_path).with_suffix(".json")
+        if file.exists():
+            file.unlink()
 
         output_path = Path(ROOT_DIR) / Path(output_path)
         command = f'scrapy crawl crawlingNLP -a start_urls={start_urls} -a item_limit={item_limit} -o {output_path}:json'.split(" ")
