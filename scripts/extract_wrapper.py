@@ -3,6 +3,7 @@ This module contains a wrapper function for extracting text from raw HTML in the
 """
 import ijson
 import logging
+import os
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
@@ -54,17 +55,18 @@ def extract_wrapper(
 
     logging.debug("Extractor initialized")
     
-    logging.debug("Extracting data from file at %s", input_path)
-    with open(input_path, 'r', encoding='utf-8') as f:
-        array_items = ijson.items(f, 'item')
-        for scraped_item in array_items:
-            if('example.com' in scraped_item['domain']):
-                logging.debug("Found example.com, skipping")
-                continue
-            extractor.create_soup_from_string(scraped_item['raw_html'])
-            extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-            insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
-            logging.info("Added extracted data from %s", scraped_item["url"])
+    for site_path in [f for f in os.listdir('scraped_data') if os.path.isfile(f)]:
+        logging.debug("Extracting data from file at %s", site_path)
+        with open(site_path, 'r', encoding='utf-8') as f:
+            array_items = ijson.items(f, 'item')
+            for scraped_item in array_items:
+                if('example.com' in scraped_item['domain']):
+                    logging.debug("Found example.com, skipping")
+                    continue
+                extractor.create_soup_from_string(scraped_item['raw_html'])
+                extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
+                insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
+                logging.info("Added extracted data from %s", scraped_item["url"])
 
 
 def insert_extracted_data(extracted_data, url, timestamp, method, interface, client):
