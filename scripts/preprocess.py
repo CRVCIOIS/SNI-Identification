@@ -30,15 +30,18 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_lab
     :param multi_label (bool): Whether to use multi-label classification.
     :return (spacy.Doc): Processed Doc object.
     """
-    data = str()
+    text = str()
     
     """
     Concatenate all data points (data per url) into one document per company
     """
     for data_point in company["data"]:
-        data = f"{data} {data_point["data"]}"
+        text = f"{text} {data_point["data"]}"
     
-    doc = nlp.make_doc(data)
+    if len(text) >= 1000000:
+        text = text[:1000000]
+    
+    doc = nlp.make_doc(text)
     
     if multi_label:
         for company_code in company["branch_codes"]:
