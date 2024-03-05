@@ -56,7 +56,6 @@ def main(
         output_path = Path(ROOT_DIR) / Path(output_path)
         command = f'scrapy crawl crawlingNLP -a start_urls={start_urls} -a item_limit={item_limit} -o {output_path}:json'.split(" ")
         logging.info("Running Scrapy crawler with the following command: %s", " ".join(command))
-        subprocess.check_call(command, cwd=Path('scraping'))
     
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

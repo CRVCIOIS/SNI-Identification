@@ -36,7 +36,7 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_lab
     Concatenate all data points (data per url) into one document per company
     """
     for data_point in company["data"]:
-        text = f"{text} {data_point["data"]}"
+        text = text + " " + data_point["data"]
     
     if len(text) >= 1000000:
         text = text[:1000000]

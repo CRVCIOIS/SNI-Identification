@@ -6,7 +6,9 @@ import os
 import tldextract
 import datetime
 import logging
+import typer
 from pathlib import Path
+from scripts.mongo import get_client, Schema
 
 class SimpleScraper():
     """
@@ -37,11 +39,31 @@ class SimpleScraper():
         for url in self.start_urls:
             logging.info('Scraping %s', url)
             timestamp = datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')
-    
-            raw = self._request(url).text
+            try:
+                raw = self._request(url).text
+            except requests.exceptions.ReadTimeout:
+                logging.debug("Request timed out, continuing...")
+                continue
             tld_extractor = tldextract.extract(url)
             domain = f"{tld_extractor.domain}.{tld_extractor.suffix}"
 
             data = {'domain':domain,'url':url,'raw_html':raw}
 
             self._save_to_json(data, f"{tld_extractor.domain}_{tld_extractor.suffix}_{timestamp}.json")
+    
+def main():
+    client = get_client()
+    query = {"url": {"$regex": r"/\S"}}
+        
+    logging.debug("Querying the database with the following query: %s", query)
+    documents = client[Schema.DB][Schema.COMPANIES].find(query)
+    start_urls = [company["url"] for company in documents]
+
+    scraper = SimpleScraper(start_urls)
+    scraper.scrape_all()
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    typer.run(main)
+    
+    

@@ -1,4 +1,5 @@
 beautifulsoup4==4.12.2
+cupy-cuda12x==13.0.0
 exceptiongroup==1.2.0
 google-api-python-client==2.117.0
 ijson==3.2.3

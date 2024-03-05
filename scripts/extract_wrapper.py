@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
+import os
 
 import tldextract
 import typer
@@ -130,4 +131,4 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    typer.run(extract_wrapper("scraped_data", True, True, False))
+    typer.run(extract_wrapper)
