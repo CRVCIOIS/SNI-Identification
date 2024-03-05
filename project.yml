@@ -56,13 +56,8 @@ workflows:
         - train-models
 
     train:
-        - SCB
-        - google
-        - scrape
         - extract
-        - divide
-        - preprocess
-        - train-models
+
 
     test_without_training:
         - preprocess

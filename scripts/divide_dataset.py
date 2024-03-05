@@ -3,6 +3,7 @@ This script divides a dataset into a smaller dataset and a cross-validation data
 
 The smaller dataset will contain a percentage of companies with the same SNI code.
 """
+import logging
 import math
 
 import typer

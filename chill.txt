@@ -1,0 +1,16 @@
+beautifulsoup4==4.12.2
+exceptiongroup==1.2.0
+google-api-python-client==2.117.0
+ijson==3.2.3
+pip-chill==1.0.3
+pipdeptree==2.16.1
+pymongo==4.6.2
+pyscbwrapper==0.1.1
+pytest==7.4.4
+python-dotenv==1.0.1
+regex==2023.12.25
+requests-pkcs12==1.24
+scrapy==2.11.1
+spacy==3.7.4
+tomli==2.0.1
+validators==0.22.0

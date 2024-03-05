@@ -1,7 +1,7 @@
 """
 This module contains a wrapper function for extracting text from raw HTML in the scraped data and inserting it into the mongo database.
 """
-import json
+import ijson
 import logging
 from datetime import datetime
 from enum import StrEnum
@@ -52,22 +52,33 @@ def extract_wrapper(
     :param extract_body (bool): If true, extracts body.
     :param p_only (bool): If true, extracts only paragraphs from body.
     """
+    logging.debug("Initializing extractor")
+    
     mongo_client = get_client()
     mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('company_id')
     mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('timestamp')
     mongo_client[Schema.DB][Schema.EXTRACTED_DATA].create_index('scraped_id')
-    
+    logging.debug("Mongo initialized")
     interface = SCBinterface()
+    logging.debug("SCB initialized")
     extractor = DataExtractor()
-    scraped_data = _open_json(input_path)
+    logging.debug("Data extractor initialized")
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     method = [extract_meta,extract_body,p_only]
 
-    for scraped_item in scraped_data:
-        extractor.create_soup_from_string(scraped_item['raw_html'])
-        extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-        insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
-        logging.info("Added extracted data from %s", scraped_item["url"])
+    logging.debug("Extractor initialized")
+    
+    logging.debug("Extracting data from file at %s", input_path)
+    with open(input_path, 'r', encoding='utf-8') as f:
+        array_items = ijson.items(f, 'item')
+        for scraped_item in array_items:
+            if('example.com' in scraped_item['domain']):
+                logging.debug("Found example.com, skipping")
+                continue
+            extractor.create_soup_from_string(scraped_item['raw_html'])
+            extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
+            insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
+            logging.info("Added extracted data from %s", scraped_item["url"])
 
 
 def insert_extracted_data(extracted_data, url, timestamp, method, interface, client):
@@ -93,8 +104,8 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
     
     # Spacy has a limit of 1000000 characters, so we truncate the data if it exceeds this limit
     if len(extracted_data) >= 1000000:
+        logging.debug("Extracted data for company %s exceeds 1000000 characters, truncating", company['name'])
         extracted_data = extracted_data[:1000000]
-    
     
     client[Schema.DB][Schema.EXTRACTED_DATA].update_one(
             {
@@ -111,23 +122,24 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
         upsert=True)
 
 
-def _open_json(file_path):
-    """
-    Opens the specified file and returns its contents as a JSON object.
+# def _open_json(file_path):
+#     """
+#     Opens the specified file and returns its contents as a JSON object.
 
-    :param file_path (Path): Path to the file.
-    :returns: The contents of the file as a JSON object, 
-        or None if the file cannot be opened or is not a valid JSON file.
-    """
-    try:
-        with open(Path(file_path), 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        logging.error("File not found: %s", file_path)
-    except json.JSONDecodeError:
-        logging.error("File is not a valid JSON file: %s", file_path)
-    return None
+#     :param file_path (Path): Path to the file.
+#     :returns: The contents of the file as a JSON object, 
+#         or None if the file cannot be opened or is not a valid JSON file.
+#     """
+#     try:
+#         with open(Path(file_path), 'r', encoding='utf-8') as f:
+#             return json.load(f)
+#     except FileNotFoundError:
+#         logging.error("File not found: %s", file_path)
+#     except json.JSONDecodeError:
+#         logging.error("File is not a valid JSON file: %s", file_path)
+#     return None
 
 
 if __name__ == '__main__':
-    typer.run(extract_wrapper)
+    logging.basicConfig(level=logging.DEBUG)
+    typer.run(extract_wrapper("assets\scraped_data.json", True, True, False))

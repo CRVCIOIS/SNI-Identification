@@ -76,4 +76,8 @@ class CrawlingnlpSpider(CrawlSpider):
             yield item
         except Exception as e:
             self.logger.error(f"Error parsing item: {e}")
-            yield
+            item = NLPspiderItem()
+            item['domain'] = f'{tldextract.extract("example.com").domain}.{tldextract.extract("example.com").suffix}'
+            item["url"] = response.url
+            item["raw_html"] = ""
+            yield item
