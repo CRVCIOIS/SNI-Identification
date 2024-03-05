@@ -316,6 +316,17 @@ class SCBinterface():
         url: URL to update
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
+
+        
+    def get_company_by_url(self, url):
+        """
+        Get company by URL.
+        params:
+        url: URL
+        returns:
+        company
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})
     
     def delete_company_from_db(self, org_nr):
         """
@@ -442,3 +453,4 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)
     scb = SCBinterface()
     scb.fetch_all_companies_from_api(fetch_limit=50)
+

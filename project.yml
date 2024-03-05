@@ -40,29 +40,40 @@ directories: ["assets", "training", "configs", "scripts", "corpus", "scraping"]
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
 # haven't changed, it won't be re-run.
 workflows:
-    evaluate-dev:
-        - evaluate-speed-dev
-        - evaluate-accuracy-dev
-    evaluate-prod:
-        - evaluate-speed-prod
-        - evaluate-accuracy-prod
+  evaluate-dev:
+    - evaluate-speed-dev
+    - evaluate-accuracy-dev
 
-    all:
-        - SCB
-        - google
-        - scrape
-        - extract
-        - divide
-        - preprocess
-        - train-models
+  evaluate-prod:
+    - evaluate-speed-prod
+    - evaluate-accuracy-prod
 
-    train:
-        - extract
+  all:
+    - SCB
+    - google
+    - scrape
+    - extract
+    - divide
+    - preprocess
+    - train-models
+    - evaluate-prod
+
+  train:
+    - SCB
+    - google
+    - scrape
+    - extract
+    - divide
+    - preprocess
+    - train-models
+    - evaluate-prod
 
 
-    test_without_training:
-        - preprocess
-        - train-models
+  test_without_training:
+    - google
+    - scrape
+    - extract
+    - divide
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command

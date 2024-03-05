@@ -71,6 +71,7 @@ class CrawlingnlpSpider(CrawlSpider):
         Yields:
             dict: The scraped item.
         """
+
         try:
             item = NLPspiderItem()
             item['domain'] = f'{tldextract.extract(response.url).domain}.{tldextract.extract(response.url).suffix}'
@@ -87,8 +88,8 @@ class CrawlingnlpSpider(CrawlSpider):
                 self.logger.debug(f"Skipping {item['url']} because the domain has reached the maximum number of items")
                 return
             self.item_count_per_domain[item['domain']] = int(self.item_count_per_domain.get(item['domain'], 0) + 1)
-
             yield item
+            
         except Exception as e:
             self.logger.error(f"Error parsing item: {e}")
             item = NLPspiderItem()
