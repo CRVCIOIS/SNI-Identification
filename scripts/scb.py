@@ -1,14 +1,15 @@
 """
 Utility methods for fetching and saving results from the SCB API.
 """
-import os
 import json
 import logging
+import os
 import random
 from enum import StrEnum
-from scripts.scb_wrapper import SCBapi
-from definitions import ROOT_DIR 
+
+from definitions import ROOT_DIR
 from scripts.mongo import get_client
+from scripts.scb_wrapper import SCBapi
 
 # MongoDB definitions ("schema")
 
@@ -25,7 +26,10 @@ class Schema(StrEnum):
     MUNICIPALITIES  = "municipalities"
     API_COUNT       = "api_count"
     LEGAL_FORMS     = "legal_forms"
-    
+    SCRAPED_DATA    = "scraped_data"
+    DEV_SET         = "dev_set"
+    TRAIN_SET       = "train_set"
+    EXTRACTED_DATA  = "extracted_data"
 
 class SCBinterface():
     """
@@ -331,6 +335,119 @@ class SCBinterface():
         org_nr: organization number
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].delete_one({"org_nr": org_nr})
+        
+    def get_company_by_url(self, url):
+        """
+        Get company by URL.
+        params:
+        url: URL
+        returns:
+        company
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})
+        
+    def fetch_aggegrate_companies_by_sni(self):
+        """
+        Fetches aggregate companies by SNI (Standard Industrial Classification) code.
+
+        Returns:
+            A list of dictionaries where each dictionary contains the following
+            keys: 
+                - _id: SNI code
+                - companies: list of company ids (MongoDB ObjectIds)
+                - count: number of companies
+        """
+        return list(self.mongo_client[Schema.DB][Schema.COMPANIES].aggregate([
+    {
+        '$match': {
+            'url': {
+                '$regex': '\\S'
+            }
+        }
+    }, {
+        '$group': {
+            '_id': {
+                '$arrayElemAt': [
+                    '$branch_codes', 0
+                ]
+            }, 
+            'companies': {
+                '$push': '$_id'
+            }, 
+            'count': {
+                '$count': {}
+            }
+        }
+    }
+]))
+        
+    
+    
+    
+    def fetch_company_extracted_data(self, id):
+        """
+        Fetch scraped data for a company from the database.
+        params:
+        id: MongoDB ObjectId
+        returns:
+        scraped data for the company
+        """
+        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({'date': -1}).limit(1)
+        company = list(company)
+        if len(company) == 0:
+            return None
+        return company[0]
+    
+    def fetch_company_by_id(self, id):
+        """
+        Fetch company from the database by MongoDB ObjectId.
+        params:
+        id: MongoDB ObjectId
+        returns:
+        company
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"_id": id})
+    def insert_to_train_set(self, data):
+        """
+        Inserts the given data into the train set collection in the MongoDB database.
+
+        Parameters:
+            data (dict): The data to be inserted into the train set collection.
+
+        Returns:
+            None
+        """
+        self.mongo_client[Schema.DB][Schema.TRAIN_SET].insert_one(data)
+        
+    def insert_to_dev_set(self, data):
+        """
+        Inserts the given data into the development set collection in the MongoDB database.
+
+        Parameters:
+            data (dict): The data to be inserted into the development set.
+
+        Returns:
+            None
+        """
+        self.mongo_client[Schema.DB][Schema.DEV_SET].insert_one(data)
+    
+    def fetch_train_set(self):
+        """
+        Fetch the training set from the database.
+
+        returns:
+            the training set
+        """
+        return self.mongo_client[Schema.DB][Schema.TRAIN_SET].find()
+    
+    def fetch_dev_set(self):
+        """
+        Fetch the training set from the database.
+
+        returns:
+            the training set
+        """
+        return self.mongo_client[Schema.DB][Schema.DEV_SET].find()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)

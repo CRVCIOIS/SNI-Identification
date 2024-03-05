@@ -1,15 +1,22 @@
 """
 This module contains a wrapper function for extracting text from raw HTML in the scraped data and inserting it into the mongo database.
 """
-import json
+import ijson
 import logging
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
+
 import tldextract
 import typer
 from mongo import get_client
+from pymongo.errors import WriteError
+
 from typing_extensions import Annotated
+from scripts.extract import DataExtractor
+from scripts.scb import SCBinterface
+
+from definitions import ROOT_DIR
 from scripts.extract import DataExtractor
 from scripts.scb import SCBinterface
 
@@ -48,60 +55,37 @@ def extract_wrapper(
     :param extract_body (bool): If true, extracts body.
     :param p_only (bool): If true, extracts only paragraphs from body.
     """
+
+    logging.debug("Initializing extractor")
+    
     mongo_client = get_client()
     mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('company_id')
     mongo_client[Schema.DB][Schema.SCRAPED_DATA].create_index('timestamp')
     mongo_client[Schema.DB][Schema.EXTRACTED_DATA].create_index('scraped_id')
-    
+    logging.debug("Mongo initialized")
     interface = SCBinterface()
+    logging.debug("SCB initialized")
     extractor = DataExtractor()
-    scraped_data = _open_json(input_path)
+    logging.debug("Data extractor initialized")
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     method = [extract_meta,extract_body,p_only]
 
-    for scraped_item in scraped_data:
-        scraped_id = insert_scraped_data(scraped_item['raw_html'], timestamp, scraped_item["url"], interface)
-        logging.info("Added scraped data from %s", scraped_item["url"])
-        
-        extractor.create_soup_from_string(scraped_item['raw_html'])
-        extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-        insert_extracted_data(scraped_id, extracted_text, scraped_item["url"], method)
-        logging.info("Added extracted data from %s", scraped_item["url"])
+    logging.debug("Extractor initialized")
+    
+    logging.debug("Extracting data from file at %s", input_path)
+    with open(input_path, 'r', encoding='utf-8') as f:
+        array_items = ijson.items(f, 'item')
+        for scraped_item in array_items:
+            if('example.com' in scraped_item['domain']):
+                logging.debug("Found example.com, skipping")
+                continue
+            extractor.create_soup_from_string(scraped_item['raw_html'])
+            extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
+            insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
+            logging.info("Added extracted data from %s", scraped_item["url"])
 
 
-def insert_scraped_data(scraped_data, timestamp, url, interface):
-    """
-    Inserts the scraped data into the mongo database.
-    
-    :param scraped_data (str): The scraped data.
-    :param timestamp (str): The timestamp of the scrape.
-    :param url (str): The URL of the scraped data.
-    :param interface (SCBinterface): An interface to the SCB database.
-    """
-    parsed_url = f"{tldextract.extract(url).domain}.{tldextract.extract(url).suffix}" # Clean the URL, into the form subdomain.domain.tld
-    company = interface.get_company_by_url(parsed_url)
-    client = get_client()
-    
-    scraped_id = client[Schema.DB][Schema.SCRAPED_DATA].update_one(
-        {
-            'company_id':company['_id'],
-            'date':timestamp
-        },                
-            {
-                "$push": 
-                {
-                    f"data" : {'url':url,'data':scraped_data}
-                }
-            } 
-        ,
-        upsert=True).upserted_id
-    
-    if scraped_id is None:
-        company = client[Schema.DB][Schema.SCRAPED_DATA].find_one({'company_id':company['_id'],'date':timestamp})
-        return company['_id']
-    return scraped_id
-
-def insert_extracted_data(scraped_id, extracted_data, url, method):
+def insert_extracted_data(extracted_data, url, timestamp, method, interface, client):
     """
     Inserts the extracted data into the mongo database.
     
@@ -109,11 +93,29 @@ def insert_extracted_data(scraped_id, extracted_data, url, method):
     :param extracted_data (str): The extracted data.
     :param url (str): The URL of the extracted data.
     """
-    client = get_client()
+    url_components = tldextract.extract(url)
+    # Try to find the company using the full domain subdomain.domain.tld
+    company = interface.get_company_by_url(url_components.fqdn)
+
+    # If not found, try using the base domain domain.tld
+    if company is None:
+        base_domain = f"{url_components.domain}.{url_components.suffix}"
+        company = interface.get_company_by_url(base_domain)
+
+    if company is None:
+        logging.error("No company found for URL: %s", url)
+        return None
+    
+    # Spacy has a limit of 1000000 characters, so we truncate the data if it exceeds this limit
+    if len(extracted_data) >= 1000000:
+        logging.debug("Extracted data for company %s exceeds 1000000 characters, truncating", company['name'])
+        extracted_data = extracted_data[:1000000]
+    
     client[Schema.DB][Schema.EXTRACTED_DATA].update_one(
-        {
-            'scraped_id':scraped_id
-        },                
+            {
+                'company_id':company['_id'],
+                'date':timestamp
+            },   
             {
                 "$push": 
                 {
@@ -124,23 +126,23 @@ def insert_extracted_data(scraped_id, extracted_data, url, method):
         upsert=True)
 
 
-def _open_json(file_path):
-    """
-    Opens the specified file and returns its contents as a JSON object.
+# def _open_json(file_path):
+#     """
+#     Opens the specified file and returns its contents as a JSON object.
 
-    :param file_path (Path): Path to the file.
-    :returns: The contents of the file as a JSON object, 
-        or None if the file cannot be opened or is not a valid JSON file.
-    """
-    try:
-        with open(Path(file_path), 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        logging.error("File not found: %s", file_path)
-    except json.JSONDecodeError:
-        logging.error("File is not a valid JSON file: %s", file_path)
-    return None
-
+#     :param file_path (Path): Path to the file.
+#     :returns: The contents of the file as a JSON object, 
+#         or None if the file cannot be opened or is not a valid JSON file.
+#     """
+#     try:
+#         with open(Path(file_path), 'r', encoding='utf-8') as f:
+#             return json.load(f)
+#     except FileNotFoundError:
+#         logging.error("File not found: %s", file_path)
+#     except json.JSONDecodeError:
+#         logging.error("File is not a valid JSON file: %s", file_path)
+#     return None
 
 if __name__ == '__main__':
-    typer.run(extract_wrapper)
+    logging.basicConfig(level=logging.DEBUG)
+    typer.run(extract_wrapper("assets\scraped_data.json", True, True, False))

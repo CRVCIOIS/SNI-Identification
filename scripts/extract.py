@@ -2,10 +2,12 @@
 Extracts information from scraped websites, 
 to reduce noise in AI model training.
 """
-import logging
 import copy
+import logging
+
 import regex as re
 from bs4 import BeautifulSoup
+
 
 class NoBeautifulSoupObject(Exception):
     """
@@ -77,14 +79,13 @@ class DataExtractor:
         Extracts text and creates a string from a scraped HTML page.
         :param filter_: if True (default), then the data is also filtered.
         :param p_only: if True, then only paragraphs will be scraped from the body.
-
         :param extract_meta: if True, then meta will be extracted.
         :param extract_body: if True, then body will be extracted. 
         :returns: a string
         """
         s = ""
         
-        if extract_body:
+        if (extract_body or p_only):
             body = self._extract_body(filter_, p_only)
             if filter_:
                 self._filter_list(body)
@@ -181,24 +182,23 @@ class DataExtractor:
         if self.soup is None:
             raise NoBeautifulSoupObject
 
-        soup = copy.deepcopy(self.soup.body)
         
         if filter_:
             # Remove links
-            for element in soup.find_all('a'):
+            for element in self.soup.find_all('a'):
                 if element.strings is not None:
                     element.decompose()
             # Remove tags containing "cookie"
-            for element in soup.find_all('div', class_=re.compile("cookie*.")):
+            for element in self.soup.find_all('div', class_=re.compile("cookie*.")):
                 element.decompose()
             # Remove JS scripts    
-            for element in soup.find_all('script'):
+            for element in self.soup.find_all('script'):
                 element.decompose()
 
         if p_only:
-            lst = [''.join(s.findAll(string=True))for s in soup.findAll('p')]
+            lst = [''.join(s.findAll(string=True))for s in self.soup.findAll('p')]
         else:
-            lst = [s for s in soup.stripped_strings]
+            lst = [s for s in self.soup.stripped_strings]
         return lst
 
     def _filter_list(self, lst):

@@ -8,23 +8,18 @@ import json
 import logging
 import subprocess
 from pathlib import Path
+
 import typer
 from typing_extensions import Annotated
+
 from definitions import ROOT_DIR
+from scripts.mongo import get_client
+from scripts.scb import Schema
 
 
 def main(
-        input_path: Annotated[Path, typer.Argument(
-            exists=True, 
-            file_okay=True, 
-            dir_okay=False, 
-            readable=True, 
-            resolve_path=True, 
-            formats=["json"], 
-            help="The path to the input data file."
-            )],
         output_path: Annotated[Path, typer.Argument(
-            exists=True, 
+            exists=False, 
             file_okay=True, 
             dir_okay=False, 
             readable=True, 
@@ -32,31 +27,37 @@ def main(
             formats=["json"], 
             help="The path to the output data file."
             )],
+        item_limit: Annotated[int, typer.Argument(
+            help="The maximum number of items to scrape per domain."
+        )] = 1
         ):
-        """
-        Run Scrapy crawler with the given start URLs and output file path.
-
-        :param input_path (Path): The path to the input file, which comes from google_wrapper.py.
-        :param output_file_path (Path): The path to the output file.
-        """
+        client = get_client()
+        query = {"url": {"$regex": r"/\S"}}
         
-        with open(input_path, 'r', encoding='utf-8') as f:
-            logging.debug("Reading data from %s", input_path)
-            data = json.load(f)
-        start_urls: str = ""
-        logging.debug("Looping through the data to get the start URLs for the Scrapy crawler.")
-        for index, company in enumerate(data):
-            if (company["url"] != "" or company["url"] != None):
-                logging.debug("Adding company url '%s' to be crawled.", company["url"])
-                if index == len(data) - 1:
-                    start_urls += company["url"]
-                else:
-                    start_urls += company["url"] + ","
+        logging.debug("Querying the database with the following query: %s", query)
+        documents = client[Schema.DB][Schema.COMPANIES].find(query)
 
-        output_path = ROOT_DIR / output_path
-        command = f'scrapy crawl crawlingNLP -a start_urls={start_urls} -o {output_path}:json'.split(" ")
+        start_urls: str = ""
+        documents = list(documents)
+        document_length = len(documents)
+        logging.debug("Found %s documents in the database.", document_length)
+        
+        for index, company in enumerate(documents):
+            if index == document_length - 1:
+                start_urls += f'{company["url"]}'
+            else:
+                start_urls += f'{company["url"]},'
+            
+        # Check if ouput file exists, then delete it
+        file = Path(output_path).with_suffix(".json")
+        if file.exists():
+            file.unlink()
+
+        output_path = Path(ROOT_DIR) / Path(output_path)
+        command = f'scrapy crawl crawlingNLP -a start_urls={start_urls} -a item_limit={item_limit} -o {output_path}:json'.split(" ")
         logging.info("Running Scrapy crawler with the following command: %s", " ".join(command))
         subprocess.check_call(command, cwd=Path('scraping'))
     
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     typer.run(main)
