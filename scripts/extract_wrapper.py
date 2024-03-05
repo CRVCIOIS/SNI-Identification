@@ -11,6 +11,7 @@ from pathlib import Path
 import tldextract
 import typer
 from pymongo.errors import WriteError
+
 from typing_extensions import Annotated
 from definitions import ROOT_DIR
 from scripts.mongo import get_client, Schema
@@ -39,6 +40,7 @@ def extract_wrapper(
     :param extract_body (bool): If true, extracts body.
     :param p_only (bool): If true, extracts only paragraphs from body.
     """
+
     logging.debug("Initializing extractor")
     
     mongo_client = get_client()
@@ -125,7 +127,6 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
 #     except json.JSONDecodeError:
 #         logging.error("File is not a valid JSON file: %s", file_path)
 #     return None
-
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

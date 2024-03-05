@@ -27,6 +27,9 @@ def main(
             formats=["json"], 
             help="The path to the output data file."
             )],
+        item_limit: Annotated[int, typer.Argument(
+            help="The maximum number of items to scrape per domain."
+        )] = 1
         ):
         client = get_client()
         query = {"url": {"$regex": r"/\S"}}
@@ -45,11 +48,13 @@ def main(
             else:
                 start_urls += f'{company["url"]},'
             
-            
-
+        # Check if ouput file exists, then delete it
+        file = Path(output_path).with_suffix(".json")
+        if file.exists():
+            file.unlink()
 
         output_path = Path(ROOT_DIR) / Path(output_path)
-        command = f'scrapy crawl crawlingNLP -a start_urls={start_urls} -o {output_path}:json'.split(" ")
+        command = f'scrapy crawl crawlingNLP -a start_urls={start_urls} -a item_limit={item_limit} -o {output_path}:json'.split(" ")
         logging.info("Running Scrapy crawler with the following command: %s", " ".join(command))
         subprocess.check_call(command, cwd=Path('scraping'))
     
