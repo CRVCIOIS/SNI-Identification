@@ -23,7 +23,11 @@ class CrawlingnlpSpider(CrawlSpider):
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
                 start_urls (str): Comma-separated list of URLs to start crawling from.
+                max_items_per_domain (int): The maximum number of items to scrape per domain.
         """
+        self.item_count_per_domain = dict()
+        self.max_items_per_domain = int(kwargs.get("item_limit", 1))
+        
         super(CrawlingnlpSpider, self).__init__(*args, **kwargs)
 
         self.start_urls = kwargs.get("start_urls").split(
@@ -72,6 +76,17 @@ class CrawlingnlpSpider(CrawlSpider):
             item['domain'] = f'{tldextract.extract(response.url).domain}.{tldextract.extract(response.url).suffix}'
             item["url"] = response.url
             item["raw_html"] = response.text
+            
+            # If the respone url contains "/en/" the item is not yielded
+            if "/en/" in item["url"]:
+                self.logger.info(f"Skipping {item['url']} because it is in English")
+                return
+
+            # Check if the domain has reached the maximum number of items
+            if self.item_count_per_domain.get(item['domain'], 0) >= int(self.max_items_per_domain):
+                self.logger.debug(f"Skipping {item['url']} because the domain has reached the maximum number of items")
+                return
+            self.item_count_per_domain[item['domain']] = int(self.item_count_per_domain.get(item['domain'], 0) + 1)
 
             yield item
         except Exception as e:
