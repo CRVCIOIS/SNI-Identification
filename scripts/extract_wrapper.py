@@ -1,7 +1,7 @@
 """
 This module contains a wrapper function for extracting text from raw HTML in the scraped data and inserting it into the mongo database.
 """
-import ijson
+import json
 import logging
 import os
 from datetime import datetime
@@ -54,12 +54,11 @@ def extract_wrapper(
     method = [extract_meta,extract_body,p_only]
 
     logging.debug("Extractor initialized")
-    
-    for site_path in [f for f in os.listdir('scraped_data') if os.path.isfile(f)]:
-        logging.debug("Extracting data from file at %s", site_path)
-        with open(site_path, 'r', encoding='utf-8') as f:
-            array_items = ijson.items(f, 'item')
-            for scraped_item in array_items:
+
+    for filename in os.listdir(input_path):
+        logging.debug("Extracting data from file at %s", filename)
+        with open(os.path.join(input_path,filename), 'r', encoding='utf-8') as f:
+                scraped_item = json.load(f)
                 if('example.com' in scraped_item['domain']):
                     logging.debug("Found example.com, skipping")
                     continue
@@ -130,4 +129,4 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    typer.run(extract_wrapper("assets\scraped_data.json", True, True, False))
+    typer.run(extract_wrapper("scraped_data", True, True, False))
