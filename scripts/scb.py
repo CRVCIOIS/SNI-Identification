@@ -8,28 +8,8 @@ import random
 from enum import StrEnum
 
 from definitions import ROOT_DIR
-from scripts.mongo import get_client
+from scripts.mongo import get_client, Schema
 from scripts.scb_wrapper import SCBapi
-
-# MongoDB definitions ("schema")
-
-class Schema(StrEnum):
-    """
-    Used to loosely enforce a schema for MongoDB.
-        Defines database name and collection names. 
-    """
-    # Database
-    DB              = "SCB"
-    # Collections
-    SNI             = "SNI_codes"
-    COMPANIES       = "companies"
-    MUNICIPALITIES  = "municipalities"
-    API_COUNT       = "api_count"
-    LEGAL_FORMS     = "legal_forms"
-    SCRAPED_DATA    = "scraped_data"
-    DEV_SET         = "dev_set"
-    TRAIN_SET       = "train_set"
-    EXTRACTED_DATA  = "extracted_data"
 
 class SCBinterface():
     """

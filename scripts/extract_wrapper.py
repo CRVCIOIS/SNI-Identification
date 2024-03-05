@@ -1,37 +1,22 @@
 """
 This module contains a wrapper function for extracting text from raw HTML in the scraped data and inserting it into the mongo database.
 """
-import ijson
+import json
 import logging
+import os
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
 
 import tldextract
 import typer
-from mongo import get_client
 from pymongo.errors import WriteError
 
 from typing_extensions import Annotated
-from scripts.extract import DataExtractor
-from scripts.scb import SCBinterface
-
 from definitions import ROOT_DIR
+from scripts.mongo import get_client, Schema
 from scripts.extract import DataExtractor
 from scripts.scb import SCBinterface
-
-
-class Schema(StrEnum):
-    """
-    Used to loosely enforce a schema for MongoDB.
-        Defines database name and collection names. 
-    """
-    # Database
-    DB              = "SCB"
-    # Collections
-    SCRAPED_DATA    = "scraped_data"
-    EXTRACTED_DATA  = "extracted_data"
-    METHODS         = "methods"
 
 def extract_wrapper(    
             input_path: Annotated[Path, typer.Argument(
@@ -71,18 +56,18 @@ def extract_wrapper(
     method = [extract_meta,extract_body,p_only]
 
     logging.debug("Extractor initialized")
-    
-    logging.debug("Extracting data from file at %s", input_path)
-    with open(input_path, 'r', encoding='utf-8') as f:
-        array_items = ijson.items(f, 'item')
-        for scraped_item in array_items:
-            if('example.com' in scraped_item['domain']):
-                logging.debug("Found example.com, skipping")
-                continue
-            extractor.create_soup_from_string(scraped_item['raw_html'])
-            extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-            insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
-            logging.info("Added extracted data from %s", scraped_item["url"])
+
+    for filename in os.listdir(input_path):
+        logging.debug("Extracting data from file at %s", filename)
+        with open(os.path.join(input_path,filename), 'r', encoding='utf-8') as f:
+                scraped_item = json.load(f)
+                if('example.com' in scraped_item['domain']):
+                    logging.debug("Found example.com, skipping")
+                    continue
+                extractor.create_soup_from_string(scraped_item['raw_html'])
+                extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
+                insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
+                logging.info("Added extracted data from %s", scraped_item["url"])
 
 
 def insert_extracted_data(extracted_data, url, timestamp, method, interface, client):
@@ -145,4 +130,4 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    typer.run(extract_wrapper("assets\scraped_data.json", True, True, False))
+    typer.run(extract_wrapper("scraped_data", True, True, False))
