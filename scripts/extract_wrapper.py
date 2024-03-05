@@ -9,26 +9,12 @@ from pathlib import Path
 
 import tldextract
 import typer
-from mongo import get_client
 from pymongo.errors import WriteError
 from typing_extensions import Annotated
-
 from definitions import ROOT_DIR
+from scripts.mongo import get_client, Schema
 from scripts.extract import DataExtractor
 from scripts.scb import SCBinterface
-
-
-class Schema(StrEnum):
-    """
-    Used to loosely enforce a schema for MongoDB.
-        Defines database name and collection names. 
-    """
-    # Database
-    DB              = "SCB"
-    # Collections
-    SCRAPED_DATA    = "scraped_data"
-    EXTRACTED_DATA  = "extracted_data"
-    METHODS         = "methods"
 
 def extract_wrapper(    
             input_path: Annotated[Path, typer.Argument(

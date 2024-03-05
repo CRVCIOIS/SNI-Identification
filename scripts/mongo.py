@@ -2,6 +2,7 @@
 Methods for abstracting communication with Mongodb
 """
 import os
+from enum import StrEnum
 from pathlib import Path
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -10,6 +11,25 @@ import bson
 
 BACKUP_PATH = os.path.join(ROOT_DIR, "backup")
 load_dotenv(os.path.join(ROOT_DIR, '.env'), override=True)
+
+class Schema(StrEnum):
+    """
+    Used to loosely enforce a schema for MongoDB.
+        Defines database name and collection names. 
+    """
+    # Database
+    DB              = "SCB"
+    # Collections
+    SNI             = "SNI_codes"
+    COMPANIES       = "companies"
+    MUNICIPALITIES  = "municipalities"
+    API_COUNT       = "api_count"
+    LEGAL_FORMS     = "legal_forms"
+    SCRAPED_DATA    = "scraped_data"
+    EXTRACTED_DATA  = "extracted_data"
+    METHODS         = "methods"
+    DEV_SET         = "dev_set"
+    TRAIN_SET       = "train_set"
 
 def get_client():
     """
