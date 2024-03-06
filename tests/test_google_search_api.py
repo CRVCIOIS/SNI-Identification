@@ -8,7 +8,7 @@ Test cases:
 - test_batch_search: Checks the behavior of the batch_search method in the API.
 """
 import pytest
-from scripts.google_search_api import GoogleSearchAPI
+from classes.google_search_api import GoogleSearchAPI
 import tldextract
 
 

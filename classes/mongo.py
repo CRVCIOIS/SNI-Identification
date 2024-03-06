@@ -2,6 +2,7 @@
 Methods for abstracting communication with Mongodb
 """
 import os
+from abc import ABC
 from enum import StrEnum
 from pathlib import Path
 from pymongo import MongoClient
@@ -69,3 +70,21 @@ def restore(client:MongoClient, db_name:str):
     for coll in os.listdir(BACKUP_PATH):
         with open(os.path.join(BACKUP_PATH, coll), "rb+") as f:
             db[coll.split('.')[0]].insert_many(bson.decode_all(f.read()))
+
+class DBInterface(ABC):
+    """
+    Abstract class for interfacing with MongoDB database.
+    """
+    def __init__(self):
+        self.mongo_client = get_client()
+
+    def _init_collection(self, collection, callback):
+        """
+        Check if vital collections are empty, if so, store the data
+        
+        params:
+        collection: collection name
+        callback: function to call if collection is empty
+        """
+        if self.mongo_client[Schema.DB][collection].count_documents({}) == 0:
+            callback()

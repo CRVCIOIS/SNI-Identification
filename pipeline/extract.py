@@ -1,0 +1,82 @@
+"""
+This module runs the extraction scripts on the scraped data.
+"""
+import os
+import json
+import logging
+from datetime import datetime
+from pathlib import Path
+import typer
+from typing_extensions import Annotated
+from classes.extract import DataExtractor
+from adapters.scb import SCBAdapter
+from adapters.extract import ExtractAdapter
+
+def main(    
+            input_path: Annotated[Path, typer.Argument(
+                exists=True, 
+                file_okay=True, 
+                dir_okay=False, 
+                readable=True, 
+                resolve_path=True, 
+                formats=["json"], 
+                help="The path to the input scraped data file."
+                )],     
+            extract_meta: Annotated[bool, typer.Argument()],
+            extract_body: Annotated[bool, typer.Argument()],
+            p_only: Annotated[bool, typer.Argument()]):
+    """
+    Extracts text from raw HTML in the scraped data
+    and inserts it into the database.
+
+    :param input_path (Path): Path to the scraped data folder.
+    :param extract_meta (bool): If true, extracts the HTML meta-tags.
+    :param extract_body (bool): If true, extracts the HTML body.
+    :param p_only (bool): If true, extracts only the paragraphs (<p>...</p>) from the HTML body.
+    """
+
+    scb_adapter = SCBAdapter()
+    extractor = DataExtractor()
+    extract_adapter = ExtractAdapter()
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    methods = [extract_meta,extract_body,p_only]
+
+    for filename in os.listdir(input_path):
+        logging.debug("Extracting data from file at %s", filename)
+
+        with open(os.path.join(input_path,filename), 'r', encoding='utf-8') as f:
+            scraped_item = json.load(f)
+
+            if 'example.com' in scraped_item['domain']:
+                logging.debug("Found example.com, skipping")
+                continue
+
+            company = scb_adapter.get_company_by_url(scraped_item["url"])
+
+            if company is None:
+                logging.error("No company found for URL: %s", scraped_item["url"])
+                continue
+
+            extractor.create_soup_from_string(scraped_item['raw_html'])
+            extracted_text = extractor.extract(
+                p_only=p_only, 
+                extract_body=extract_body, 
+                extract_meta=extract_meta)
+
+            # Spacy has a limit of 1000000 characters,
+            # so we truncate the data if it exceeds this limit
+            if len(extracted_data) >= 1000000:
+                logging.debug("Extracted data for company %s exceeds 1000000 characters, truncating", company['name'])
+                extracted_data = extracted_data[:1000000]
+
+            extract_adapter.insert_extracted_data(
+                extracted_text,company['url'],
+                company['_id'],timestamp,methods)
+
+            logging.info("Added extracted data from %s", scraped_item["url"])
+
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    typer.run(main)

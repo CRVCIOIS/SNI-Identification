@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 import json
-from scripts.divide_dataset import main
+from pipeline.divide_dataset import main
 DATASET = [
             {
                 "company_name": "SSAB",

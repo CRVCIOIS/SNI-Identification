@@ -8,7 +8,7 @@ import pytest
 import spacy
 from spacy.tokens import DocBin
 
-from scripts.preprocess import main
+from pipeline.preprocess import main
 
 
 @pytest.fixture

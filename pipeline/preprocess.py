@@ -18,8 +18,8 @@ import typer
 from spacy.language import Language
 from spacy.tokens import DocBin
 
-from scripts.scb import SCBinterface
-
+from adapters.train import TrainAdapter
+from adapters.scb import SCBAdapter
 
 def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_label=False):
     """
@@ -66,18 +66,19 @@ def main(
     doc_train = DocBin()
     doc_eval = DocBin()
     
-    scb = SCBinterface()
+    scb_adapter   = SCBAdapter()
+    train_adapter = TrainAdapter()
     
     codes = {}
-    for code in scb.fetch_codes():
+    for code in scb_adapter.fetch_codes():
         codes[code] = 0
         
-    for company in scb.fetch_train_set():
+    for company in train_adapter.fetch_train_set():
         labels = copy(codes) # Copy needed to avoid reference to same dictionary
         doc = create_doc_for_company(labels, company, nlp, multi_label=False)
         doc_train.add(doc)
             
-    for company in scb.fetch_dev_set():
+    for company in train_adapter.fetch_dev_set():
         labels = copy(codes) # Copy needed to avoid reference to same dictionary
         doc = create_doc_for_company(labels, company, nlp, multi_label=False)
         doc_eval.add(doc)

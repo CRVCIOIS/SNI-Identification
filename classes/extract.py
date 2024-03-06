@@ -2,7 +2,6 @@
 Extracts information from scraped websites, 
 to reduce noise in AI model training.
 """
-import copy
 import logging
 
 import regex as re

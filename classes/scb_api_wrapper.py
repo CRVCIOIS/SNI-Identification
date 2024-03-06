@@ -8,7 +8,6 @@ import copy
 import json
 from dotenv import load_dotenv
 from requests import Session
-from requests.models import Response
 from requests_pkcs12 import Pkcs12Adapter
 from definitions import ROOT_DIR
 

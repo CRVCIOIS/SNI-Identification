@@ -4,11 +4,10 @@ and write the updated data to an output file.
 """
 import logging
 from typing import Annotated
-import time
 
 import typer
-from scripts.google_search_api import GoogleSearchAPI
-from scripts.scb import SCBinterface
+from classes.google_search_api import GoogleSearchAPI
+from adapters.scb import SCBAdapter
 
 FILTER_LIST = [
     'aktiebolag',
@@ -52,7 +51,7 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
     Returns:
         None
     """
-    interface = SCBinterface()
+    interface = SCBAdapter()
     sni_codes = interface.fetch_codes()
     
     google = GoogleSearchAPI()

@@ -7,7 +7,7 @@ from requests import Session
 from requests_pkcs12 import Pkcs12Adapter
 from dotenv import load_dotenv
 from definitions import ROOT_DIR
-import scripts.scb_wrapper as scb
+import classes.scb_api_wrapper as scb
 load_dotenv(os.path.join(ROOT_DIR, '.env'))
 
 
