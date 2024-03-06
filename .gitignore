@@ -183,3 +183,6 @@ temp/
 
 #keys and certs
 *.pfx
+
+# Ignore backup files
+backup/

@@ -22,8 +22,8 @@ from scripts.scb import SCBinterface
 def extract_wrapper(    
             input_path: Annotated[Path, typer.Argument(
                 exists=True, 
-                file_okay=True, 
-                dir_okay=False, 
+                file_okay=False, 
+                dir_okay=True, 
                 readable=True, 
                 resolve_path=True, 
                 formats=["json"], 
@@ -61,17 +61,14 @@ def extract_wrapper(
     for filename in os.listdir(input_path):
         logging.debug("Extracting data from file at %s", filename)
         with open(os.path.join(input_path,filename), 'r', encoding='utf-8') as f:
-                scraped_item = json.load(f)
-                if('example.com' in scraped_item['domain']):
-                    logging.debug("Found example.com, skipping")
-                    continue
-                extractor.create_soup_from_string(scraped_item['raw_html'])
-                extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
-                insert_extracted_data(extracted_text, scraped_item["url"], timestamp, method, interface, mongo_client)
-                logging.info("Added extracted data from %s", scraped_item["url"])
+            scraped_item = json.load(f)
+            extractor.create_soup_from_string(scraped_item['raw_html'])
+            extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
+            insert_extracted_data(extracted_text, scraped_item["url"], scraped_item['org_nr'], timestamp, method, interface, mongo_client)
+            logging.info("Added extracted data from %s", scraped_item["url"])
 
 
-def insert_extracted_data(extracted_data, url, timestamp, method, interface, client):
+def insert_extracted_data(extracted_data, url, org_nr, timestamp, method, interface, client):
     """
     Inserts the extracted data into the mongo database.
     
@@ -79,18 +76,11 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
     :param extracted_data (str): The extracted data.
     :param url (str): The URL of the extracted data.
     """
-    url_components = tldextract.extract(url)
-    # Try to find the company using the full domain subdomain.domain.tld
-    company = interface.get_company_by_url(url_components.fqdn)
-
-    # If not found, try using the base domain domain.tld
+    
+    company = interface.fetch_company_by_org_nr(org_nr)
+    
     if company is None:
-        base_domain = f"{url_components.domain}.{url_components.suffix}"
-        company = interface.get_company_by_url(base_domain)
-
-    if company is None:
-        logging.error("No company found for URL: %s", url)
-        return None
+        return
     
     # Spacy has a limit of 1000000 characters, so we truncate the data if it exceeds this limit
     if len(extracted_data) >= 1000000:
@@ -110,24 +100,6 @@ def insert_extracted_data(extracted_data, url, timestamp, method, interface, cli
             } 
         ,
         upsert=True)
-
-
-# def _open_json(file_path):
-#     """
-#     Opens the specified file and returns its contents as a JSON object.
-
-#     :param file_path (Path): Path to the file.
-#     :returns: The contents of the file as a JSON object, 
-#         or None if the file cannot be opened or is not a valid JSON file.
-#     """
-#     try:
-#         with open(Path(file_path), 'r', encoding='utf-8') as f:
-#             return json.load(f)
-#     except FileNotFoundError:
-#         logging.error("File not found: %s", file_path)
-#     except json.JSONDecodeError:
-#         logging.error("File is not a valid JSON file: %s", file_path)
-#     return None
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

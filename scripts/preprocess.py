@@ -12,7 +12,7 @@
 """
 from copy import copy
 from pathlib import Path
-
+import logging
 import spacy
 import typer
 from spacy.language import Language
@@ -20,6 +20,7 @@ from spacy.tokens import DocBin
 
 from scripts.scb import SCBinterface
 
+logging.basicConfig(level=logging.INFO)
 
 def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_label=False):
     """
@@ -55,6 +56,7 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_lab
 def main(
         output_train_path: Path = typer.Argument(..., dir_okay=False),
         output_dev_path: Path = typer.Argument(..., dir_okay=False),
+        output_test_path: Path = typer.Argument(..., dir_okay=False),
 ):
     """
     Preprocesses the input data and saves the processed labeled documents in binary form to the output path.
@@ -65,6 +67,7 @@ def main(
     nlp.max_length = 20000000
     doc_train = DocBin()
     doc_eval = DocBin()
+    doc_test = DocBin()
     
     scb = SCBinterface()
     
@@ -81,8 +84,27 @@ def main(
         labels = copy(codes) # Copy needed to avoid reference to same dictionary
         doc = create_doc_for_company(labels, company, nlp, multi_label=False)
         doc_eval.add(doc)
+        
+    for company in scb.fetch_test_set():
+        labels = copy(codes)
+        doc = create_doc_for_company(labels, company, nlp, multi_label=False)
+        doc_test.add(doc)
+
+    # Remove old files
+    output_dev_path.unlink(missing_ok=True)
+    output_train_path.unlink(missing_ok=True)
+    output_test_path.unlink(missing_ok=True)
+    logging.info("Removed old files")
 
     doc_train.to_disk(output_train_path)
+    logging.info("Saved training data to %s", output_train_path)
+    logging.info("Number of documents in training data: %s", len(doc_train))
     doc_eval.to_disk(output_dev_path)
+    logging.info("Saved evaluation data to %s", output_dev_path)
+    logging.info("Number of documents in evaluation data: %s", len(doc_eval))
+    doc_test.to_disk(output_test_path)
+    logging.info("Saved test data to %s", output_test_path)
+    logging.info("Number of documents in test data: %s", len(doc_test))
+    
 if __name__ == "__main__":
     typer.run(main)
