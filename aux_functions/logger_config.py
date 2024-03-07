@@ -43,7 +43,7 @@ def conf_logger(filename):
         },
         'root': {
             'handlers': ['file', 'console'],
-            'level': "INFO",
+            'level': "DEBUG",
         }
     }
 
