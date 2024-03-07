@@ -27,11 +27,16 @@ class SimpleScraper():
         self.urls = []
         self.follow_queries = {"om", "about"}
         self.headers = {"Accept-Language": "sv-SE,sv;"}
-        self.filter = {"/en/", "/en-US", "/en-GB", ".pdf", ".jpg", ".png",
+        self.filter = {"/en/", "/en-US", "/en-GB", "lang=en", "in-english", ".pdf", ".jpg", ".png",
                        ".jpeg", ".gif", ".svg", ".doc", ".docx", ".ppt", ".pptx",
                        "cookies", "integritet","privacy", "policy", "terms",
                        "conditions", "contact", "job", "career", "press", "news",
-                       "investor", "investors", "kontakt", "karriär", "jobb",}
+                       "investor", "investors", "kontakt", "karriär", "jobb",
+                       "styrelse", "nyhet", "medlemmar", "personal", "ledning",
+                       "hallbarhet", "sustainability", "miljo", "environment",
+                       "lediga-tjanster", "lediga-jobb", 
+                       "visselblasning", "socialamedier", "social-media", "instagram",
+                       "sociala-medier", "facebook", "twitter", "linkedin", "youtube",}
         self.already_scraped = set()
        
     def scrape_all(self, follow_links=False, filter_=False):
@@ -176,6 +181,7 @@ def main(follow_links: Annotated[bool, typer.Argument(help="If true, the scraper
          filter_: Annotated[bool, typer.Argument(help="If true, the scraper will filter out certain urls.")] = False):
     scraper = SimpleScraper()
     scraper.scrape_all(follow_links, filter_)
+    #scraper.prune_data()
     logging.info("Scraping finished!")
 
 if __name__ == "__main__":

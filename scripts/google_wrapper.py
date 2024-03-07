@@ -44,6 +44,9 @@ BLACKLIST = [
     'wiktionary.org',
     'kth.se',
     'wikipedia.org',
+    'pintrest.com',
+    'primevideo.com',
+    
 ]
 
 

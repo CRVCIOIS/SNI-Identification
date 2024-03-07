@@ -26,13 +26,12 @@ def main(
     nr_of_each_SNI = interface.fetch_aggegrate_companies_by_sni()
     stored_sni = {}
     
+    interface.delete_all_data_sets()
+    logging.info("Deleted all previous data sets")
+
     for sni in nr_of_each_SNI:
-        nr_of_cross_validation_companies = math.ceil(sni["count"] * (100 - 10 - percentage_train) / 100)
-        nr_of_test_companies = math.ceil(sni["count"] * (10) / 100) # 10% of the companies will be used for test data
-        logging.info(f"Number of companies with SNI code {sni['sni_code']}: {sni['count']}.")
-        logging.info(f"Number of companies in cross-validation dataset: {nr_of_cross_validation_companies}.")
-        logging.info(f"Number of companies in test dataset: {nr_of_test_companies}.")
-        logging.info(f"Number of companies in training dataset: {sni['count'] - nr_of_cross_validation_companies - nr_of_test_companies}.")
+        nr_of_cross_validation_companies = math.floor(sni["count"] * (100 - 10 - percentage_train) / 100)
+        nr_of_test_companies = math.floor(sni["count"] * (10) / 100) # 10% of the companies will be used for test data
         
         for company in sni['companies']:
             company_scraped_data = interface.fetch_company_extracted_data(company)
@@ -55,7 +54,8 @@ def main(
                 stored_sni[company_data["branch_codes"][0]] += 1
             else:
                 interface.insert_to_train_set(company_scraped_data)
-                
+    
+    logging.info("Dataset division finished!")
  
    
 if __name__ == "__main__":
@@ -70,4 +70,3 @@ if __name__ == "__main__":
                     datefmt='%H:%M:%S',
                     level=logging.DEBUG)
     typer.run(main)
-    logging.info("Dataset division finished!")

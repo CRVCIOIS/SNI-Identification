@@ -349,7 +349,7 @@ class SCBinterface():
         returns:
         scraped data for the company
         """
-        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({'date': -1}).limit(1)
+        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({"_id":-1}).limit(1)
         company = list(company)
         if len(company) == 0:
             return None
@@ -437,7 +437,33 @@ class SCBinterface():
         company
         """
         return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"org_nr": org_nr})
-
+    
+    def delete_train_set(self):
+        """
+        Deletes the training set from the database.
+        """
+        self.mongo_client[Schema.DB][Schema.TRAIN_SET].delete_many({})
+        
+    def delete_dev_set(self):
+        """
+        Deletes the development set from the database.
+        """
+        self.mongo_client[Schema.DB][Schema.DEV_SET].delete_many({})
+        
+    def delete_test_set(self):
+        """
+        Deletes the test set from the database.
+        """
+        self.mongo_client[Schema.DB][Schema.TEST_SET].delete_many({})
+        
+    def delete_all_data_sets(self):
+        """
+        Deletes all data sets from the database.
+        """
+        self.delete_train_set()
+        self.delete_dev_set()
+        self.delete_test_set()
+    
 if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)
     scb = SCBinterface()

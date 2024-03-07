@@ -10,7 +10,6 @@ vars:
     version: "0.0.1"
     train: "docs_nace_training"
     dev: "docs_nace_eval"
-    test: "docs_nace_test"
     gpu_id: -1
     scraped_data_file_name: "scraped_data"
     scrape_filter: "True"
@@ -118,14 +117,10 @@ commands:
     - name: "preprocess"
       help: "Convert the data to spaCy's binary format"
       script:
-          - "python scripts/preprocess.py corpus/${vars.train}.spacy corpus/${vars.dev}.spacy corpus/${vars.test}.spacy"
+          - "python scripts/preprocess.py corpus/${vars.train}.spacy corpus/${vars.dev}.spacy"
       deps:
           - "scripts/preprocess.py"
 
-      outputs:
-          - "corpus/${vars.train}.spacy"
-          - "corpus/${vars.dev}.spacy"
-          - "corpus/${vars.test}.spacy"
 
     - name: "train-models"
       help: "Train a text classification model"
@@ -152,7 +147,7 @@ commands:
     - name: "evaluate-accuracy-prod"
       help: "Evaluate the prod model for accuracy and export metrics"
       script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.test}.spacy --output training/metrics-accuracy-prod-${vars.train}.json --gpu-id ${vars.gpu_id}"
+          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-accuracy-prod-${vars.train}.json --gpu-id ${vars.gpu_id}"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
@@ -162,7 +157,7 @@ commands:
     - name: "evaluate-speed-prod"
       help: "Evaluate the prod model for speed and export metrics"
       script:
-          - "python -m spacy benchmark speed training/model-best corpus/${vars.test}.spacy --output training/metrics-speed-prod-${vars.train}.json --gpu-id ${vars.gpu_id}y"
+          - "python -m spacy benchmark speed training/model-best corpus/${vars.dev}.spacy --output training/metrics-speed-prod-${vars.train}.json --gpu-id ${vars.gpu_id}y"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
@@ -172,7 +167,7 @@ commands:
     - name: "evaluate-accuracy-dev"
       help: "Evaluate the dev model for accuracy and export metrics"
       script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.test}.spacy --output training/metrics-accuracy-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
+          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-accuracy-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
@@ -183,7 +178,7 @@ commands:
     - name: "evaluate-speed-dev"
       help: "Evaluate the dev model for and export metrics"
       script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.test}.spacy --output training/metrics-speed-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
+          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-speed-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"

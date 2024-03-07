@@ -19,6 +19,7 @@ from datetime import datetime
 from spacy.language import Language
 from spacy.tokens import DocBin
 from scripts.scb import SCBinterface
+from definitions import ROOT_DIR
 
 def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_label=False):
     """
@@ -54,7 +55,6 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_lab
 def main(
         output_train_path: Path = typer.Argument(..., dir_okay=False),
         output_dev_path: Path = typer.Argument(..., dir_okay=False),
-        output_test_path: Path = typer.Argument(..., dir_okay=False),
 ):
     """
     Preprocesses the input data and saves the processed labeled documents in binary form to the output path.
@@ -82,16 +82,10 @@ def main(
         labels = copy(codes) # Copy needed to avoid reference to same dictionary
         doc = create_doc_for_company(labels, company, nlp, multi_label=False)
         doc_eval.add(doc)
-        
-    for company in scb.fetch_test_set():
-        labels = copy(codes)
-        doc = create_doc_for_company(labels, company, nlp, multi_label=False)
-        doc_test.add(doc)
 
     # Remove old files
     output_dev_path.unlink(missing_ok=True)
     output_train_path.unlink(missing_ok=True)
-    output_test_path.unlink(missing_ok=True)
     logging.debug("Removed old corpus files")
 
     doc_train.to_disk(output_train_path)
@@ -100,9 +94,6 @@ def main(
     doc_eval.to_disk(output_dev_path)
     logging.info("Saved evaluation data to %s", output_dev_path)
     logging.info("Number of documents in evaluation data: %s", len(doc_eval))
-    doc_test.to_disk(output_test_path)
-    logging.info("Saved test data to %s", output_test_path)
-    logging.info("Number of documents in test data: %s", len(doc_test))
     
 if __name__ == "__main__":
     log_path = Path(ROOT_DIR) / "logs"
