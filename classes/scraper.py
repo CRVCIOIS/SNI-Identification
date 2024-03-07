@@ -13,15 +13,18 @@ from pathlib import Path
 
 class Scraper():
     """
-    A simple synchronous scraper that fetches the content of a list of pages
-        and saves it to json files.
+    A simple synchronous crawler that crawls sites while propagating labels,
+        and saves the results to json files.
+    Can also scrape single pages and save them as temporary files.
     Example usage:
             scraper = SimpleScraper(['http://bdx.se','http://ssab.se'])
             scraper.scrape_all()
     """
-    def __init__(self):
+    def __init__(self, scrape_output_folder):
         """
+        :param scrape_output_folder: where to save scraped sites
         """
+        self.scrape_output_folder = scrape_output_folder
         self.urls = []
         self.follow_queries = {"om", "about"}
         self.headers = {"Accept-Language": "sv-SE,sv;"}
@@ -37,39 +40,45 @@ class Scraper():
                        "sociala-medier", "facebook", "twitter", "linkedin", "youtube",}
         self.already_scraped = set()
 
-    def scrape_all(self, scrape_output_folder, start_urls, follow_links=False, filter_=False):
+    def scrape_all(self, labeled_urls, follow_links=False, filter_=False):
         """
         Crawls all urls from start_urls and saves each page in a json file.
-        :param scrape_output_folder: where to save scraped sites
-        :param start_urls: starting points for crawler
+        :param labled_urls: a dictionary 
         """
-        self.urls = [{"url": url, "depth": 0} for url in self.start_urls]
+        self.urls = [
+            {
+                "label":item['label'], 
+                "url": item['url'], 
+                "depth": 0
+            } 
+                for item in labeled_urls]
+
         self._get_already_scraped()
 
-        for company in self.urls:
+        for url in self.urls:
             if filter_:
-                if self._check_filter(company):
+                if self._check_filter(url):
                     continue
 
-            if company['url'] in self.already_scraped:
-                logging.debug("Already scraped %s", company['url'])
+            if url['url'] in self.already_scraped:
+                logging.debug("Already scraped %s", url['url'])
                 continue
 
-            logging.debug('Scraping %s', company['url'])
+            logging.debug('Scraping %s', url['url'])
             try:
-                request = self._request(company['url'])
+                request = self._request(url['url'])
             except Exception as e:
-                logging.error('Failed to fetch %s: %s', company['url'], e)
+                logging.error('Failed to fetch %s: %s', url['url'], e)
                 continue
 
-            tld_extractor = tldextract.extract(company['url'])
+            tld_extractor = tldextract.extract(url['url'])
             domain = f"{tld_extractor.domain}.{tld_extractor.suffix}"
-            data = {'url':company['url'], 'raw_html':request.text}
+            data = {'label':url['label'],'url':url['url'], 'raw_html':request.text}
             timestamp = datetime.now().strftime('%Y-%m-%dT%H%M%S')
             self._save_to_json(data, f"{tld_extractor.domain}_{tld_extractor.suffix}_{timestamp}.json")
 
-            if company["depth"] < 1 and follow_links:
-                self._follow_links(request, domain, company)
+            if url["depth"] < 1 and follow_links:
+                self._follow_links(request, domain, url)
 
     def scrape_one(self, url):
         """
@@ -116,10 +125,10 @@ class Scraper():
         r = requests.get(url, timeout=5, headers=self.headers)
         return r
     
-    def _check_filter(self, company):
+    def _check_filter(self, url):
         for filter_ in self.filter:
-            if filter_ in urlparse(company['url']).path:
-                logging.debug("Filtering out %s, matched with %s", company['url'], filter_)
+            if filter_ in urlparse(url['url']).path:
+                logging.debug("Filtering out %s, matched with %s", url['url'], filter_)
                 return True
         return False
     
@@ -133,7 +142,7 @@ class Scraper():
                 self.already_scraped.add(json.load(f)['url'])
                 logging.debug("Added %s to already_scraped", filename)
 
-    def _follow_links(self, request, domain, company):
+    def _follow_links(self, request, domain, url):
         """
         Follows all links on a page and adds them to urls if they match the follow_queries.
         """
@@ -144,9 +153,9 @@ class Scraper():
             link_domain = f"{tld_extractor.domain}.{tld_extractor.suffix}"
             
             for query in self.follow_queries:
-                if  (query in urlparse(link).path) and (link_domain == domain) and (link not in already_found) and (link not in self.already_scraped) and (link != company['url']):
+                if  (query in urlparse(link).path) and (link_domain == domain) and (link not in already_found) and (link not in self.already_scraped) and (link != url['url']):
                     logging.debug('Found link: %s', link)
-                    self.urls.append({'url': link, "depth": company["depth"] + 1})
+                    self.urls.append({'label':url['label'],'url': link, "depth": url["depth"] + 1})
                     already_found.add(link)
 
     def _find_all_links(self, request):

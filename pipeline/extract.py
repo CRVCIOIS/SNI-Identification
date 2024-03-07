@@ -48,11 +48,7 @@ def main(
         with open(os.path.join(scraped_data_folder,filename), 'r', encoding='utf-8') as f:
             scraped_item = json.load(f)
 
-            if 'example.com' in scraped_item['domain']:
-                logging.debug("Found example.com, skipping")
-                continue
-
-            company = scb_adapter.get_company_by_url(scraped_item["url"])
+            company = scb_adapter.fetch_company_by_org_nr(scraped_item['label'])
 
             if company is None:
                 logging.error("No company found for URL: %s", scraped_item["url"])

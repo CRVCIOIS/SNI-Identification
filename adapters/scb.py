@@ -324,6 +324,16 @@ class SCBAdapter(DBInterface):
 
         return company
 
+    def fetch_company_by_org_nr(self, org_nr):
+        """
+        Fetch company from the database by organization number.
+        params:
+        org_nr: organization number
+        returns:
+        company
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"org_nr": org_nr})
+
     def delete_company_from_db(self, org_nr):
         """
         Deletes a company from the database based on the organization number.
