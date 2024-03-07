@@ -68,7 +68,6 @@ workflows:
         - train-models
 
     test_without_training:
-        - scrape
         - extract
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure

@@ -11,6 +11,9 @@ scraping/data/
 assets/scraped_data.json
 scraped_data/
 
+# logs
+logs/
+
 # Distribution / packaging
 .Python
 build/
