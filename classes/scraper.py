@@ -137,10 +137,10 @@ class Scraper():
         Fetches all already scraped urls and returns them as a set.
         """
         path = Path(self.scrape_output_folder)
-        for filename in Path.iterdir(path):
-            with open(Path(path, filename), 'r', encoding='utf-8') as f:
+        for file_path in Path.iterdir(path):
+            with open(Path(file_path), 'r', encoding='utf-8') as f:
                 self.already_scraped.add(json.load(f)['url'])
-                logging.debug("Added %s to already_scraped", filename)
+                logging.debug("Added %s to already_scraped", file_path)
 
     def _follow_links(self, request, domain, url):
         """

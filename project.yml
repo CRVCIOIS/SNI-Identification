@@ -30,7 +30,7 @@ vars:
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
-directories: ["assets", "training", "configs", "scripts", "corpus", ${vars.scraped_data_folder}, ${vars.python_logs_folder}]
+directories: ["assets", "training", "configs", "scripts", "corpus", "${vars.scraped_data_folder}", "${vars.python_logs_folder}"]
 
 # Assets that should be downloaded or available in the directory. We're shipping
 # them with the project, so they won't have to be downloaded. But the
@@ -53,7 +53,7 @@ workflows:
         - evaluate-accuracy-prod
 
     all:
-        - set_python_logging
+        #- set_python_logging
         - SCB
         - google
         - scrape
@@ -63,13 +63,13 @@ workflows:
         - train-models
     
     fetch:
-        - set_python_logging_level
+        #- set_python_logging
         - SCB
         - google
         - scrape
 
     train:
-        - set_python_logging_level
+        #- set_python_logging
         - extract
         - divide
         - preprocess
@@ -83,7 +83,7 @@ workflows:
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
-    - name: "set_python_logging
+    - name: "set_python_logging"
       help: "set Python logging"
       script:
         - "python pipeline/set_logging.py ${vars.python_logging_level} ${vars.python_logs_folder}"
@@ -101,10 +101,10 @@ commands:
     - name: "scrape"
       help: "Scrapes websites"
       script:
-          - "python pipeline/scrape.py ${vars.scraped_data_folder} ${vars.scrape_filter}"
+          - "python pipeline/scrape.py ${vars.scraped_data_folder} ${vars.follow_links} ${vars.scrape_filter}"
 
     - name: "extract"
-      help: "Extacts the valuable data from the scraped website"
+      help: "Extracts the valuable data from the scraped website"
       script:
           - "python pipeline/extract.py ${vars.extract_path} ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
       deps:

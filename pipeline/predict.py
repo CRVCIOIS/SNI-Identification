@@ -36,4 +36,5 @@ def main(model_path: Annotated[Path, typer.Argument(..., dir_okay=True)] = "trai
 
     
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     typer.run(main)

@@ -66,4 +66,5 @@ def main(
     logging.info("Dataset division finished!")
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     typer.run(main)

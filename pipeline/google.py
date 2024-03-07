@@ -95,4 +95,5 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
                     scb_adapter.delete_company_from_db(company["org_nr"])
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     typer.run(main)
