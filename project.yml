@@ -197,3 +197,10 @@ commands:
           - "python scripts/predict.py  ${vars.model_for_prediction} ${vars.predict_url}"
       deps:
           - "scripts/predict.py"
+
+    - name: "eval-custom"
+      help: "Custom evaluation of the model"
+      script:
+          - "python scripts/evaluate.py"
+      deps:
+          - "scripts/evaluate.py"
