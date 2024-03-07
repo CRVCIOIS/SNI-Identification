@@ -102,5 +102,15 @@ def insert_extracted_data(extracted_data, url, org_nr, timestamp, method, interf
         upsert=True)
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    log_path = Path(ROOT_DIR) / "logs"
+    log_path.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime('%Y-%m-%dT%H%M%S')
+    file_name = f"{Path(__file__).stem}_{timestamp}.log"
+    logging.basicConfig(
+                    filename=Path(log_path, file_name),
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
     typer.run(extract_wrapper)
+    logging.info("Extraction finished!")

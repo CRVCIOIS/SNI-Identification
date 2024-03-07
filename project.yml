@@ -23,6 +23,7 @@ vars:
     percentage_train: 70
     google_limit: 50
     follow_links: True
+    scrape_filter: True
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -64,7 +65,13 @@ workflows:
         - preprocess
         - train-models
 
-
+    train_and_evaluate:
+        - extract
+        - divide
+        - preprocess
+        - train-models
+        - evaluate-accuracy-prod
+        
     test_without_training:
         - preprocess
         - train-models
@@ -95,10 +102,9 @@ commands:
     - name: "scrape"
       help: "Scrapes websites"
       script:
-          - "python scripts/simple_scraper.py ${vars.follow_links}"
+          - "python scripts/simple_scraper.py ${vars.follow_links} ${vars.scrape_filter}"
       deps:
           - "scripts/simple_scraper.py"
-    
 
     - name: "extract"
       help: "Extacts valuable the valuable data from the scraped website"

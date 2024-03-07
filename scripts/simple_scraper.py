@@ -4,9 +4,10 @@ import requests
 import json
 import os
 import tldextract
-import datetime
+from datetime import datetime
 import logging
 import typer
+from urllib.parse import urlparse
 from requests_html import HTMLSession
 from typing_extensions import Annotated
 from pathlib import Path
@@ -23,7 +24,7 @@ class SimpleScraper():
     """
     def __init__(self):
         self.urls = []
-        self.follow_queries = {"/om","/om-oss", "/about"}
+        self.follow_queries = {"om", "about"}
         self.headers = {"Accept-Language": "sv-SE,sv;"}
         self.filter = {"/en/", "/en-US", "/en-GB", ".pdf", ".jpg", ".png",
                        ".jpeg", ".gif", ".svg", ".doc", ".docx", ".ppt", ".pptx",
@@ -31,9 +32,56 @@ class SimpleScraper():
                        "conditions", "contact", "job", "career", "press", "news",
                        "investor", "investors", "kontakt", "karriär", "jobb",}
         self.already_scraped = set()
+       
+    def scrape_all(self, follow_links=False, filter_=False):
+        """
+        Scrapes all urls in start_urls and saves each page in a json file.
+        """
+        self.urls = self._get_companies_from_db()
+        self._get_already_scraped()
+        
+        for company in self.urls:
+            if filter_:
+                if self._check_filter(company):
+                    continue
+                
+            if company['url'] in self.already_scraped:
+                logging.debug("Already scraped %s", company['url'])
+                continue
+            
+            logging.debug('Scraping %s', company['url'])
+            try:
+                request = self._request(company['url'])
+            except Exception as e:
+                logging.error('Failed to fetch %s: %s', company['url'], e)
+                continue
+            
+            tld_extractor = tldextract.extract(company['url'])
+            domain = f"{tld_extractor.domain}.{tld_extractor.suffix}"
+            data = {'org_nr': company['org_nr'], 'url':company['url'], 'raw_html':request.text}
+            timestamp = datetime.now().strftime('%Y-%m-%dT%H%M%S')
+            self._save_to_json(data, f"{tld_extractor.domain}_{tld_extractor.suffix}_{timestamp}.json")
+            
+            if company["depth"] < 1 and follow_links:
+                self._follow_links(request, domain, company) 
+        
+    def prune_data(self):
+        """
+        Removes all data from the scraped_data folder that contains any of the filter words.
+        """
+        path = Path(ROOT_DIR) / "scraped_data"
+        for filename in Path.iterdir(path):
+            with open(Path(path, filename), 'r', encoding='utf-8') as f:
+                file = json.load(f)
+                for filter in self.filter:
+                    if filter in urlparse(file['url']).path:
+                        f.close()
+                        filename.unlink()
+                        logging.debug("Filtering out %s, matched with %s", file['url'], filter)
+                        break
 
     def _save_to_json(self, data, filename):
-        logging.info('Saving scraped data to %s', filename)
+        logging.info('Saving scraped data from %s', data['url'])
         Path('scraped_data').mkdir(parents=True, exist_ok=True)
         full_path = os.path.join('scraped_data',filename)
         with open(full_path, 'w', encoding='utf-8') as f:
@@ -43,6 +91,13 @@ class SimpleScraper():
     def _request(self, url):
         r = requests.get(url, timeout=5, headers=self.headers)
         return r
+    
+    def _check_filter(self, company):
+        for filter in self.filter:
+            if filter in urlparse(company['url']).path:
+                logging.debug("Filtering out %s, matched with %s", company['url'], filter)
+                return True
+        return False
     
     def _get_already_scraped(self):
         """
@@ -66,37 +121,6 @@ class SimpleScraper():
         companies = [{"org_nr": company['org_nr'], "url": company["url"], "depth": 0} for company in documents]
         return companies
 
-    def scrape_all(self, follow_links=False):
-        """
-        Scrapes all urls in start_urls and saves each page in a json file.
-        """
-        self.urls = self._get_companies_from_db()
-        self._get_already_scraped()
-        
-        for company in self.urls:
-            for filter in self.filter:
-                if filter in company['url']:
-                    logging.debug("Filtering out %s", company['url'])
-                    continue
-                
-            if company['url'] in self.already_scraped:
-                logging.debug("Already scraped %s", company['url'])
-                continue
-            
-            logging.info('Scraping %s', company['url'])
-            timestamp = datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')
-            try:
-                request = self._request(company['url'])
-            except Exception as e:
-                logging.error('Failed to fetch %s: %s', company['url'], e)
-                continue
-            tld_extractor = tldextract.extract(company['url'])
-            domain = f"{tld_extractor.domain}.{tld_extractor.suffix}"
-            data = {'org_nr': company['org_nr'], 'url':company['url'], 'raw_html':request.text}
-
-            self._save_to_json(data, f"{tld_extractor.domain}_{tld_extractor.suffix}_{timestamp}.json")
-            if company["depth"] < 1 and follow_links:
-                self._follow_links(request, domain, company)
             
     def _follow_links(self, request, domain, company):
         """
@@ -109,8 +133,8 @@ class SimpleScraper():
             link_domain = f"{tld_extractor.domain}.{tld_extractor.suffix}"
             
             for query in self.follow_queries:
-                if  (query in link) and (link_domain == domain) and (link not in already_found) and (link not in self.already_scraped) and (link != company['url']):
-                    logging.info('Found link: %s', link)
+                if  (query in urlparse(link).path) and (link_domain == domain) and (link not in already_found) and (link not in self.already_scraped) and (link != company['url']):
+                    logging.debug('Found link: %s', link)
                     self.urls.append({'org_nr': company['org_nr'], 'url': link, "depth": company["depth"] + 1})
                     already_found.add(link)     
                     
@@ -127,27 +151,25 @@ class SimpleScraper():
             return set()
         return links
     
-    def prune_data(self):
-        """
-        Removes all data from the scraped_data folder that contains any of the filter words.
-        """
-        path = Path(ROOT_DIR) / "scraped_data"
-        for filename in Path.iterdir(path):
-            with open(Path(path, filename), 'r', encoding='utf-8') as f:
-                file = json.load(f)
-                for filter in self.filter:
-                    if filter in file['url']:
-                        f.close()
-                        filename.unlink()
-                        logging.info("Deleted %s", filename)
-                        break
+
     
-def main(follow_links: Annotated[bool, typer.Argument(help="If true, the scraper will follow links on the start pages.")] = False):
+def main(follow_links: Annotated[bool, typer.Argument(help="If true, the scraper will follow links on the start pages.")] = False,
+         filter_: Annotated[bool, typer.Argument(help="If true, the scraper will filter out certain urls.")] = False):
     scraper = SimpleScraper()
-    scraper.scrape_all(follow_links)
-    #scraper.prune_data()
+    scraper.scrape_all(follow_links, filter_)
+    logging.info("Scraping finished!")
+
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    log_path = Path(ROOT_DIR) / "logs"
+    log_path.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime('%Y-%m-%dT%H%M%S')
+    file_name = f"{Path(__file__).stem}_{timestamp}.log"
+    logging.basicConfig(
+                    filename=Path(log_path, file_name),
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
     typer.run(main)
     
     

@@ -15,12 +15,10 @@ from pathlib import Path
 import logging
 import spacy
 import typer
+from datetime import datetime
 from spacy.language import Language
 from spacy.tokens import DocBin
-
 from scripts.scb import SCBinterface
-
-logging.basicConfig(level=logging.INFO)
 
 def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_label=False):
     """
@@ -94,7 +92,7 @@ def main(
     output_dev_path.unlink(missing_ok=True)
     output_train_path.unlink(missing_ok=True)
     output_test_path.unlink(missing_ok=True)
-    logging.info("Removed old files")
+    logging.debug("Removed old corpus files")
 
     doc_train.to_disk(output_train_path)
     logging.info("Saved training data to %s", output_train_path)
@@ -107,4 +105,16 @@ def main(
     logging.info("Number of documents in test data: %s", len(doc_test))
     
 if __name__ == "__main__":
+    log_path = Path(ROOT_DIR) / "logs"
+    log_path.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime('%Y-%m-%dT%H%M%S')
+    file_name = f"{Path(__file__).stem}_{timestamp}.log"
+    logging.basicConfig(
+                    filename=Path(log_path, file_name),
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
     typer.run(main)
+    logging.info("Preprocessing finished!")
+    
