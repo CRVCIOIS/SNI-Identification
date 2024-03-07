@@ -29,7 +29,7 @@ class ExtractAdapter(DBInterface):
         returns:
         scraped data for the company
         """
-        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({'date': -1}).limit(1)
+        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({"_id":-1}).limit(1)
         company = list(company)
         if len(company) == 0:
             return None

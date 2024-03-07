@@ -10,16 +10,17 @@
     Example usage:
     python preprocess.py input.json output.spacy
 """
-from copy import copy
-from pathlib import Path
-
+import logging
 import spacy
 import typer
+from copy import copy
+from pathlib import Path
+from datetime import datetime
 from spacy.language import Language
 from spacy.tokens import DocBin
-
 from adapters.train import TrainAdapter
 from adapters.scb import SCBAdapter
+from definitions import ROOT_DIR
 
 def create_doc_for_company(labels: dict, company: dict, nlp: Language, multi_label=False):
     """
@@ -65,6 +66,7 @@ def main(
     nlp.max_length = 20000000
     doc_train = DocBin()
     doc_eval = DocBin()
+    doc_test = DocBin()
     
     scb_adapter   = SCBAdapter()
     train_adapter = TrainAdapter()
@@ -83,7 +85,20 @@ def main(
         doc = create_doc_for_company(labels, company, nlp, multi_label=False)
         doc_eval.add(doc)
 
+    # Remove old files
+    output_dev_path.unlink(missing_ok=True)
+    output_train_path.unlink(missing_ok=True)
+    logging.debug("Removed old corpus files")
+
     doc_train.to_disk(output_train_path)
+    logging.info("Saved training data to %s", output_train_path)
+    logging.info("Number of documents in training data: %s", len(doc_train))
+
     doc_eval.to_disk(output_dev_path)
+    logging.info("Saved evaluation data to %s", output_dev_path)
+    logging.info("Number of documents in evaluation data: %s", len(doc_eval))
+
+    logging.info("Preprocessing finished!")
+
 if __name__ == "__main__":
     typer.run(main)

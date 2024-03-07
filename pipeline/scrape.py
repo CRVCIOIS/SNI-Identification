@@ -12,8 +12,8 @@ def main(scrape_output_folder: Path = typer.Argument(..., dir_okay=True)):
     companies = scb_adapter.fetch_all_companies_from_db(no_url=True)
     start_urls = [company["url"] for company in companies]
 
-    scraper = Scraper(scrape_output_folder, start_urls)
-    scraper.scrape_all()
+    scraper = Scraper()
+    scraper.scrape_all(scrape_output_folder, start_urls)
 
 if __name__ == "__main__":
     typer.run(main)

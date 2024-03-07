@@ -10,9 +10,11 @@ vars:
     version: "0.0.2"
     train: "docs_nace_training"
     dev: "docs_nace_eval"
-    gpu_id: 0
+    gpu_id: -1
     python_logging_level: "DEBUG"
+    python_logs_folder: "logs"
     scraped_data_folder: "scraped_data"
+    scrape_filter: "True"
     extract_meta: "True"
     extract_body: "True"
     extract_p_only: "False"
@@ -20,13 +22,15 @@ vars:
     scb_data_file_name: "scb_data"
     nr_of_each_sni: 10
     regenerate_company_urls: false
-    percentage_dev: 30
-    google_limit: 50
-    scrapy_limit: 1
+    percentage_training_split: 70
+    google_limit: 100
+    follow_links: True
+    model_for_prediction: "training/model-best"
+    predict_url: "https://www.rh-markiser.se/"
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
-directories: ["assets", "training", "configs", "scripts", "corpus", "scraped_data"]
+directories: ["assets", "training", "configs", "scripts", "corpus", ${vars.scraped_data_folder}, ${vars.python_logs_folder}]
 
 # Assets that should be downloaded or available in the directory. We're shipping
 # them with the project, so they won't have to be downloaded. But the
@@ -43,15 +47,13 @@ directories: ["assets", "training", "configs", "scripts", "corpus", "scraped_dat
 # haven't changed, it won't be re-run.
 workflows:
     evaluate-dev:
-        - evaluate-speed-dev
         - evaluate-accuracy-dev
-        
+
     evaluate-prod:
-        - evaluate-speed-prod
         - evaluate-accuracy-prod
 
     all:
-        - set_python_logging_level
+        - set_python_logging
         - SCB
         - google
         - scrape
@@ -74,18 +76,17 @@ workflows:
         - train-models
 
     test_without_training:
-        - preprocess
-        - train-models
+        - extract
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
-    - name: "set_python_logging_level"
-      help: "set Python logging level"
+    - name: "set_python_logging
+      help: "set Python logging"
       script:
-        - "python pipeline/set_logging.py ${vars.python_logging_level}"
+        - "python pipeline/set_logging.py ${vars.python_logging_level} ${vars.python_logs_folder}"
 
     - name: "SCB"
       help: "Get data from SCB"
@@ -100,7 +101,7 @@ commands:
     - name: "scrape"
       help: "Scrapes websites"
       script:
-          - "python pipeline/scrape.py ${vars.scraped_data_folder}"
+          - "python pipeline/scrape.py ${vars.scraped_data_folder} ${vars.scrape_filter}"
 
     - name: "extract"
       help: "Extacts the valuable data from the scraped website"
@@ -112,16 +113,13 @@ commands:
     - name: "divide"
       help: "Divides the dataset into training and validation sets"
       script:
-          - "python pipeline/divide_dataset.py  ${vars.percentage_dev}"
+          - "python pipeline/divide_dataset.py  ${vars.percentage_training_split}"
 
     - name: "preprocess"
       help: "Convert the data to spaCy's binary format"
       script:
-          - "python pipeline/preprocess.py corpus/${vars.dev}.spacy corpus/${vars.train}.spacy "
+          - "python pipeline/preprocess.py corpus/${vars.train}.spacy corpus/${vars.dev}.spacy"
 
-      outputs:
-          - "corpus/${vars.train}.spacy"
-          - "corpus/${vars.dev}.spacy"
 
     - name: "train-models"
       help: "Train a text classification model"
@@ -148,29 +146,27 @@ commands:
     - name: "evaluate-accuracy-prod"
       help: "Evaluate the prod model for accuracy and export metrics"
       script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.train}.spacy --output training/metrics-accuracy-prod-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
+          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-accuracy-prod-${vars.train}.json --gpu-id ${vars.gpu_id}"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
-          - "training/displacy"
       outputs:
           - "training/metrics-accuracy-prod-${vars.train}.json"
 
     - name: "evaluate-speed-prod"
       help: "Evaluate the prod model for speed and export metrics"
       script:
-          - "python -m spacy benchmark speed training/model-best corpus/${vars.train}.spacy --output training/metrics-speed-prod-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
+          - "python -m spacy benchmark speed training/model-best corpus/${vars.dev}.spacy --output training/metrics-speed-prod-${vars.train}.json --gpu-id ${vars.gpu_id}y"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
-          - "training/displacy"
       outputs:
           - "training/metrics-speed-prod-${vars.train}.json"
 
     - name: "evaluate-accuracy-dev"
       help: "Evaluate the dev model for accuracy and export metrics"
       script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.train}.spacy --output training/metrics-accuracy-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
+          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-accuracy-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
@@ -181,10 +177,20 @@ commands:
     - name: "evaluate-speed-dev"
       help: "Evaluate the dev model for and export metrics"
       script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.train}.spacy --output training/metrics-speed-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
+          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-speed-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
       outputs:
           - "training/metrics-speed-dev-${vars.train}.json"
           - "training/displacy/speed-dev-${vars.train}.html"
+
+    - name: "predict"
+      help: "predict the SNI code of a company based on their website data"
+      script:
+          - "python pipeline/predict.py  ${vars.model_for_prediction} ${vars.predict_url}"
+
+    - name: "eval-custom"
+      help: "Custom evaluation of the model"
+      script:
+          - "python pipeline/evaluate.py"

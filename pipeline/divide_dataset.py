@@ -3,6 +3,7 @@ This script divides a dataset into a smaller dataset and a cross-validation data
 
 The smaller dataset will contain a percentage of companies with the same SNI code.
 """
+import logging
 import math
 
 import typer
@@ -13,12 +14,14 @@ from adapters.extract import ExtractAdapter
 from adapters.scb import SCBAdapter
 
 def main(
-            validation_set_size: Annotated[int, typer.Argument()] = 10
+            percentage_training_split: Annotated[int, typer.Argument()] = 10
         ):
     """
     Divide the dataset into a smaller dataset and a validation dataset based on the SNI code of each company.
 
-    :param: validation_set_size (int, optional): Percent of the entire dataset that should be used as a validation set. Defaults to 10%.
+    :param percentage_training_split (int, optional): 
+        Percent of the entire dataset that should be used for training. 
+        Defaults to 70%.
     """
 
     scb_adapter       = SCBAdapter()
@@ -28,9 +31,14 @@ def main(
     nr_of_each_SNI = scb_adapter.aggregate_companies_by_sni()
     
     stored_sni = {}
+
+    train_adapter.delete_all_data_sets()
+    logging.info("Deleted all previous data sets")
     
     for sni in nr_of_each_SNI:
-        nr_of_cross_validation_companies = math.ceil(sni["count"] * validation_set_size / 100)
+        nr_of_cross_validation_companies = math.floor(
+            sni["count"] * (100 - 10 - percentage_training_split) / 100)
+        nr_of_test_companies = math.floor(sni["count"] * (10) / 100) # 10% of the companies will be used for test data
         
         for company in sni['companies']:
             company_scraped_data = extract_adapter.fetch_company_extracted_data(company)
@@ -47,8 +55,15 @@ def main(
                     stored_sni[company_data["branch_codes"][0]] = 1
                 else:
                     stored_sni[company_data["branch_codes"][0]] += 1
+            elif (stored_sni[company_data["branch_codes"][0]] <
+                   nr_of_cross_validation_companies + nr_of_test_companies):
+                #Move scraped data to test dataset
+                train_adapter.insert_to_test_set(company_scraped_data)
+                stored_sni[company_data["branch_codes"][0]] += 1
             else:
                 train_adapter.insert_to_train_set(company_scraped_data)
+
+    logging.info("Dataset division finished!")
 
 if __name__ == "__main__":
     typer.run(main)
