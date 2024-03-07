@@ -52,5 +52,5 @@ def main(model_path: Annotated[Path, typer.Argument(..., dir_okay=True)] = "trai
     print(f"Correct category score: {final_correct_category_score}")
     
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.info)
+    logging.basicConfig(level=logging.INFO)
     typer.run(main)
