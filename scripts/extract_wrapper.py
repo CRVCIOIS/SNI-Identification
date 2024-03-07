@@ -63,6 +63,10 @@ def extract_wrapper(
         with open(os.path.join(input_path,filename), 'r', encoding='utf-8') as f:
             scraped_item = json.load(f)
             extractor.create_soup_from_string(scraped_item['raw_html'])
+            if extractor.soup is None:
+                logging.error("Couldn't create soup from %s!", scraped_item['url'])
+                logging.error("Probably not a valid HTML file")
+                continue
             extracted_text = extractor.extract(p_only=p_only, extract_body=extract_body, extract_meta=extract_meta)
             insert_extracted_data(extracted_text, scraped_item["url"], scraped_item['org_nr'], timestamp, method, interface, mongo_client)
             logging.info("Added extracted data from %s", scraped_item["url"])

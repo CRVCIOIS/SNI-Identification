@@ -7,6 +7,7 @@ import tldextract
 from datetime import datetime
 import logging
 import typer
+import tempfile
 from urllib.parse import urlparse
 from requests_html import HTMLSession
 from typing_extensions import Annotated

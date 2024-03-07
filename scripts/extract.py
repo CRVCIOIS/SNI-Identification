@@ -72,7 +72,11 @@ class DataExtractor:
         Creates a soup object from a raw HTML string or a file pointer.
         :raw_html: raw HTML string or a file pointer.
         """
-        self.soup = BeautifulSoup(raw_html, 'html.parser')
+        try:
+            self.soup = BeautifulSoup(raw_html, 'html.parser')
+        except (TypeError, AttributeError, AssertionError) as e:
+            logging.error(e)
+            self.soup = None
 
     def extract(self, filter_ = True, p_only = False, extract_meta = True, extract_body = True):
         """
