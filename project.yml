@@ -13,6 +13,7 @@ vars:
     test: "docs_nace_test"
     gpu_id: -1
     scraped_data_file_name: "scraped_data"
+    scrape_filter: "True"
     extract_meta: "True"
     extract_body: "True"
     extract_p_only: "False"
@@ -21,9 +22,10 @@ vars:
     nr_of_each_sni: 10
     regenerate_company_urls: false
     percentage_train: 70
-    google_limit: 50
+    google_limit: 100
     follow_links: True
-    scrape_filter: True
+    model_for_prediction: "training/model-best"
+    predict_url: "https://www.rh-markiser.se/"
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
@@ -45,7 +47,7 @@ directories: ["assets", "training", "configs", "scripts", "corpus", "scraping"]
 workflows:
     evaluate-dev:
         - evaluate-accuracy-dev
-        
+
     evaluate-prod:
         - evaluate-accuracy-prod
 
@@ -65,16 +67,9 @@ workflows:
         - preprocess
         - train-models
 
-    train_and_evaluate:
-        - extract
-        - divide
-        - preprocess
-        - train-models
-        - evaluate-accuracy-prod
-        
     test_without_training:
-        - preprocess
-        - train-models
+        - scrape
+        - extract
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
@@ -196,3 +191,10 @@ commands:
       outputs:
           - "training/metrics-speed-dev-${vars.train}.json"
           - "training/displacy/speed-dev-${vars.train}.html"
+
+    - name: "predict"
+      help: "predict the SNI code of a company based on their website data"
+      script:
+          - "python scripts/predict.py  ${vars.model_for_prediction} ${vars.predict_url}"
+      deps:
+          - "scripts/predict.py"
