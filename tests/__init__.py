@@ -1,0 +1,3 @@
+"""
+Contains all project tests
+"""

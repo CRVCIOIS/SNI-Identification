@@ -13,10 +13,10 @@ from adapters.scb import SCBAdapter
 from adapters.extract import ExtractAdapter
 
 def main(    
-            input_path: Annotated[Path, typer.Argument(
+            scraped_data_folder: Annotated[Path, typer.Argument(
                 exists=True, 
-                file_okay=True, 
-                dir_okay=False, 
+                file_okay=False, 
+                dir_okay=True, 
                 readable=True, 
                 resolve_path=True, 
                 formats=["json"], 
@@ -42,10 +42,10 @@ def main(
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     methods = [extract_meta,extract_body,p_only]
 
-    for filename in os.listdir(input_path):
-        logging.debug("Extracting data from file at %s", filename)
+    for filename in os.listdir(scraped_data_folder):
+        logging.info("Extracting data from file at %s", filename)
 
-        with open(os.path.join(input_path,filename), 'r', encoding='utf-8') as f:
+        with open(os.path.join(scraped_data_folder,filename), 'r', encoding='utf-8') as f:
             scraped_item = json.load(f)
 
             if 'example.com' in scraped_item['domain']:
@@ -66,9 +66,9 @@ def main(
 
             # Spacy has a limit of 1000000 characters,
             # so we truncate the data if it exceeds this limit
-            if len(extracted_data) >= 1000000:
+            if len(extracted_text) >= 1000000:
                 logging.debug("Extracted data for company %s exceeds 1000000 characters, truncating", company['name'])
-                extracted_data = extracted_data[:1000000]
+                extracted_text = extracted_text[:1000000]
 
             extract_adapter.insert_extracted_data(
                 extracted_text,company['url'],
@@ -78,5 +78,4 @@ def main(
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
     typer.run(main)

@@ -1,7 +1,6 @@
 """
 Creates and runs scrapers.
 """
-import logging
 import typer
 from pathlib import Path
 from classes.scraper import Scraper
@@ -17,5 +16,4 @@ def main(scrape_output_folder: Path = typer.Argument(..., dir_okay=True)):
     scraper.scrape_all()
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
     typer.run(main)

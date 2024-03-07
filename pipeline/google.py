@@ -6,7 +6,7 @@ import logging
 from typing import Annotated
 
 import typer
-from classes.google_search_api import GoogleSearchAPI
+from classes.google_api_wrapper import GoogleSearchAPI
 from adapters.scb import SCBAdapter
 
 FILTER_LIST = [
@@ -51,13 +51,13 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
     Returns:
         None
     """
-    interface = SCBAdapter()
-    sni_codes = interface.fetch_codes()
+    scb_adapter = SCBAdapter()
+    sni_codes = scb_adapter.fetch_codes()
     
     google = GoogleSearchAPI()
     for code in sni_codes.keys():
         count = 0
-        data = interface.fetch_companies_from_db(code, no_url=not regenerate_urls)
+        data = scb_adapter.fetch_companies_from_db(code, no_url=not regenerate_urls)
         for company in data:
             if count >= limit:
                 break
@@ -70,11 +70,10 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
                 if (company["url"] and not any(bl in company["url"] for bl in BLACKLIST)):
                     # If the url is found and does not contain, update the DB
                     logging.debug("Updating URL for %s to %s", company["name"], company["url"])
-                    interface.update_url_for_company(company["org_nr"], company["url"])
+                    scb_adapter.update_url_for_company(company["org_nr"], company["url"])
                 else:
                     logging.debug("No URL found for %s, or the url is in BLACKLIST. Deleting from DB", company["name"])
-                    interface.delete_company_from_db(company["org_nr"])
+                    scb_adapter.delete_company_from_db(company["org_nr"])
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
     typer.run(main)

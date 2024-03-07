@@ -2,13 +2,14 @@
 Methods for abstracting communication with Mongodb
 """
 import os
+import bson
 from abc import ABC
 from enum import StrEnum
 from pathlib import Path
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from definitions import ROOT_DIR
-import bson
+
 
 BACKUP_PATH = os.path.join(ROOT_DIR, "backup")
 load_dotenv(os.path.join(ROOT_DIR, '.env'), override=True)
