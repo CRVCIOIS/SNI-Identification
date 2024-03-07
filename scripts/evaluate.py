@@ -28,7 +28,7 @@ def main(model_path: Annotated[Path, typer.Argument(..., dir_okay=True)] = "trai
     logging.info("Starting evaluation")
     
     scb = SCBinterface()
-    test_data = scb.fetch_test_set()
+    test_data = [company for company in scb.fetch_test_set()]
     
     nlp = spacy.load(model_path)
 
