@@ -7,6 +7,7 @@ import logging
 import math
 
 import typer
+from pathlib import Path
 from typing_extensions import Annotated
 
 from adapters.train import TrainAdapter
@@ -66,5 +67,6 @@ def main(
     logging.info("Dataset division finished!")
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    from aux_functions.logger_config import conf_logger
+    conf_logger({Path(__file__).stem})
     typer.run(main)

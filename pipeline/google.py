@@ -4,7 +4,7 @@ and write the updated data to an output file.
 """
 import logging
 from typing import Annotated
-
+from pathlib import Path
 import typer
 from classes.google_api_wrapper import GoogleSearchAPI
 from adapters.scb import SCBAdapter
@@ -95,5 +95,6 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
                     scb_adapter.delete_company_from_db(company["org_nr"])
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    from aux_functions.logger_config import conf_logger
+    conf_logger({Path(__file__).stem})
     typer.run(main)

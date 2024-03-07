@@ -11,8 +11,6 @@ vars:
     train: "docs_nace_training"
     dev: "docs_nace_eval"
     gpu_id: -1
-    python_logging_level: "DEBUG"
-    python_logs_folder: "logs"
     scraped_data_folder: "scraped_data"
     scrape_filter: "True"
     extract_meta: "True"
@@ -30,7 +28,7 @@ vars:
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
-directories: ["assets", "training", "configs", "scripts", "corpus", "${vars.scraped_data_folder}", "${vars.python_logs_folder}"]
+directories: ["assets", "training", "configs", "scripts", "corpus", "${vars.scraped_data_folder}", "logs"]
 
 # Assets that should be downloaded or available in the directory. We're shipping
 # them with the project, so they won't have to be downloaded. But the
@@ -53,7 +51,6 @@ workflows:
         - evaluate-accuracy-prod
 
     all:
-        #- set_python_logging
         - SCB
         - google
         - scrape
@@ -63,13 +60,11 @@ workflows:
         - train-models
     
     fetch:
-        #- set_python_logging
         - SCB
         - google
         - scrape
 
     train:
-        #- set_python_logging
         - extract
         - divide
         - preprocess
@@ -83,11 +78,6 @@ workflows:
 # via "spacy project run [command] [path]". The help message is optional and
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
-    - name: "set_python_logging"
-      help: "set Python logging"
-      script:
-        - "python pipeline/set_logging.py ${vars.python_logging_level} ${vars.python_logs_folder}"
-
     - name: "SCB"
       help: "Get data from SCB"
       script:
