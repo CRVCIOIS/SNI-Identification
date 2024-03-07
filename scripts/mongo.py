@@ -30,6 +30,7 @@ class Schema(StrEnum):
     METHODS         = "methods"
     DEV_SET         = "dev_set"
     TRAIN_SET       = "train_set"
+    TEST_SET        = "test_set"
 
 def get_client():
     """

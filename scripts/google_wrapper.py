@@ -27,7 +27,26 @@ BLACKLIST = [
     'kreditrapporten.se',
     'utsidan.se',
     'lansstyrelsen.se',
-    'barometern.se'
+    'barometern.se',
+    'betyg.se',
+    'instagram.com',
+    'tripadvisor.com',
+    'livsmedelsverket.se',
+    'youtube.com',
+    '118100.se',
+    'twitter.com',
+    'systembolaget.se',
+    'riksarkivet.se',
+    'pubmed.ncbi.nlm.nih.gov',
+    'alltombolag.se',
+    'yelp.com',
+    'eniro.se',
+    'wiktionary.org',
+    'kth.se',
+    'wikipedia.org',
+    'pintrest.com',
+    'primevideo.com',
+    
 ]
 
 

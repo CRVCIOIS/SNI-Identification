@@ -297,16 +297,6 @@ class SCBinterface():
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
 
-        
-    def get_company_by_url(self, url):
-        """
-        Get company by URL.
-        params:
-        url: URL
-        returns:
-        company
-        """
-        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})
     
     def delete_company_from_db(self, org_nr):
         """
@@ -315,17 +305,7 @@ class SCBinterface():
         org_nr: organization number
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].delete_one({"org_nr": org_nr})
-        
-    def get_company_by_url(self, url):
-        """
-        Get company by URL.
-        params:
-        url: URL
-        returns:
-        company
-        """
-        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})
-        
+         
     def fetch_aggegrate_companies_by_sni(self):
         """
         Fetches aggregate companies by SNI (Standard Industrial Classification) code.
@@ -361,9 +341,6 @@ class SCBinterface():
     }
 ]))
         
-    
-    
-    
     def fetch_company_extracted_data(self, id):
         """
         Fetch scraped data for a company from the database.
@@ -372,7 +349,7 @@ class SCBinterface():
         returns:
         scraped data for the company
         """
-        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({'date': -1}).limit(1)
+        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({"_id":-1}).limit(1)
         company = list(company)
         if len(company) == 0:
             return None
@@ -410,6 +387,19 @@ class SCBinterface():
             None
         """
         self.mongo_client[Schema.DB][Schema.DEV_SET].insert_one(data)
+        
+    def insert_to_test_set(self, data):
+        """
+        Inserts the given data into the test set collection in the MongoDB database.
+
+        Parameters:
+            data (dict): The data to be inserted into the test set.
+
+        Returns:
+            None
+        """
+        self.mongo_client[Schema.DB][Schema.TEST_SET].insert_one(data)
+    
     
     def fetch_train_set(self):
         """
@@ -428,7 +418,52 @@ class SCBinterface():
             the training set
         """
         return self.mongo_client[Schema.DB][Schema.DEV_SET].find()
+    
+    def fetch_test_set(self):
+        """
+        Fetch the training set from the database.
 
+        returns:
+            the training set
+        """
+        return self.mongo_client[Schema.DB][Schema.TEST_SET].find()
+    
+    def fetch_company_by_org_nr(self, org_nr):
+        """
+        Fetch company from the database by organization number.
+        params:
+        org_nr: organization number
+        returns:
+        company
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"org_nr": org_nr})
+    
+    def delete_train_set(self):
+        """
+        Deletes the training set from the database.
+        """
+        self.mongo_client[Schema.DB][Schema.TRAIN_SET].delete_many({})
+        
+    def delete_dev_set(self):
+        """
+        Deletes the development set from the database.
+        """
+        self.mongo_client[Schema.DB][Schema.DEV_SET].delete_many({})
+        
+    def delete_test_set(self):
+        """
+        Deletes the test set from the database.
+        """
+        self.mongo_client[Schema.DB][Schema.TEST_SET].delete_many({})
+        
+    def delete_all_data_sets(self):
+        """
+        Deletes all data sets from the database.
+        """
+        self.delete_train_set()
+        self.delete_dev_set()
+        self.delete_test_set()
+    
 if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)
     scb = SCBinterface()

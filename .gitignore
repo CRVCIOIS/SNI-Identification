@@ -11,6 +11,9 @@ scraping/data/
 assets/scraped_data.json
 scraped_data/
 
+# logs
+logs/
+
 # Distribution / packaging
 .Python
 build/
@@ -183,3 +186,6 @@ temp/
 
 #keys and certs
 *.pfx
+
+# Ignore backup files
+backup/
