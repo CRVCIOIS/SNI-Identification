@@ -7,11 +7,7 @@ import tldextract
 from datetime import datetime
 import logging
 import typer
-<<<<<<< Updated upstream
 from urllib.parse import urlparse
-=======
-import tempfile
->>>>>>> Stashed changes
 from requests_html import HTMLSession
 from typing_extensions import Annotated
 from pathlib import Path
@@ -68,6 +64,24 @@ class SimpleScraper():
             
             if company["depth"] < 1 and follow_links:
                 self._follow_links(request, domain, company) 
+    
+    def scrape_one(self, url):
+        """
+        Scrapes one url and saves the page in a temp json file.
+        """
+        try:
+            request = self._request(url)
+        except Exception as e:
+            logging.error('Failed to fetch %s: %s', url, e)
+            return
+        tld_extractor = tldextract.extract(url)
+        data = {'url':url, 'raw_html':request.text}
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False, encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False)
+            logging.info('Saved scraped data to %s', f.name)
+            name = f.name
+        return name
         
     def prune_data(self):
         """
@@ -124,56 +138,7 @@ class SimpleScraper():
         documents = client[Schema.DB][Schema.COMPANIES].find(query)
         companies = [{"org_nr": company['org_nr'], "url": company["url"], "depth": 0} for company in documents]
         return companies
-        
-    def scrape_all(self, follow_links=False):
-        """
-        Scrapes all urls in start_urls and saves each page in a json file.
-        """
-        self.urls = self._get_companies_from_db()
-        self._get_already_scraped()
-        
-        for company in self.urls:
-            for filter in self.filter:
-                if filter in company['url']:
-                    logging.debug("Filtering out %s", company['url'])
-                    continue
-                
-            if company['url'] in self.already_scraped:
-                logging.debug("Already scraped %s", company['url'])
-                continue
-            
-            logging.info('Scraping %s', company['url'])
-            timestamp = datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')
-            try:
-                request = self._request(company['url'])
-            except Exception as e:
-                logging.error('Failed to fetch %s: %s', company['url'], e)
-                continue
-            tld_extractor = tldextract.extract(company['url'])
-            domain = f"{tld_extractor.domain}.{tld_extractor.suffix}"
-            data = {'org_nr': company['org_nr'], 'url':company['url'], 'raw_html':request.text}
 
-            self._save_to_json(data, f"{tld_extractor.domain}_{tld_extractor.suffix}_{timestamp}.json")
-            if company["depth"] < 1 and follow_links:
-                self._follow_links(request, domain, company)
-    
-    def scrape_one(self, url):
-        """
-        Scrapes one url and saves the page in a temp json file.
-        """
-        try:
-            request = self._request(url)
-        except Exception as e:
-            logging.error('Failed to fetch %s: %s', url, e)
-            return
-        tld_extractor = tldextract.extract(url)
-        data = {'url':url, 'raw_html':request.text}
-        
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False, encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False)
-            logging.info('Saved scraped data to %s', f.name)
-            name = f.name
-        return name
             
     def _follow_links(self, request, domain, company):
         """
@@ -224,5 +189,4 @@ if __name__ == "__main__":
                     datefmt='%H:%M:%S',
                     level=logging.DEBUG)
     typer.run(main)
-    
     
