@@ -1,23 +1,24 @@
 """
-Utility methods for fetching and saving results from the SCB API.
+Provides an adapter for SCB-related information in MongoDB
 """
+
 import json
 import logging
 import os
 import random
-from enum import StrEnum
+import tldextract
 
 from definitions import ROOT_DIR
-from scripts.mongo import get_client, Schema
-from scripts.scb_wrapper import SCBapi
+from classes.mongo import DBInterface, Schema
+from classes.scb_api_wrapper import SCBapi
 
-class SCBinterface():
+class SCBAdapter(DBInterface):
     """
     Class for interfacing with the SCB API and the MongoDB database.
 
     Example usage:
             ```
-            scb = SCBinterface()
+            scb = SCBAdapter()
             scb.fetch_companies_from_api(
                 sni_start="00000",
                 sni_stop="02300", 
@@ -25,23 +26,11 @@ class SCBinterface():
             ```
     """
     def __init__(self):
+        super().__init__()
         self.wrapper = SCBapi()
-        self.mongo_client = get_client()
-        
         self._init_collection(Schema.SNI, self._store_codes)
         self._init_collection(Schema.MUNICIPALITIES, self._store_municipalities)
         self._init_collection(Schema.LEGAL_FORMS, self._store_legal_forms)
-
-    def _init_collection(self, collection, callback):
-        """
-        Check if vital collections are empty, if so, store the data
-        
-        params:
-        collection: collection name
-        callback: function to call if collection is empty
-        """
-        if self.mongo_client[Schema.DB][collection].count_documents({}) == 0:
-            callback()
 
     def _store_codes(self):
         """
@@ -55,19 +44,6 @@ class SCBinterface():
         self.mongo_client[Schema.DB][Schema.SNI].insert_many(sni)
         self.mongo_client[Schema.DB][Schema.SNI].create_index('sni_code')
 
-    def fetch_codes(self):
-        """
-        Fetch the list of all 5 digit codes from the mongodb database.
-        
-        :returns a dict: {sni_code: description}
-        """
-        
-        codes = self.mongo_client[Schema.DB][Schema.SNI].find()
-        sni_codes = {}
-        for code in codes:
-            sni_codes[code['sni_code']] = code['description']
-        return sni_codes
-        
     def _store_municipalities(self):
         """
         Saves the list of all municipalities from SCB to the db.
@@ -85,7 +61,7 @@ class SCBinterface():
         self.mongo_client[Schema.DB][Schema.MUNICIPALITIES].insert_many(municipalities)
         self.mongo_client[Schema.DB][Schema.SNI].create_index('code')
 
-    def fetch_municipalities(self):
+    def _fetch_municipalities(self):
         """
         Fetch the list of all municipalities from the mongodb database.
         
@@ -123,7 +99,7 @@ class SCBinterface():
         self.mongo_client[Schema.DB][Schema.LEGAL_FORMS].insert_many(legal_forms)
         self.mongo_client[Schema.DB][Schema.LEGAL_FORMS].create_index('code')
         
-    def fetch_legal_forms(self):
+    def _fetch_legal_forms(self):
         """
         Fetch the list of all legal forms from the mongodb database.
 
@@ -134,9 +110,8 @@ class SCBinterface():
         for form in forms:
             legal_forms[form['code']] = form['description']
         return legal_forms
-        
 
-    def last_code_checked(self):
+    def _last_code_checked(self):
         """
         Last SNI code checked in the companies collection.
         
@@ -205,10 +180,10 @@ class SCBinterface():
         comp_arr = []
         logging.debug(f"Fetching from SNI: {sni_code}")
 
-        mun_codes = list(self.fetch_municipalities().keys())
+        mun_codes = list(self._fetch_municipalities().keys())
         random.shuffle(mun_codes)
 
-        legal_forms = list(self.fetch_legal_forms().keys())
+        legal_forms = list(self._fetch_legal_forms().keys())
 
         while (total_fetched < fetch_limit) and (mun_codes):
 
@@ -229,8 +204,7 @@ class SCBinterface():
         self._update_api_request_count(total_fetched)
         return comp_arr
 
-
-    def fetch_companies_from_api(self, start_sni, stop_sni, fetch_limit=50):
+    def _fetch_companies_from_api(self, start_sni, stop_sni, fetch_limit=50):
         """
         Fetch companies from the SCB API from random municipalities in the specified SNI code range.
         
@@ -239,7 +213,7 @@ class SCBinterface():
         stop_sni: stop SNI code
         fetch_limit: maximum number of companies to fetch
         """
-        last_code = self.last_code_checked()
+        last_code = self._last_code_checked()
         docs = self.mongo_client[Schema.DB][Schema.SNI].find({"sni_code": { "$ne": last_code }}).sort([("sni_code")])
         if (last_code is not None) and (last_code > start_sni):
             start_sni = last_code
@@ -251,7 +225,19 @@ class SCBinterface():
                 if len(companies) > 0:
                     self.mongo_client[Schema.DB][Schema.COMPANIES].insert_many(companies)
         self.wrapper.session.close()
+
+    def fetch_codes(self):
+        """
+        Fetch the list of all 5 digit codes from the mongodb database.
         
+        :returns a dict: {sni_code: description}
+        """
+        
+        codes = self.mongo_client[Schema.DB][Schema.SNI].find()
+        sni_codes = {}
+        for code in codes:
+            sni_codes[code['sni_code']] = code['description']
+        return sni_codes
 
     def fetch_all_companies_from_api(self, fetch_limit=50):
         """
@@ -263,7 +249,7 @@ class SCBinterface():
         start_sni="01120"
         stop_sni="95290"
         
-        self.fetch_companies_from_api(start_sni, stop_sni, fetch_limit=fetch_limit)
+        self._fetch_companies_from_api(start_sni, stop_sni, fetch_limit=fetch_limit)
 
     def _update_api_request_count(self, num_requests=1):
         """
@@ -273,19 +259,62 @@ class SCBinterface():
         """
         self.mongo_client[Schema.DB][Schema.API_COUNT].update_one({}, {"$inc": {"count": num_requests}}, upsert=True)
         
-    def fetch_companies_from_db(self, sni_code, no_url=False):
+    def fetch_companies_from_db_by_sni(self, sni_code, has_url="BOTH"):
         """
         Fetch companies from the database based on the SNI code.
-        params:
-        sni_code: SNI code
-        returns:
-        list of companies
+        :params sni_code:
+        :param has_url:
+            if "BOTH" then will return companies with and without urls
+            if "ONLY" then will only return companies with urls 
+                (that have non-whitespace characters)
+            if "NO"   then will only return companies with missing urls 
+                or with urls that only contain whitespaces
+            will be returned.
+        returns a list of companies:
         """
-        if no_url:
-            query = {"branch_codes": sni_code, "url": {"$eq": ""}}
-            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
-        else:
-            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
+        match has_url.upper():
+            case "ONLY":
+                query = {"branch_codes": sni_code, "url": {"$regex": r"^\\S+$"}}
+            case "NO":
+                query = {
+                    "branch_codes": sni_code,
+                    "$or":[
+                        {"url": {"$exists": False}},
+                        {"url": {"$regex": r"^\\s*$"}}
+                    ]
+                }
+            case _: # BOTH is default
+                query = {"branch_codes": sni_code}
+
+        companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
+        return list(companies)
+
+    def fetch_all_companies_from_db(self, has_url="BOTH"):
+        """
+        Fetch all companies from the database.
+        :param has_url:
+            if "BOTH" then will return companies with and without urls
+            if "ONLY" then will only return companies with urls 
+                (that have non-whitespace characters)
+            if "NO"   then will only return companies with missing urls 
+                or with urls that only contain whitespaces
+            will be returned.
+        :returns a list of companies:
+        """
+        match has_url.upper():
+            case "ONLY":
+                query = {"url": {"$regex": r"^\\S+$"}}
+            case "NO":
+                query = {
+                    "$or":[
+                        {"url": {"$exists": False}},
+                        {"url": {"$regex": r"^\\s*$"}}
+                    ]
+                }
+            case _: # BOTH is default
+                query = {}
+
+        companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
         return list(companies)
 
     def update_url_for_company(self, org_nr, url):
@@ -297,137 +326,36 @@ class SCBinterface():
         """
         self.mongo_client[Schema.DB][Schema.COMPANIES].update_one({"org_nr": org_nr}, {"$set": {"url": url}})
 
-    
-    def delete_company_from_db(self, org_nr):
+    def _get_company_by_url(self, url):
         """
-        Deletes a company from the database based on the organization number.
+        Get company by URL.
         params:
-        org_nr: organization number
-        """
-        self.mongo_client[Schema.DB][Schema.COMPANIES].delete_one({"org_nr": org_nr})
-         
-    def fetch_aggegrate_companies_by_sni(self):
-        """
-        Fetches aggregate companies by SNI (Standard Industrial Classification) code.
-
-        Returns:
-            A list of dictionaries where each dictionary contains the following
-            keys: 
-                - _id: SNI code
-                - companies: list of company ids (MongoDB ObjectIds)
-                - count: number of companies
-        """
-        return list(self.mongo_client[Schema.DB][Schema.COMPANIES].aggregate([
-    {
-        '$match': {
-            'url': {
-                '$regex': '\\S'
-            }
-        }
-    }, {
-        '$group': {
-            '_id': {
-                '$arrayElemAt': [
-                    '$branch_codes', 0
-                ]
-            }, 
-            'companies': {
-                '$push': '$_id'
-            }, 
-            'count': {
-                '$count': {}
-            }
-        }
-    }
-]))
-        
-    def fetch_company_extracted_data(self, id):
-        """
-        Fetch scraped data for a company from the database.
-        params:
-        id: MongoDB ObjectId
-        returns:
-        scraped data for the company
-        """
-        company = self.mongo_client[Schema.DB][Schema.EXTRACTED_DATA].find({"company_id": id}).sort({"_id":-1}).limit(1)
-        company = list(company)
-        if len(company) == 0:
-            return None
-        return company[0]
-    
-    def fetch_company_by_id(self, id):
-        """
-        Fetch company from the database by MongoDB ObjectId.
-        params:
-        id: MongoDB ObjectId
+        url: URL
         returns:
         company
         """
-        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"_id": id})
-    def insert_to_train_set(self, data):
-        """
-        Inserts the given data into the train set collection in the MongoDB database.
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"url": {"$regex": url}})
 
-        Parameters:
-            data (dict): The data to be inserted into the train set collection.
+    def get_company_by_url(self, url, try_base_domain = True):
+        """
+        Will try to find the company in the DB based on its URL.
 
-        Returns:
-            None
-        """
-        self.mongo_client[Schema.DB][Schema.TRAIN_SET].insert_one(data)
-        
-    def insert_to_dev_set(self, data):
-        """
-        Inserts the given data into the development set collection in the MongoDB database.
+        :param url:
+        :try_base_domain: will search for the base domain if True and can't find the FQDN.
 
-        Parameters:
-            data (dict): The data to be inserted into the development set.
+        :returns a PyMongo result object or None:
+        """
+        url_components = tldextract.extract(url)
+        # Try to find the company using the full domain subdomain.domain.tld
+        company = self._get_company_by_url(url_components.fqdn)
 
-        Returns:
-            None
-        """
-        self.mongo_client[Schema.DB][Schema.DEV_SET].insert_one(data)
-        
-    def insert_to_test_set(self, data):
-        """
-        Inserts the given data into the test set collection in the MongoDB database.
+        # If not found, try using the base domain domain.tld
+        if company is None and try_base_domain:
+            base_domain = f"{url_components.domain}.{url_components.suffix}"
+            company = self._get_company_by_url(base_domain)
 
-        Parameters:
-            data (dict): The data to be inserted into the test set.
+        return company
 
-        Returns:
-            None
-        """
-        self.mongo_client[Schema.DB][Schema.TEST_SET].insert_one(data)
-    
-    
-    def fetch_train_set(self):
-        """
-        Fetch the training set from the database.
-
-        returns:
-            the training set
-        """
-        return self.mongo_client[Schema.DB][Schema.TRAIN_SET].find()
-    
-    def fetch_dev_set(self):
-        """
-        Fetch the training set from the database.
-
-        returns:
-            the training set
-        """
-        return self.mongo_client[Schema.DB][Schema.DEV_SET].find()
-    
-    def fetch_test_set(self):
-        """
-        Fetch the training set from the database.
-
-        returns:
-            the training set
-        """
-        return self.mongo_client[Schema.DB][Schema.TEST_SET].find()
-    
     def fetch_company_by_org_nr(self, org_nr):
         """
         Fetch company from the database by organization number.
@@ -437,35 +365,53 @@ class SCBinterface():
         company
         """
         return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"org_nr": org_nr})
-    
-    def delete_train_set(self):
-        """
-        Deletes the training set from the database.
-        """
-        self.mongo_client[Schema.DB][Schema.TRAIN_SET].delete_many({})
-        
-    def delete_dev_set(self):
-        """
-        Deletes the development set from the database.
-        """
-        self.mongo_client[Schema.DB][Schema.DEV_SET].delete_many({})
-        
-    def delete_test_set(self):
-        """
-        Deletes the test set from the database.
-        """
-        self.mongo_client[Schema.DB][Schema.TEST_SET].delete_many({})
-        
-    def delete_all_data_sets(self):
-        """
-        Deletes all data sets from the database.
-        """
-        self.delete_train_set()
-        self.delete_dev_set()
-        self.delete_test_set()
-    
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.ERROR)
-    scb = SCBinterface()
-    scb.fetch_all_companies_from_api(fetch_limit=50)
 
+    def delete_company_from_db(self, org_nr):
+        """
+        Deletes a company from the database based on the organization number.
+        params:
+        org_nr: organization number
+        """
+        self.mongo_client[Schema.DB][Schema.COMPANIES].delete_one({"org_nr": org_nr})
+
+    def aggregate_companies_by_sni(self):
+        """
+        Fetches aggregate companies by SNI (Standard Industrial Classification) code.
+        Returns:
+            A list of dictionaries where each dictionary contains the following
+            keys: 
+                - _id: SNI code
+                - companies: list of company ids (MongoDB ObjectIds)
+                - count: number of companies
+        """
+        aggregate = self.mongo_client[Schema.DB][Schema.COMPANIES].aggregate(
+            [{
+                    '$match': {
+                        'url': {
+                        '$regex': '\\S'
+                        }
+                    }
+                }, {
+                    '$group': {
+                        '_id': {
+                            '$arrayElemAt': [
+                                '$branch_codes', 0
+                            ]
+                        }, 
+                        'companies': {
+                            '$push': '$_id'
+                        }, 
+                        'count': {
+                            '$count': {}
+                        }
+                    }
+                }])
+        return list(aggregate)
+
+    def fetch_company_by_id(self, id):
+        """
+        Fetch company from the database by MongoDB ObjectId.
+        :param id: MongoDB ObjectId
+        :returns company:
+        """
+        return self.mongo_client[Schema.DB][Schema.COMPANIES].find_one({"_id": id})

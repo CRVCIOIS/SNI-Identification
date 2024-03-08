@@ -2,8 +2,8 @@
 Tests for SCB interface.
 """
 import pytest
-from scripts.scb import *
-from scripts.scb_wrapper import SCBapi
+from classes.DB_adapters import *
+from classes.scb_api_wrapper import SCBapi
 from pymongo import MongoClient
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def scb_interface():
     """
     Fixture for SCB interface.
     """
-    return SCBinterface()
+    return SCBPollingAdapter()
 
 def test_init(scb_interface):
     """

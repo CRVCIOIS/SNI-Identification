@@ -2,11 +2,12 @@
 This module provides a class that interacts with the Google Custom Search API to perform searches.
 """
 import os
-from googleapiclient.discovery import build
-from dotenv import load_dotenv
-from googleapiclient.errors import HttpError
 import logging
 import time
+from dotenv import load_dotenv
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
 
 load_dotenv()
 

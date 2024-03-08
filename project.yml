@@ -7,11 +7,11 @@ description: "This is a training and evaluation pipeline for a CNN AI model whic
 # Filename, as 'train' only specifies the actual name and not where it's stored or it's extension
 vars:
     config: "config"
-    version: "0.0.1"
+    version: "0.0.2"
     train: "docs_nace_training"
     dev: "docs_nace_eval"
     gpu_id: -1
-    scraped_data_file_name: "scraped_data"
+    scraped_data_folder: "scraped_data"
     scrape_filter: "True"
     extract_meta: "True"
     extract_body: "True"
@@ -20,7 +20,7 @@ vars:
     scb_data_file_name: "scb_data"
     nr_of_each_sni: 10
     regenerate_company_urls: false
-    percentage_train: 70
+    percentage_training_split: 70
     google_limit: 100
     follow_links: True
     model_for_prediction: "training/model-best"
@@ -28,7 +28,7 @@ vars:
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
-directories: ["assets", "training", "configs", "scripts", "corpus", "scraping"]
+directories: ["assets", "training", "configs", "scripts", "corpus", "${vars.scraped_data_folder}", "logs"]
 
 # Assets that should be downloaded or available in the directory. We're shipping
 # them with the project, so they won't have to be downloaded. But the
@@ -58,9 +58,13 @@ workflows:
         - divide
         - preprocess
         - train-models
+    
+    fetch:
+        - SCB
+        - google
+        - scrape
 
     train:
-        - scrape
         - extract
         - divide
         - preprocess
@@ -77,49 +81,34 @@ commands:
     - name: "SCB"
       help: "Get data from SCB"
       script:
-          - "python scripts/scb.py"
-      deps:
-          - "scripts/mongo.py"
-          - "scripts/scb_wrapper.py"
-          - "scripts/scb.py"
+          - "python pipeline/scb.py"
 
     - name: "google"
-      help: "Get company URL's by using Google search API"
+      help: "Fill the DB with a matching URL for each company by using Google search API"
       script:
-          - "python scripts/google_wrapper.py ${vars.regenerate_company_urls} ${vars.google_limit}"
-      deps:
-          - "scripts/mongo.py"
-          - "scripts/google_wrapper.py"
-          - "scripts/google_search_api.py"
+          - "python pipeline/google.py ${vars.regenerate_company_urls} ${vars.google_limit}"
 
     - name: "scrape"
       help: "Scrapes websites"
       script:
-          - "python scripts/simple_scraper.py ${vars.follow_links} ${vars.scrape_filter}"
-      deps:
-          - "scripts/simple_scraper.py"
+          - "python pipeline/scrape.py ${vars.scraped_data_folder} ${vars.follow_links} ${vars.scrape_filter}"
 
     - name: "extract"
-      help: "Extacts valuable the valuable data from the scraped website"
+      help: "Extracts the valuable data from the scraped website"
       script:
-          - "python scripts/extract_wrapper.py ${vars.extract_path} ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
+          - "python pipeline/extract.py ${vars.extract_path} ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
       deps:
-          - "assets/${vars.scraped_data_file_name}.json"
-          - "scripts/extract_wrapper.py"
+          - "${vars.scraped_data_folder}"
 
     - name: "divide"
-      help: "Divides the dataset into two, one smaller for cross-validation and a larger for training"
+      help: "Divides the dataset into training and validation sets"
       script:
-          - "python scripts/divide_dataset.py  ${vars.percentage_train}"
-      deps:
-          - "scripts/divide_dataset.py"
+          - "python pipeline/divide_dataset.py  ${vars.percentage_training_split}"
 
     - name: "preprocess"
       help: "Convert the data to spaCy's binary format"
       script:
-          - "python scripts/preprocess.py corpus/${vars.train}.spacy corpus/${vars.dev}.spacy"
-      deps:
-          - "scripts/preprocess.py"
+          - "python pipeline/preprocess.py corpus/${vars.train}.spacy corpus/${vars.dev}.spacy"
 
 
     - name: "train-models"
@@ -189,13 +178,9 @@ commands:
     - name: "predict"
       help: "predict the SNI code of a company based on their website data"
       script:
-          - "python scripts/predict.py  ${vars.model_for_prediction} ${vars.predict_url}"
-      deps:
-          - "scripts/predict.py"
+          - "python pipeline/predict.py  ${vars.model_for_prediction} ${vars.predict_url}"
 
     - name: "eval-custom"
       help: "Custom evaluation of the model"
       script:
-          - "python scripts/evaluate.py"
-      deps:
-          - "scripts/evaluate.py"
+          - "python pipeline/evaluate.py"

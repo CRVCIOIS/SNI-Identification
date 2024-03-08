@@ -10,7 +10,7 @@ import requests
 import logging
 from pathlib import Path
 import regex as re
-from scripts.extract import DataExtractor, NoBeautifulSoupObject
+from classes.extract import DataExtractor, NoBeautifulSoupObject
 import pytest
 
 DATA = {
