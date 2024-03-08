@@ -274,9 +274,15 @@ class SCBAdapter(DBInterface):
         """
         match has_url.upper():
             case "ONLY":
-                query = {"branch_codes": sni_code, "url": {"$regex": "^\\S+$"}}
+                query = {"branch_codes": sni_code, "url": {"$regex": r"^\\S+$"}}
             case "NO":
-                query = {"branch_codes": sni_code, "url": {"$regex": "^\\s*$"}}
+                query = {
+                    "branch_codes": sni_code,
+                    "$or":[
+                        {"url": {"$exists": False}},
+                        {"url": {"$regex": r"^\\s*$"}}
+                    ]
+                }
             case _: # BOTH is default
                 query = {"branch_codes": sni_code}
 
@@ -297,9 +303,14 @@ class SCBAdapter(DBInterface):
         """
         match has_url.upper():
             case "ONLY":
-                query = {"url": {"$regex": "^\\S+$"}}
+                query = {"url": {"$regex": r"^\\S+$"}}
             case "NO":
-                query = {"url": {"$regex": "^\\s*$"}}
+                query = {
+                    "$or":[
+                        {"url": {"$exists": False}},
+                        {"url": {"$regex": r"^\\s*$"}}
+                    ]
+                }
             case _: # BOTH is default
                 query = {}
 
