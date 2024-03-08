@@ -76,7 +76,11 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
     google = GoogleSearchAPI()
     for code in sni_codes.keys():
         count = 0
-        data = scb_adapter.fetch_companies_from_db(code, no_url=not regenerate_urls)
+        
+        data = scb_adapter.fetch_companies_from_db_by_sni(
+            code,
+            has_url = "BOTH" if regenerate_urls else "NO"
+        )
         for company in data:
             if count >= limit:
                 break

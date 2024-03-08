@@ -5,15 +5,13 @@ from classes.mongo import DBInterface, Schema
 
 class ScrapeAdapter(DBInterface):
     """
-    Class for interfacing with the SCB API and the MongoDB database.
+    Performs operations on scraped data and the related mongo collections.
+    Right now all it does is create indexes on two collections, 
+        but is here for consistency with the rest of the modules.
 
     Example usage:
             ```
-            scb = SCBinterface()
-            scb.fetch_companies_from_api(
-                sni_start="00000",
-                sni_stop="02300", 
-                fetch_limit=10)
+            scrape_adapter = ScrapeAdapter()
             ```
     """
     def __init__(self):

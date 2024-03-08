@@ -6,15 +6,12 @@ from classes.mongo import DBInterface, Schema
 
 class TrainAdapter(DBInterface):
     """
-    Class for interfacing with the SCB API and the MongoDB database.
+    Performs operations on training data and the related mongo collections.
 
     Example usage:
             ```
-            scb = SCBinterface()
-            scb.fetch_companies_from_api(
-                sni_start="00000",
-                sni_stop="02300", 
-                fetch_limit=10)
+            train_adapter = TrainAdapter()
+            train_adapter.insert_to_train_set(data)
             ```
     """
 

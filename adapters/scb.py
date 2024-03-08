@@ -18,7 +18,7 @@ class SCBAdapter(DBInterface):
 
     Example usage:
             ```
-            scb = SCBinterface()
+            scb = SCBAdapter()
             scb.fetch_companies_from_api(
                 sni_start="00000",
                 sni_stop="02300", 
@@ -259,30 +259,51 @@ class SCBAdapter(DBInterface):
         """
         self.mongo_client[Schema.DB][Schema.API_COUNT].update_one({}, {"$inc": {"count": num_requests}}, upsert=True)
         
-    def fetch_companies_from_db(self, sni_code, no_url=False):
+    def fetch_companies_from_db_by_sni(self, sni_code, has_url="BOTH"):
         """
         Fetch companies from the database based on the SNI code.
         :params sni_code:
-        :param no_url: if True then only companies with missing urls will be returned.
+        :param has_url:
+            if "BOTH" then will return companies with and without urls
+            if "ONLY" then will only return companies with urls 
+                (that have non-whitespace characters)
+            if "NO"   then will only return companies with missing urls 
+                or with urls that only contain whitespaces
+            will be returned.
         returns a list of companies:
         """
-        if no_url:
-            query = {"branch_codes": sni_code, "url": {"$eq": ""}}
-            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
-        else:
-            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"branch_codes": sni_code})
+        match has_url.upper():
+            case "ONLY":
+                query = {"branch_codes": sni_code, "url": {"$regex": "^\\S+$"}}
+            case "NO":
+                query = {"branch_codes": sni_code, "url": {"$regex": "^\\s*$"}}
+            case _: # BOTH is default
+                query = {"branch_codes": sni_code}
+
+        companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
         return list(companies)
 
-    def fetch_all_companies_from_db(self, no_url=False):
+    def fetch_all_companies_from_db(self, has_url="BOTH"):
         """
         Fetch all companies from the database.
-        :param no_url: if True then only companies with missing urls will be returned.
-        returns a list of companies:
+        :param has_url:
+            if "BOTH" then will return companies with and without urls
+            if "ONLY" then will only return companies with urls 
+                (that have non-whitespace characters)
+            if "NO"   then will only return companies with missing urls 
+                or with urls that only contain whitespaces
+            will be returned.
+        :returns a list of companies:
         """
-        if no_url:
-            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find({"url": {"$regex": r"/\S"}})
-        else:
-            companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find()
+        match has_url.upper():
+            case "ONLY":
+                query = {"url": {"$regex": "^\\S+$"}}
+            case "NO":
+                query = {"url": {"$regex": "^\\s*$"}}
+            case _: # BOTH is default
+                query = {}
+
+        companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
         return list(companies)
 
     def update_url_for_company(self, org_nr, url):

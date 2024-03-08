@@ -16,7 +16,7 @@ def main(
     scb_adapter = SCBAdapter()
 
     logging.info("Started fetching companies from db...")
-    companies = scb_adapter.fetch_all_companies_from_db(no_url=True)
+    companies = scb_adapter.fetch_all_companies_from_db(has_url="ONLY")
     logging.info("Finished fetching companies from db...")
     start_urls = [{'label':company['org_nr'], 'url':company["url"]} for company in companies]
 

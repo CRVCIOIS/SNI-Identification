@@ -15,7 +15,7 @@ from adapters.extract import ExtractAdapter
 from adapters.scb import SCBAdapter
 
 def main(
-            percentage_training_split: Annotated[int, typer.Argument()] = 10
+            percentage_training_split: Annotated[int, typer.Argument()] = 70
         ):
     """
     Divide the dataset into a smaller dataset and a validation dataset based on the SNI code of each company.

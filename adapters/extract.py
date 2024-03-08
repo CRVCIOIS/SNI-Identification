@@ -5,15 +5,13 @@ from classes.mongo import DBInterface, Schema
 
 class ExtractAdapter(DBInterface):
     """
-    Class for interfacing with the SCB API and the MongoDB database.
+    Performs operations on extract data and the related mongo collections.
 
     Example usage:
             ```
-            scb = SCBinterface()
-            scb.fetch_companies_from_api(
-                sni_start="00000",
-                sni_stop="02300", 
-                fetch_limit=10)
+            extract_adapter = ExtractAdapter()
+            extract_adapter.insert_extracted_data(
+                extracted_data, url, company_id, timestamp, methods)
             ```
     """
 
