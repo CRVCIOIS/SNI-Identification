@@ -16,23 +16,52 @@ The evaluation toolchain can:
 3. Use a trained model to predict the results. 
 
 [^1]: The Swedish extension of the European [NACE](https://ec.europa.eu/eurostat/web/nace) which provides an extra level of detail compared to NACE.
-## Requirements
-|Pipeline command|Requirements|
-|--|--|
-|Common to all|MongoDB instance|
-|SCB|[SCB FDB](https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/foretagsregister-och-foretagsundersokningar/foretagsdatabasen-fdb/) API credentials and certificate|
-|google|[Google Custom Search JSON API credentials](https://developers.google.com/custom-search/v1/overview) and a [Google Programmable Search Engine](https://programmablesearchengine.google.com)|
-|scrape|None|
-|extract|None|
-|divide|None|
-|train-models|None|
-|evaluate-accuracy-dev|None|
-|evaluate-accuracy-prod|None|
+
+### Commands
+
+The following commands are defined by the project.
+Commands are only re-run if their inputs have changed.
+
+| Command | Description | Requirements 
+| --- | --- | --- |
+| `SCB` | Get data from SCB | [SCB FDB](https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/foretagsregister-och-foretagsundersokningar/foretagsdatabasen-fdb/) API credentials and certificate & MongoDB instance|
+| `google` | Fill the DB with a matching URL for each company by using Google search API | [Google Custom Search JSON API credentials](https://developers.google.com/custom-search/v1/overview) and a [Google Programmable Search Engine](https://programmablesearchengine.google.com) & MongoDB instance|
+| `scrape` | Scrapes websites | MongoDB instance |
+| `extract` | Extracts the valuable data from the scraped website | MongoDB instance|
+| `divide` | Divides the dataset into training and validation sets | MongoDB instance|
+| `preprocess` | Convert the data to spaCy's binary format | MongoDB instance|
+| `train-models` | Train a text classification model | MongoDB instance|
+| `evaluate-accuracy-prod` | Evaluate the prod model for accuracy and export metrics | MongoDB instance|
+| `evaluate-speed-prod` | Evaluate the prod model for speed and export metrics | MongoDB instance|
+| `evaluate-accuracy-dev` | Evaluate the dev model for accuracy and export metrics | MongoDB instance|
+| `evaluate-speed-dev` | Evaluate the dev model for and export metrics | MongoDB instance|
+| `predict` | Predict the SNI code of a company based on their website data | MongoDB instance|
+| `eval-custom` | Custom evaluation of the model | MongoDB instance|
+
+###  Workflows
+
+The following workflows are defined by the project. They
+can be executed using `spacy project run [workflow]`
+and will run the specified commands in order. Commands are only re-run if their
+inputs have changed.
+
+| Workflow | Steps |
+| --- | --- |
+| `evaluate-dev` | `evaluate-accuracy-dev` |
+| `evaluate-prod` | `evaluate-accuracy-prod` |
+| `all` | `SCB` &rarr; `google` &rarr; `scrape` &rarr; `extract` &rarr; `divide` &rarr; `preprocess` &rarr; `train-models` |
+| `fetch` | `SCB` &rarr; `google` &rarr; `scrape` |
+| `train` | `extract` &rarr; `divide` &rarr; `preprocess` &rarr; `train-models` |
+| `test_without_training` | `extract` |
+
 ## Setup
 1. `pip install -r requirements.txt` (preferably inside a [Python virtual environment](https://docs.python.org/3/library/venv.html)).
 2. Create a copy of `.env.example` called `.env` in the root folder, and fill in the fields.
-3. Copy the SCB certificate into the root folder, and rename it to `key.pfx`.
-4. Run the program using `spacy project run <workflow name>`, where `<workflow name>` should be one of the workflows from `project.yml` (i.e. `all`, `fetch`, `train`, etc.).
+   - `GOOGLE_SEARCH_API_KEY` is gathered from [Google Custom Search JSON API credentials](https://developers.google.com/custom-search/v1/overview)
+   - `GOOGLE_SEARCH_ENGINE_ID` is gathered from [Google Programmable Search Engine](https://programmablesearchengine.google.com)
+   - `SCB_API_USER` & `SCB_API_PASS` is gathered from your SCB account that you get issued when signing a contract with SCB for [SCB FDB](https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/foretagsregister-och-foretagsundersokningar/foretagsdatabasen-fdb/)
+4. Copy the SCB certificate into the root folder, and rename it to `key.pfx`.
+5. Run the program using `spacy project run <workflow name>`, where `<workflow name>` should be one of the workflows from `project.yml` (i.e. `all`, `fetch`, `train`, etc.).
    - You can also create your own workflows by giving them a name and a list of commands. 
 ## Structure
 ```
