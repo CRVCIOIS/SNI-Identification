@@ -25,9 +25,28 @@ class SCBAdapter(DBInterface):
                 fetch_limit=10)
             ```
     """
-    def __init__(self):
+    def __init__(self, init_collections = False):
+        """
+        :param init_collections: if True, then will call the initialization 
+            scripts for the 3 basic collections
+            (SNI codes, municipalities and legal forms)
+
+            Requires SCB credentials!
+        """
         super().__init__()
         self.wrapper = SCBapi()
+        if init_collections:
+            self.init_collections()
+
+    def init_collections(self):
+        """
+        Checks if the 3 collections (SNI codes, municipalities and legal forms)  
+            that are necessary for limiting the size of the API responses
+            are empty, and in that case fetches the info from the API and saves
+            the results into the DB.
+
+            Requires SCB credentials! 
+        """
         self._init_collection(Schema.SNI, self._store_codes)
         self._init_collection(Schema.MUNICIPALITIES, self._store_municipalities)
         self._init_collection(Schema.LEGAL_FORMS, self._store_legal_forms)

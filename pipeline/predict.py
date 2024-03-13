@@ -28,7 +28,7 @@ def main(model_path: Annotated[Path, typer.Argument(..., dir_okay=True)] = "trai
     
     sorted_predictions = sorted(predictions.items(), key=lambda x: x[1], reverse=True)
 
-    scb_adapter = SCBAdapter()
+    scb_adapter = SCBAdapter(init_collections=True)
     codes = scb_adapter.fetch_codes()
     print("\nTop 10 Predictions for the URL:")
     print(test_url)
