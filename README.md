@@ -26,17 +26,17 @@ Commands are only re-run if their inputs have changed.
 | --- | --- | --- |
 | `SCB` | Get data from SCB | [SCB FDB](https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/foretagsregister-och-foretagsundersokningar/foretagsdatabasen-fdb/) API credentials and certificate & MongoDB instance|
 | `google` | Fill the DB with a matching URL for each company by using Google search API | [Google Custom Search JSON API credentials](https://developers.google.com/custom-search/v1/overview) and a [Google Programmable Search Engine](https://programmablesearchengine.google.com) & MongoDB instance|
-| `scrape` | Scrapes websites | MongoDB instance |
+| `scrape` | Scrapes websites |  |
 | `extract` | Extracts the valuable data from the scraped website | MongoDB instance|
 | `divide` | Divides the dataset into training and validation sets | MongoDB instance|
 | `preprocess` | Convert the data to spaCy's binary format | MongoDB instance|
 | `train-models` | Train a text classification model | MongoDB instance|
-| `evaluate-accuracy-prod` | Evaluate the prod model for accuracy and export metrics | MongoDB instance|
-| `evaluate-speed-prod` | Evaluate the prod model for speed and export metrics | MongoDB instance|
-| `evaluate-accuracy-dev` | Evaluate the dev model for accuracy and export metrics | MongoDB instance|
-| `evaluate-speed-dev` | Evaluate the dev model for and export metrics | MongoDB instance|
-| `predict` | Predict the SNI code of a company based on their website data | MongoDB instance|
-| `eval-custom` | Custom evaluation of the model | MongoDB instance|
+| `evaluate-accuracy-prod` | Evaluate the prod model for accuracy and export metrics | |
+| `evaluate-speed-prod` | Evaluate the prod model for speed and export metrics | |
+| `evaluate-accuracy-dev` | Evaluate the dev model for accuracy and export metrics | |
+| `evaluate-speed-dev` | Evaluate the dev model for and export metrics | |
+| `predict` | Predict the SNI code of a company based on their website data | |
+| `eval-custom` | Custom evaluation of the model | |
 
 ###  Workflows
 
