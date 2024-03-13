@@ -4,8 +4,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>320</x>
-      <y>536</y>
+      <x>480</x>
+      <y>712</y>
       <w>24</w>
       <h>136</h>
     </coordinates>
@@ -15,8 +15,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>320</x>
-      <y>680</y>
+      <x>480</x>
+      <y>856</y>
       <w>24</w>
       <h>184</h>
     </coordinates>
@@ -27,8 +27,8 @@
   <element>
     <id>UMLObject</id>
     <coordinates>
-      <x>144</x>
-      <y>352</y>
+      <x>304</x>
+      <y>528</y>
       <w>368</w>
       <h>272</h>
     </coordinates>
@@ -40,8 +40,8 @@ halign=left</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>320</x>
-      <y>432</y>
+      <x>480</x>
+      <y>608</y>
       <w>24</w>
       <h>96</h>
     </coordinates>
@@ -51,8 +51,8 @@ halign=left</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>184</x>
-      <y>376</y>
+      <x>344</x>
+      <y>552</y>
       <w>288</w>
       <h>64</h>
     </coordinates>
@@ -64,8 +64,8 @@ heuristic methods, HTML tags, etc"</panel_attributes>
   <element>
     <id>UMLObject</id>
     <coordinates>
-      <x>560</x>
-      <y>360</y>
+      <x>720</x>
+      <y>536</y>
       <w>376</w>
       <h>112</h>
     </coordinates>
@@ -77,7 +77,7 @@ halign=left</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>528</x>
+      <x>688</x>
       <y>0</y>
       <w>16</w>
       <h>16</h>
@@ -89,22 +89,22 @@ group=group-2</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>528</x>
+      <x>688</x>
       <y>8</y>
-      <w>112</w>
+      <w>56</w>
       <h>224</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 Input:
-a scraped website
+a URL
 group=group-2</panel_attributes>
     <additional_attributes>10.0;260.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>608</x>
-      <y>384</y>
+      <x>768</x>
+      <y>560</y>
       <w>288</w>
       <h>64</h>
     </coordinates>
@@ -115,8 +115,8 @@ using HTML tags and regex</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>320</x>
-      <y>224</y>
+      <x>480</x>
+      <y>400</y>
       <w>24</w>
       <h>168</h>
     </coordinates>
@@ -126,8 +126,8 @@ using HTML tags and regex</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>736</x>
-      <y>224</y>
+      <x>896</x>
+      <y>400</y>
       <w>24</w>
       <h>176</h>
     </coordinates>
@@ -137,8 +137,8 @@ using HTML tags and regex</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>736</x>
-      <y>440</y>
+      <x>896</x>
+      <y>616</y>
       <w>24</w>
       <h>424</h>
     </coordinates>
@@ -148,8 +148,8 @@ using HTML tags and regex</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>528</x>
-      <y>848</y>
+      <x>688</x>
+      <y>1024</y>
       <w>200</w>
       <h>240</h>
     </coordinates>
@@ -161,8 +161,8 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLSyncBarHorizontal</id>
     <coordinates>
-      <x>264</x>
-      <y>216</y>
+      <x>424</x>
+      <y>392</y>
       <w>560</w>
       <h>16</h>
     </coordinates>
@@ -173,8 +173,8 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLSyncBarHorizontal</id>
     <coordinates>
-      <x>248</x>
-      <y>848</y>
+      <x>408</x>
+      <y>1024</y>
       <w>560</w>
       <h>16</h>
     </coordinates>
@@ -185,8 +185,8 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>528</x>
-      <y>1072</y>
+      <x>688</x>
+      <y>1248</y>
       <w>16</w>
       <h>16</h>
     </coordinates>
@@ -196,8 +196,8 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>184</x>
-      <y>512</y>
+      <x>344</x>
+      <y>688</y>
       <w>288</w>
       <h>32</h>
     </coordinates>
@@ -207,12 +207,47 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>184</x>
-      <y>656</y>
+      <x>344</x>
+      <y>832</y>
       <w>288</w>
       <h>32</h>
     </coordinates>
     <panel_attributes>Evaluate the data with the pretrained spaCy model</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>512</x>
+      <y>192</y>
+      <w>376</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>Scraping
+valign=top
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>560</x>
+      <y>216</y>
+      <w>288</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>The website is scraped</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>688</x>
+      <y>296</y>
+      <w>24</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>
