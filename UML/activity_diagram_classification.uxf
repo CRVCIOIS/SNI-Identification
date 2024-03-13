@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="15.1">
-  <zoom_level>8</zoom_level>
+  <zoom_level>5</zoom_level>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
-      <y>712</y>
-      <w>24</w>
-      <h>136</h>
+      <x>580</x>
+      <y>600</y>
+      <w>15</w>
+      <h>85</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;150.0;10.0;10.0</additional_attributes>
@@ -15,10 +15,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
-      <y>856</y>
-      <w>24</w>
-      <h>184</h>
+      <x>580</x>
+      <y>690</y>
+      <w>15</w>
+      <h>115</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 </panel_attributes>
@@ -27,10 +27,10 @@
   <element>
     <id>UMLObject</id>
     <coordinates>
-      <x>304</x>
-      <y>528</y>
-      <w>368</w>
-      <h>272</h>
+      <x>470</x>
+      <y>485</y>
+      <w>230</w>
+      <h>170</h>
     </coordinates>
     <panel_attributes>Preprocessing
 valign=top
@@ -40,10 +40,10 @@ halign=left</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
-      <y>608</y>
-      <w>24</w>
-      <h>96</h>
+      <x>580</x>
+      <y>535</y>
+      <w>15</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
@@ -51,10 +51,10 @@ halign=left</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>344</x>
-      <y>552</y>
-      <w>288</w>
-      <h>64</h>
+      <x>495</x>
+      <y>500</y>
+      <w>180</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>Clean the scraped data:
 extracting relevant information using
@@ -64,10 +64,10 @@ heuristic methods, HTML tags, etc"</panel_attributes>
   <element>
     <id>UMLObject</id>
     <coordinates>
-      <x>720</x>
-      <y>536</y>
-      <w>376</w>
-      <h>112</h>
+      <x>730</x>
+      <y>490</y>
+      <w>235</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>Miscellaneous fields exrtaction
 valign=top
@@ -77,10 +77,10 @@ halign=left</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>688</x>
-      <y>0</y>
-      <w>16</w>
-      <h>16</h>
+      <x>710</x>
+      <y>155</y>
+      <w>10</w>
+      <h>10</h>
     </coordinates>
     <panel_attributes>type=initial
 group=group-2</panel_attributes>
@@ -89,10 +89,10 @@ group=group-2</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>688</x>
-      <y>8</y>
-      <w>56</w>
-      <h>224</h>
+      <x>710</x>
+      <y>160</y>
+      <w>35</w>
+      <h>140</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 Input:
@@ -103,22 +103,23 @@ group=group-2</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>768</x>
-      <y>560</y>
-      <w>288</w>
-      <h>64</h>
+      <x>760</x>
+      <y>505</y>
+      <w>180</w>
+      <h>40</h>
     </coordinates>
-    <panel_attributes>Extract simple fields (i.e. telephone number, e-mail)
+    <panel_attributes>bg=red
+Extract simple fields (i.e. telephone number, e-mail)
 using HTML tags and regex</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
-      <y>400</y>
-      <w>24</w>
-      <h>168</h>
+      <x>580</x>
+      <y>405</y>
+      <w>15</w>
+      <h>105</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;190.0;10.0;10.0</additional_attributes>
@@ -126,10 +127,10 @@ using HTML tags and regex</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>896</x>
-      <y>400</y>
-      <w>24</w>
-      <h>176</h>
+      <x>840</x>
+      <y>405</y>
+      <w>15</w>
+      <h>110</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;200.0;10.0;10.0</additional_attributes>
@@ -137,10 +138,10 @@ using HTML tags and regex</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>896</x>
-      <y>616</y>
-      <w>24</w>
-      <h>424</h>
+      <x>840</x>
+      <y>540</y>
+      <w>15</w>
+      <h>265</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;510.0;10.0;10.0</additional_attributes>
@@ -148,10 +149,10 @@ using HTML tags and regex</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>688</x>
-      <y>1024</y>
-      <w>200</w>
-      <h>240</h>
+      <x>710</x>
+      <y>795</y>
+      <w>125</w>
+      <h>150</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 Output:
@@ -161,10 +162,10 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLSyncBarHorizontal</id>
     <coordinates>
-      <x>424</x>
-      <y>392</y>
-      <w>560</w>
-      <h>16</h>
+      <x>545</x>
+      <y>400</y>
+      <w>350</w>
+      <h>10</h>
     </coordinates>
     <panel_attributes>lw=5
 </panel_attributes>
@@ -173,10 +174,10 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLSyncBarHorizontal</id>
     <coordinates>
-      <x>408</x>
-      <y>1024</y>
-      <w>560</w>
-      <h>16</h>
+      <x>535</x>
+      <y>795</y>
+      <w>350</w>
+      <h>10</h>
     </coordinates>
     <panel_attributes>lw=5
 </panel_attributes>
@@ -185,10 +186,10 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>688</x>
-      <y>1248</y>
-      <w>16</w>
-      <h>16</h>
+      <x>710</x>
+      <y>935</y>
+      <w>10</w>
+      <h>10</h>
     </coordinates>
     <panel_attributes>type=final</panel_attributes>
     <additional_attributes/>
@@ -196,10 +197,10 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>344</x>
-      <y>688</y>
-      <w>288</w>
-      <h>32</h>
+      <x>495</x>
+      <y>585</y>
+      <w>180</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Convert data to spaCy's binary format</panel_attributes>
     <additional_attributes/>
@@ -207,10 +208,10 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>344</x>
-      <y>832</y>
-      <w>288</w>
-      <h>32</h>
+      <x>495</x>
+      <y>675</y>
+      <w>180</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Evaluate the data with the pretrained spaCy model</panel_attributes>
     <additional_attributes/>
@@ -218,10 +219,10 @@ Branch code + miscellaneous fields</panel_attributes>
   <element>
     <id>UMLObject</id>
     <coordinates>
-      <x>512</x>
-      <y>192</y>
-      <w>376</w>
-      <h>112</h>
+      <x>600</x>
+      <y>275</y>
+      <w>235</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>Scraping
 valign=top
@@ -231,10 +232,10 @@ halign=left</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>560</x>
-      <y>216</y>
-      <w>288</w>
-      <h>64</h>
+      <x>630</x>
+      <y>290</y>
+      <w>180</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>The website is scraped</panel_attributes>
     <additional_attributes/>
@@ -242,12 +243,24 @@ halign=left</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>688</x>
-      <y>296</y>
-      <w>24</w>
-      <h>112</h>
+      <x>710</x>
+      <y>340</y>
+      <w>15</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>485</x>
+      <y>185</y>
+      <w>145</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>bg=red
+Not fully implemented yet</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>
