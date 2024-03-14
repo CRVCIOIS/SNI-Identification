@@ -68,7 +68,7 @@ def main(
     doc_eval = DocBin()
     doc_test = DocBin()
     
-    scb_adapter   = SCBAdapter(init_collections=True)
+    scb_adapter   = SCBAdapter(init_api=True)
     train_adapter = TrainAdapter()
     
     codes = {}
