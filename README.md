@@ -56,7 +56,8 @@ inputs have changed.
 
 ## Setup
 1. `pip install -r requirements.txt` (preferably inside a [Python virtual environment](https://docs.python.org/3/library/venv.html)).
-2. Create a copy of `.env.example` called `.env` in the root folder, and fill in the fields.
+2. Create a new Google search engine, and add all URLs from `assets/google_search_blacklist.txt` to the engine blacklist.
+3. Create a copy of `.env.example` called `.env` in the root folder, and fill in the fields.
    - `GOOGLE_SEARCH_API_KEY` is gathered from [Google Custom Search JSON API credentials](https://developers.google.com/custom-search/v1/overview)
    - `GOOGLE_SEARCH_ENGINE_ID` is gathered from [Google Programmable Search Engine](https://programmablesearchengine.google.com)
    - `SCB_API_USER` & `SCB_API_PASS` is gathered from your SCB account that you get issued when signing a contract with SCB for [SCB FDB](https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/foretagsregister-och-foretagsundersokningar/foretagsdatabasen-fdb/)
