@@ -106,7 +106,7 @@ def main(
 
     doc_eval.to_disk(output_test_path)
     logging.info("Saved test data to %s", output_test_path)
-    logging.info("Number of documents in evaluation data: %s", len(doc_test))
+    logging.info("Number of documents in test data: %s", len(doc_test))
 
     logging.info("Preprocessing finished!")
 
