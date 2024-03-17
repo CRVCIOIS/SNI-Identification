@@ -7,7 +7,7 @@ from datetime import datetime
 
 LOGS_FOLDER = 'logs'
 FILE_LOG_LEVEL = "DEBUG"
-CONSOLE_LOG_LEVEL = "DEBUG"
+CONSOLE_LOG_LEVEL = "INFO"
 
 def conf_logger(filename):
     """

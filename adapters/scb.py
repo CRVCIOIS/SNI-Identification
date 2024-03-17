@@ -303,17 +303,16 @@ class SCBAdapter(DBInterface):
         """
         match has_url.upper():
             case "ONLY":
-                query = {"url": {"$regex": r"^\\S+$"}}
+                query = {"url": {"$regex": r"^\S+$"}}
             case "NO":
                 query = {
                     "$or":[
                         {"url": {"$exists": False}},
-                        {"url": {"$regex": r"^\\s*$"}}
+                        {"url": {"$regex": r"^\s*$"}}
                     ]
                 }
             case _: # BOTH is default
                 query = {}
-
         companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
         return list(companies)
 
