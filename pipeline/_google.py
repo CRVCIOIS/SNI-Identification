@@ -70,7 +70,7 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
     Returns:
         None
     """
-    scb_adapter = SCBAdapter()
+    scb_adapter = SCBAdapter(init_api=True)
     sni_codes = scb_adapter.fetch_codes()
     
     google = GoogleSearchAPI()
