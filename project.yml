@@ -94,7 +94,7 @@ commands:
     - name: "google"
       help: "Fill the DB with a matching URL for each company by using Google search API"
       script:
-          - "python pipeline/google.py ${vars.regenerate_company_urls} ${vars.google_limit}"
+          - "python pipeline/_google.py ${vars.regenerate_company_urls} ${vars.google_limit}"
 
     - name: "scrape"
       help: "Scrapes websites"
