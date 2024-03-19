@@ -143,6 +143,7 @@ def main(model_path: Annotated[Path, typer.Argument(..., dir_okay=True)] = "trai
     label_results = dict()
     
     for data_point in test_data:
+        point_results = {'label': None, 'results': {}}
         text = str()
         """Combine all text data for the company into one string."""
         for data in data_point['data']:

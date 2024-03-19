@@ -38,13 +38,14 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language,  min_data
     for data_point in company["data"]:
         text = text + " " + data_point["data"]
     
-    if len(text) >= 1000000:
+    if len(text) >= 1000000: # Spacy has a limit of 1000000 characters per document
         text = text[:1000000]
         logging.debug(f"Truncated company text to 1000000 characters")
     if len(text) < min_data_length:
-        logging.debug(f"Skipping company with too short text: {len(text)}")
+        logging.debug(f"Skipping company with too short text length: {len(text)}")
         return None
     
+    logging.debug("Processed company_id: %s, SNI: %s, document length: %s", company["company_id"], company['branch_codes'][0], len(text))
     doc = nlp.make_doc(text)
     labels_copy = copy(labels) # Copy needed to avoid reference to same dictionary
     labels_copy[company["branch_codes"][0]] = 1
@@ -71,6 +72,7 @@ def main(
     scb_adapter   = SCBAdapter()
     train_adapter = TrainAdapter()
     
+    label_count = {"total_length": 0, "labels": {}}
     labels = {}
     for label in scb_adapter.fetch_codes():
         labels[label] = 0
@@ -79,16 +81,21 @@ def main(
         doc = create_doc_for_company(labels, company, nlp, min_data_length)
         if doc is not None:
             doc_train.add(doc)
+            label_count['labels'][company['branch_codes'][0]] = label_count['labels'].get(company['branch_codes'][0], 0) + 1
+            label_count['total_length'] = label_count.get('total_length', 0) + len(doc.text)
             
     for company in train_adapter.fetch_dev_set():
         doc = create_doc_for_company(labels, company, nlp, min_data_length)
         if doc is not None:
             doc_eval.add(doc)
-        
+            label_count['labels'][company['branch_codes'][0]] = label_count['labels'].get(company['branch_codes'][0], 0) + 1
+            label_count['total_length'] = label_count.get('total_length', 0) + len(doc.text)
     for company in train_adapter.fetch_test_set():
         doc = create_doc_for_company(labels, company, nlp, min_data_length)
         if doc is not None:
             doc_test.add(doc)
+            label_count['labels'][company['branch_codes'][0]] = label_count['labels'].get(company['branch_codes'][0], 0) + 1
+            label_count['total_length'] = label_count.get('total_length', 0) + len(doc.text)
 
     # Remove old files
     output_dev_path.unlink(missing_ok=True)
@@ -107,8 +114,16 @@ def main(
     doc_eval.to_disk(output_test_path)
     logging.info("Saved test data to %s", output_test_path)
     logging.info("Number of documents in test data: %s", len(doc_test))
-
+    
     logging.info("Preprocessing finished!")
+    logging.info("Number of documents processed: %s", sum(label_count['labels'].values()))
+    logging.info("Number of distinct labels processed: %s", len(label_count['labels']))
+    logging.info("Number of documents per label:")
+    for label in dict(sorted(label_count['labels'].items())):
+        logging.info("Label %s: %s documents", label, label_count['labels'][label])
+
+    logging.info("Total length of documents processed: %s", label_count['total_length'])
+    logging.info("Average length of documents per label: %s", label_count['total_length']/len(label_count['labels']))
 
 if __name__ == "__main__":
     from aux_functions.logger_config import conf_logger

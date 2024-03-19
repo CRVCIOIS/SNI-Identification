@@ -1,8 +1,8 @@
 # This YAML file represents the project configuration for the NLP project.
 # It contains settings and parameters that are used to configure and run the project.
 #
-title: "CRVCIOIS SNI CNN AI Model pipeline"
-description: "This is a training and evaluation pipeline for a CNN AI model which predicts a companys SNI code based on their website data."
+title: "CRVCIOIS SNI Stacked Ensemble AI Model pipeline"
+description: "This is a training and evaluation pipeline for a Stacked Ensemble AI model which predicts a companys SNI code based on their website data."
 # Variables can be referenced across the project.yml using ${vars.var_name}
 # Filename, as 'train' only specifies the actual name and not where it's stored or it's extension
 vars:
@@ -27,12 +27,11 @@ vars:
     extract_body: True
     extract_p_only: False
     # Divide settings
-    nr_of_each_sni: 10
     percentage_training_split: 70
     percentage_validation_split: 20
     percentage_test_split: 10
     # Preprocess settings
-    min_data_length: 300
+    min_data_length: 150
     # Evaluate and prediction settings
     model_to_evaluate: "training/model-best"
     evaluate_top_n: 5
@@ -71,14 +70,7 @@ workflows:
         - scrape
         - extract
 
-    scrape-evaluate:
-        - scrape
-        - extract
-        - divide
-        - preprocess
-        - train-model
-        - evaluate-accuracy
-        - evaluate-custom
+
 
     train-evaluate:
         - train-model
