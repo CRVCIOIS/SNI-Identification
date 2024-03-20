@@ -331,6 +331,7 @@ class SCBAdapter(DBInterface):
                 }
             case _: # BOTH is default
                 query = {}
+
         companies = self.mongo_client[Schema.DB][Schema.COMPANIES].find(query)
         return list(companies)
 

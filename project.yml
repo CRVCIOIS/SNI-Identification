@@ -13,8 +13,6 @@ vars:
     dev: "docs_nace_eval"
     test: "docs_nace_test"
     gpu_id: -1
-    # SCB settings
-    scb_data_file_name: "scb_data"
     # Google API settings
     google_limit: 100
     regenerate_company_urls: False

@@ -9,7 +9,7 @@ __pycache__/
 # scraped data
 scraping/data/
 assets/scraped_data.json
-scraped_data*
+scraped_data/
 
 # logs
 logs/
