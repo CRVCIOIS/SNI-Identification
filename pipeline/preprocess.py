@@ -1,14 +1,6 @@
 """
-    This script preprocesses the input data and saves the processed labeled documents in binary form to the output path.
-
-    The main function takes two arguments:
-    - input_path (Path): Path to the input data file.
-    - output_path (Path): Path to save the processed documents.
-
-    The script uses the spacy library to process the text data. It reads the input data from a JSON file, where each record contains a "text" field and a "sni" field representing the text and the label respectively. It then tokenizes the text using a blank Swedish language model from spacy, assigns the label to the document, and adds it to a DocBin object. Finally, the DocBin object is saved to the output path in binary format.
-
-    Example usage:
-    python preprocess.py input.json output.spacy
+    This module preprocesses the extracted data and saves the processed documents
+    to the output paths, in spacy DocBin format.
 """
 import logging
 import spacy
@@ -24,6 +16,7 @@ from adapters.scb import SCBAdapter
 def create_doc_for_company(labels: dict, company: dict, nlp: Language,  min_data_length: int):
     """
     Create a spacy Doc object with the given labels and company data.
+    
     :param labels (dict): Dictionary of labels.
     :param company (dict): Company to process.
     :param nlp (spacy.Language): Language model to use for processing.
@@ -59,10 +52,13 @@ def main(
         min_data_length: Annotated[int, typer.Argument()] = 300
     ):
     """
-    Preprocesses the input data and saves the processed labeled documents in binary form to the output path.
-    :param output_path (Path): Path to save the processed documents.
-    """
+    Preprocess the input data and save the processed documents to the output paths.
     
+    :param output_train_path (Path): Path to save the processed training documents.
+    :param output_dev_path (Path): Path to save the processed evaluation documents.
+    :param output_test_path (Path): Path to save the processed test documents.
+    :param min_data_length (int): Minimum length of data to include in the document.
+    """
     nlp = spacy.blank("sv")
     nlp.max_length = 20000000
     doc_train = DocBin()
@@ -97,7 +93,7 @@ def main(
             label_count['labels'][company['branch_codes'][0]] = label_count['labels'].get(company['branch_codes'][0], 0) + 1
             label_count['total_length'] = label_count.get('total_length', 0) + len(doc.text)
 
-    # Remove old files
+    # Remove old corpus files
     output_dev_path.unlink(missing_ok=True)
     output_train_path.unlink(missing_ok=True)
     output_test_path.unlink(missing_ok=True)
@@ -111,7 +107,7 @@ def main(
     logging.info("Saved evaluation data to %s", output_dev_path)
     logging.info("Number of documents in evaluation data: %s", len(doc_eval))
 
-    doc_eval.to_disk(output_test_path)
+    doc_test.to_disk(output_test_path)
     logging.info("Saved test data to %s", output_test_path)
     logging.info("Number of documents in test data: %s", len(doc_test))
     
