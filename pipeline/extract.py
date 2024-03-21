@@ -12,6 +12,22 @@ from classes.extract import DataExtractor
 from adapters.scb import SCBAdapter
 from adapters.extract import ExtractAdapter
 
+def log_results(results: dict):
+    """
+    Log the results of the extraction.
+    
+    :param results (dict): Results of the extraction.
+    """
+    logging.info("Number of URLs extracted: %s", sum(results['labels'].values()))
+    logging.info("Number of distinct labels processed: %s", len(results['labels']))
+    logging.info("Number of URLs per label:")
+    for label in dict(sorted(results['labels'].items())):
+        logging.info("Label %s: %s extracted URLs", label, results['labels'][label])
+        
+    logging.info("Total length of extracted data: %s", results['total_length'])
+    logging.info("Average length of extracted data per label: %s", results['total_length']/len(results['labels']))
+
+
 def main(    
             scraped_data_folder: Annotated[Path, typer.Argument(
                 exists=True, 
@@ -83,14 +99,8 @@ def main(
             logging.debug("Added extracted data from %s", scraped_item["url"])
 
     logging.info("Extraction finished")
-    logging.info("Number of URLs extracted: %s", sum(label_count['labels'].values()))
-    logging.info("Number of distinct labels processed: %s", len(label_count['labels']))
-    logging.info("Number of URLs per label:")
-    for label in dict(sorted(label_count['labels'].items())):
-        logging.info("Label %s: %s extracted URLs", label, label_count['labels'][label])
-        
-    logging.info("Total length of extracted data: %s", label_count['total_length'])
-    logging.info("Average length of extracted data per label: %s", label_count['total_length']/len(label_count['labels']))
+    log_results(label_count)
+
 
 if __name__ == '__main__':
     from aux_functions.logger_config import conf_logger

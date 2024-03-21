@@ -13,10 +13,11 @@ from spacy.tokens import DocBin
 from adapters.train import TrainAdapter
 from adapters.scb import SCBAdapter
 
+
 def create_doc_for_company(labels: dict, company: dict, nlp: Language,  min_data_length: int):
     """
     Create a spacy Doc object with the given labels and company data.
-    
+
     :param labels (dict): Dictionary of labels.
     :param company (dict): Company to process.
     :param nlp (spacy.Language): Language model to use for processing.
@@ -24,7 +25,7 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language,  min_data
     :return (spacy.Doc): Processed Doc object.
     """
     text = str()
-    
+
     """
     Concatenate all data points (data per url) into one document per company
     """
@@ -45,6 +46,23 @@ def create_doc_for_company(labels: dict, company: dict, nlp: Language,  min_data
     doc.cats = labels_copy
     return doc
 
+
+def log_results(results: dict):
+    """
+    Log the results of the preprocessing.
+
+    :param results (dict): Results of the preprocessing.
+    """
+    logging.info("Number of documents processed: %s", sum(results['labels'].values()))
+    logging.info("Number of distinct labels processed: %s", len(results['labels']))
+    logging.info("Number of documents per label:")
+    for label in dict(sorted(results['labels'].items())):
+        logging.info("Label %s: %s documents", label, results['labels'][label])
+
+    logging.info("Total length of documents processed: %s", results['total_length'])
+    logging.info("Average length of documents per label: %s", results['total_length']/len(results['labels']))
+
+
 def main(
         output_train_path: Annotated[Path, typer.Argument(...,dir_okay=False)],
         output_dev_path: Annotated[Path, typer.Argument(...,dir_okay=False)],
@@ -53,7 +71,7 @@ def main(
     ):
     """
     Preprocess the input data and save the processed documents to the output paths.
-    
+
     :param output_train_path (Path): Path to save the processed training documents.
     :param output_dev_path (Path): Path to save the processed evaluation documents.
     :param output_test_path (Path): Path to save the processed test documents.
@@ -64,15 +82,15 @@ def main(
     doc_train = DocBin()
     doc_eval = DocBin()
     doc_test = DocBin()
-    
-    scb_adapter   = SCBAdapter(init_api=True)
+
+    scb_adapter = SCBAdapter(init_api=True)
     train_adapter = TrainAdapter()
-    
+
     label_count = {"total_length": 0, "labels": {}}
     labels = {}
     for label in scb_adapter.fetch_codes():
         labels[label] = 0
-        
+
     for company in train_adapter.fetch_train_set():
         doc = create_doc_for_company(labels, company, nlp, min_data_length)
         if doc is not None:
@@ -110,16 +128,10 @@ def main(
     doc_test.to_disk(output_test_path)
     logging.info("Saved test data to %s", output_test_path)
     logging.info("Number of documents in test data: %s", len(doc_test))
-    
-    logging.info("Preprocessing finished!")
-    logging.info("Number of documents processed: %s", sum(label_count['labels'].values()))
-    logging.info("Number of distinct labels processed: %s", len(label_count['labels']))
-    logging.info("Number of documents per label:")
-    for label in dict(sorted(label_count['labels'].items())):
-        logging.info("Label %s: %s documents", label, label_count['labels'][label])
 
-    logging.info("Total length of documents processed: %s", label_count['total_length'])
-    logging.info("Average length of documents per label: %s", label_count['total_length']/len(label_count['labels']))
+    logging.info("Preprocessing finished!")
+    log_results(label_count)
+
 
 if __name__ == "__main__":
     from aux_functions.logger_config import conf_logger
