@@ -26,18 +26,33 @@ class Scraper():
         """
         self.scrape_output_folder = scrape_output_folder
         self.urls = []
-        self.follow_queries = {"om", "about"}
+        self.follow_queries = {"/om", "/about"}
         self.headers = {"Accept-Language": "sv-SE,sv;"}
         self.filter = {"/en/", "/en-US", "/en-GB", "lang=en", "in-english", ".pdf", ".jpg", ".png",
                        ".jpeg", ".gif", ".svg", ".doc", ".docx", ".ppt", ".pptx",
-                       "cookies", "integritet","privacy", "policy", "terms",
+                       "cookie-","cookies", "integritet","privacy", "policy", "terms",
                        "conditions", "contact", "job", "career", "press", "news",
-                       "investor", "investors", "kontakt", "karriär", "jobb",
+                       "investor", "investors", "kontakt", "kontakta", "karriär", "jobb",
                        "styrelse", "nyhet", "medlemmar", "personal", "ledning",
                        "hallbarhet", "sustainability", "miljo", "environment",
-                       "lediga-tjanster", "lediga-jobb", 
+                       "lediga-tjanster", "lediga-jobb", "management", "people",
                        "visselblasning", "socialamedier", "social-media", "instagram",
-                       "sociala-medier", "facebook", "twitter", "linkedin", "youtube",}
+                       "sociala-medier", "facebook", "twitter", "linkedin", "youtube",
+                       "hitta", "find", "omsorg", "riktlinjer", "stadga", "agare"
+                       "kronika", "partner", "partners", "sponsring", "sponsorship",
+                       "diversity", "mangfald", "equality", "jämställdhet", 
+                       "organisation", "organization","om-webbplats", "about-website",
+                       "tillganglighet", "accessibility","agare", "karriar",
+                       "/bg-bg", "/cs-cz", "/da-dk", "/de-de", "/el-gr", "/es-es", "/et-ee",
+                       "/fi-fi", "/fr-fr", "/hr-hr", "/hu-hu", "/it-it", "/lt-lt", "/lv-lv",
+                       "/mt-mt", "/nl-nl", "/pl-pl", "/pt-pt", "/ro-ro", "/sk-sk", "/sl-sl",
+                       "ja-jp", "ko-kr", "zh-cn", "zh-tw", "ar-ae", "he-il", "hi-in", "th-th",
+                       "tr-tr", "vi-vn", "ru-ru", "uk-ua", "sr-rs", "bs-ba", "mk-mk", "sq-al",
+                       "aterforsaljare", "bolagsstyrning", "logga-in", "logga-ut", "skapa-konto",
+                       "anvandarupplevelse", "anvandarvillkor", "publikationer",
+                       "etik", "moral", "vara-natverk", "anmal", "kundtjanst", "kundservice",
+                       "gdpr"
+                       }
         self.already_scraped = set()
 
     def scrape_all(self, labeled_urls, follow_links=False, filter_=False):
@@ -106,12 +121,9 @@ class Scraper():
         for filename in Path.iterdir(path):
             with open(Path(path, filename), 'r', encoding='utf-8') as fd:
                 f = json.load(fd)
-                for filter_ in self.filter:
-                    if filter_ in urlparse(f['url']).path:
-                        fd.close()
-                        filename.unlink()
-                        logging.debug("Filtering out %s, matched with %s", f['url'], filter_)
-                        break
+                if self._check_filter(f):
+                    f.close()
+                    filename.unlink()
 
     def _save_to_json(self, data, filename):
         logging.info('Saving scraped data from %s', data['url'])

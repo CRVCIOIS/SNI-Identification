@@ -1,29 +1,38 @@
 # This YAML file represents the project configuration for the NLP project.
 # It contains settings and parameters that are used to configure and run the project.
 #
-title: "CRVCIOIS SNI CNN AI Model pipeline"
-description: "This is a training and evaluation pipeline for a CNN AI model which predicts a companys SNI code based on their website data."
+title: "CRVCIOIS SNI Stacked Ensemble AI Model pipeline"
+description: "This is a training and evaluation pipeline for a Stacked Ensemble AI model which predicts a companys SNI code based on their website data."
 # Variables can be referenced across the project.yml using ${vars.var_name}
 # Filename, as 'train' only specifies the actual name and not where it's stored or it's extension
 vars:
-    config: "config"
+    # General settings
+    config: "config_ensemble"
     version: "0.0.2"
     train: "docs_nace_training"
     dev: "docs_nace_eval"
+    test: "docs_nace_test"
     gpu_id: -1
-    scraped_data_folder: "scraped_data"
-    scrape_filter: "True"
-    extract_meta: "True"
-    extract_body: "True"
-    extract_p_only: "False"
-    extract_path: "scraped_data"
-    scb_data_file_name: "scb_data"
-    nr_of_each_sni: 10
-    regenerate_company_urls: false
-    percentage_training_split: 70
+    # Google API settings
     google_limit: 100
-    follow_links: True
-    model_for_prediction: "training/model-best"
+    regenerate_company_urls: False
+    # Scraping settings
+    scraped_data_folder: "scraped_data"
+    follow_links: False
+    scrape_filter: True
+    # Extract settings
+    extract_meta: True
+    extract_body: True
+    extract_p_only: False
+    # Divide settings
+    percentage_training_split: 70
+    percentage_validation_split: 20
+    percentage_test_split: 10
+    # Preprocess settings
+    min_data_length: 150
+    # Evaluate and prediction settings
+    model_to_evaluate: "training/model-best"
+    evaluate_top_n: 5
     predict_url: "https://www.rh-markiser.se/"
 
 # These are the directories that the project needs. The project CLI will make
@@ -44,12 +53,6 @@ directories: ["assets", "training", "configs", "scripts", "corpus", "${vars.scra
 # run them via "spacy project run [workflow]". If a commands's inputs/outputs
 # haven't changed, it won't be re-run.
 workflows:
-    evaluate-dev:
-        - evaluate-accuracy-dev
-
-    evaluate-prod:
-        - evaluate-accuracy-prod
-
     all:
         - SCB
         - google
@@ -57,21 +60,24 @@ workflows:
         - extract
         - divide
         - preprocess
-        - train-models
+        - train-model
     
     fetch:
         - SCB
         - google
         - scrape
-
-    train:
         - extract
-        - divide
-        - preprocess
-        - train-models
 
-    test_without_training:
-        - extract
+
+
+    train-evaluate:
+        - train-model
+        - evaluate-accuracy
+        - evaluate-custom
+
+    evaluate:
+        - evaluate-accuracy
+        - evaluate-custom
 
 # Project commands, specified in a style similar to CI config files (e.g. Azure
 # pipelines). The name is the command name that lets you trigger the command
@@ -96,22 +102,21 @@ commands:
     - name: "extract"
       help: "Extracts the valuable data from the scraped website"
       script:
-          - "python pipeline/extract.py ${vars.extract_path} ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
+          - "python pipeline/extract.py ${vars.scraped_data_folder} ${vars.extract_meta} ${vars.extract_body} ${vars.extract_p_only}"
       deps:
           - "${vars.scraped_data_folder}"
 
     - name: "divide"
       help: "Divides the dataset into training and validation sets"
       script:
-          - "python pipeline/divide_dataset.py  ${vars.percentage_training_split}"
+          - "python pipeline/divide_dataset.py  ${vars.percentage_training_split} ${vars.percentage_validation_split} ${vars.percentage_test_split}"
 
     - name: "preprocess"
       help: "Convert the data to spaCy's binary format"
       script:
-          - "python pipeline/preprocess.py corpus/${vars.train}.spacy corpus/${vars.dev}.spacy"
+          - "python pipeline/preprocess.py corpus/${vars.train}.spacy corpus/${vars.dev}.spacy corpus/${vars.test}.spacy ${vars.min_data_length}"
 
-
-    - name: "train-models"
+    - name: "train-model"
       help: "Train a text classification model"
       script:
           - "python -m spacy train configs/${vars.config}.cfg --output training/ --paths.train corpus/${vars.train}.spacy --paths.dev corpus/${vars.dev}.spacy --gpu-id ${vars.gpu_id}"
@@ -122,65 +127,22 @@ commands:
       outputs:
           - "training/model-best"
 
-    # Deprecated
-    # - name: "evaluate"
-    #   help: "Evaluate the model and export metrics"
-    #   script:
-    #     - "python -m spacy evaluate training/model-best corpus/${vars.dev}.spacy --output training/metrics.json --gpu-id ${vars.gpu_id}"
-    #   deps:
-    #     - "corpus/${vars.dev}.spacy"
-    #     - "training/model-best"
-    #   outputs:
-    #     - "training/metrics.json"
-
-    - name: "evaluate-accuracy-prod"
+    - name: "evaluate-accuracy"
       help: "Evaluate the prod model for accuracy and export metrics"
       script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-accuracy-prod-${vars.train}.json --gpu-id ${vars.gpu_id}"
+          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.test}.spacy --output training/metrics-accuracy-${vars.test}.json --gpu-id ${vars.gpu_id}"
       deps:
           - "corpus/${vars.dev}.spacy"
           - "training/model-best"
       outputs:
-          - "training/metrics-accuracy-prod-${vars.train}.json"
-
-    - name: "evaluate-speed-prod"
-      help: "Evaluate the prod model for speed and export metrics"
-      script:
-          - "python -m spacy benchmark speed training/model-best corpus/${vars.dev}.spacy --output training/metrics-speed-prod-${vars.train}.json --gpu-id ${vars.gpu_id}y"
-      deps:
-          - "corpus/${vars.dev}.spacy"
-          - "training/model-best"
-      outputs:
-          - "training/metrics-speed-prod-${vars.train}.json"
-
-    - name: "evaluate-accuracy-dev"
-      help: "Evaluate the dev model for accuracy and export metrics"
-      script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-accuracy-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
-      deps:
-          - "corpus/${vars.dev}.spacy"
-          - "training/model-best"
-      outputs:
-          - "training/metrics-accuracy-dev-${vars.train}.json"
-          - "training/displacy/accuracy-dev-${vars.train}.html"
-
-    - name: "evaluate-speed-dev"
-      help: "Evaluate the dev model for and export metrics"
-      script:
-          - "python -m spacy benchmark accuracy training/model-best corpus/${vars.dev}.spacy --output training/metrics-speed-dev-${vars.train}.json --gpu-id ${vars.gpu_id} --displacy-path training/displacy"
-      deps:
-          - "corpus/${vars.dev}.spacy"
-          - "training/model-best"
-      outputs:
-          - "training/metrics-speed-dev-${vars.train}.json"
-          - "training/displacy/speed-dev-${vars.train}.html"
+          - "training/metrics-accuracy-${vars.test}.json"
 
     - name: "predict"
       help: "predict the SNI code of a company based on their website data"
       script:
-          - "python pipeline/predict.py  ${vars.model_for_prediction} ${vars.predict_url}"
+          - "python pipeline/predict.py  ${vars.model_to_evaluate} ${vars.predict_url}"
 
-    - name: "eval-custom"
+    - name: "evaluate-custom"
       help: "Custom evaluation of the model"
       script:
-          - "python pipeline/evaluate.py"
+          - "python pipeline/evaluate.py ${vars.model_to_evaluate} ${vars.min_data_length} ${vars.evaluate_top_n}"

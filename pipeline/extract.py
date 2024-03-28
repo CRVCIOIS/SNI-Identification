@@ -12,6 +12,22 @@ from classes.extract import DataExtractor
 from adapters.scb import SCBAdapter
 from adapters.extract import ExtractAdapter
 
+def log_results(results: dict):
+    """
+    Log the results of the extraction.
+    
+    :param results (dict): Results of the extraction.
+    """
+    logging.info("Number of URLs extracted: %s", sum(results['labels'].values()))
+    logging.info("Number of distinct labels processed: %s", len(results['labels']))
+    logging.info("Number of URLs per label:")
+    for label in dict(sorted(results['labels'].items())):
+        logging.info("Label %s: %s extracted URLs", label, results['labels'][label])
+        
+    logging.info("Total length of extracted data: %s", results['total_length'])
+    logging.info("Average length of extracted data per label: %s", results['total_length']/len(results['labels']))
+
+
 def main(    
             scraped_data_folder: Annotated[Path, typer.Argument(
                 exists=True, 
@@ -41,9 +57,11 @@ def main(
 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     methods = [extract_meta,extract_body,p_only]
+    label_count = {"total_length": 0, "labels": {}}
 
+    logging.info("Starting extraction...")
     for filename in os.listdir(scraped_data_folder):
-        logging.info("Extracting data from file at %s", filename)
+        logging.debug("Extracting data from file at %s", filename)
 
         with open(os.path.join(scraped_data_folder,filename), 'r', encoding='utf-8') as f:
             scraped_item = json.load(f)
@@ -75,11 +93,16 @@ def main(
             extract_adapter.insert_extracted_data(
                 extracted_text,company['url'],
                 company['_id'],timestamp,methods)
+            
+            label_count['labels'][company['branch_codes'][0]] = label_count['labels'].get(company['branch_codes'][0], 0) + 1
+            label_count['total_length'] = label_count.get('total_length', 0) + len(extracted_text)
+            logging.debug("Added extracted data from %s", scraped_item["url"])
 
-            logging.info("Added extracted data from %s", scraped_item["url"])
+    logging.info("Extraction finished")
+    log_results(label_count)
 
 
 if __name__ == '__main__':
     from aux_functions.logger_config import conf_logger
-    conf_logger({Path(__file__).stem})
+    conf_logger(Path(__file__).stem)
     typer.run(main)
