@@ -70,7 +70,7 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
     Returns:
         None
     """
-    scb_adapter = SCBAdapter()
+    scb_adapter = SCBAdapter(init_api=True)
     sni_codes = scb_adapter.fetch_codes()
     
     google = GoogleSearchAPI()
@@ -100,5 +100,5 @@ def main(regenerate_urls: Annotated[bool, typer.Argument()] = False, limit: Anno
 
 if __name__ == "__main__":
     from aux_functions.logger_config import conf_logger
-    conf_logger({Path(__file__).stem})
+    conf_logger(Path(__file__).stem)
     typer.run(main)

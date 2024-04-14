@@ -15,7 +15,9 @@ from adapters.extract import ExtractAdapter
 from adapters.scb import SCBAdapter
 
 def main(
-            percentage_training_split: Annotated[int, typer.Argument()] = 70
+            percentage_training_split: Annotated[int, typer.Argument()] = 70,
+            percentage_eval_split: Annotated[int, typer.Argument()] = 20,
+            percentage_test_split: Annotated[int, typer.Argument()] = 10,
         ):
     """
     Divide the dataset into a smaller dataset and a validation dataset based on the SNI code of each company.
@@ -23,7 +25,16 @@ def main(
     :param percentage_training_split (int, optional): 
         Percent of the entire dataset that should be used for training. 
         Defaults to 70%.
+    :param percentage_eval_split (int, optional):
+        Percent of the entire dataset that should be used for evaluation.
+        Defaults to 20%.
+    :param percentage_test_split (int, optional):
+        Percent of the entire dataset that should be used for testing.
+        Defaults to 10%.
     """
+    
+    if percentage_training_split + percentage_eval_split + percentage_test_split != 100:
+        raise ValueError("The sum of the data split percentages must be 100.")
 
     scb_adapter       = SCBAdapter()
     extract_adapter   = ExtractAdapter()
@@ -34,12 +45,12 @@ def main(
     stored_sni = {}
 
     train_adapter.delete_all_data_sets()
-    logging.info("Deleted all previous data sets")
+    logging.debug("Deleted all previous data sets")
     
     for sni in nr_of_each_SNI:
         nr_of_cross_validation_companies = math.floor(
-            sni["count"] * (100 - 10 - percentage_training_split) / 100)
-        nr_of_test_companies = math.floor(sni["count"] * (10) / 100) # 10% of the companies will be used for test data
+            sni["count"] * (percentage_eval_split) / 100)
+        nr_of_test_companies = math.floor(sni["count"] * (percentage_test_split) / 100)
         
         for company in sni['companies']:
             company_scraped_data = extract_adapter.fetch_company_extracted_data(company)
@@ -68,5 +79,5 @@ def main(
 
 if __name__ == "__main__":
     from aux_functions.logger_config import conf_logger
-    conf_logger({Path(__file__).stem})
+    conf_logger(Path(__file__).stem)
     typer.run(main)

@@ -12,7 +12,7 @@ from adapters.scb import SCBAdapter
 def main(model_path: Annotated[Path, typer.Argument(..., dir_okay=True)] = "training/model-best", test_url: Annotated[str, typer.Argument()] =  ""):
     nlp = spacy.load(model_path)
     
-    scraper = Scraper()
+    scraper = Scraper("")
     file_name = scraper.scrape_one(test_url)
     
     with open(file_name, 'r', encoding='utf-8') as f:
@@ -28,14 +28,16 @@ def main(model_path: Annotated[Path, typer.Argument(..., dir_okay=True)] = "trai
     
     sorted_predictions = sorted(predictions.items(), key=lambda x: x[1], reverse=True)
 
-    scb_adapter = SCBAdapter()
+    scb_adapter = SCBAdapter(init_api=True)
     codes = scb_adapter.fetch_codes()
-    
+    print("\nTop 10 Predictions for the URL:")
+    print(test_url)
+    print(" ----------------- ")
     for label, score in sorted_predictions[:10]:
-        logging.info(f"{label}: {codes[label]} - {score}")
+        print(f"{label}: {codes[label]} - {score}")
 
     
 if __name__ == "__main__":
     from aux_functions.logger_config import conf_logger
-    conf_logger({Path(__file__).stem})
+    conf_logger(Path(__file__).stem)
     typer.run(main)

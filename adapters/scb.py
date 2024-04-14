@@ -25,8 +25,26 @@ class SCBAdapter(DBInterface):
                 fetch_limit=10)
             ```
     """
-    def __init__(self):
+    def __init__(self, init_api = False):
+        """
+        :param init_api: if True, then will call the initialization 
+            scripts for the api wrapper. 
+            Requires SCB credentials!
+        """
         super().__init__()
+        if init_api:
+            self.init_api()
+
+    def init_api(self):
+        """
+        Creates an SCB API wrapper, and then checks if the 3 collections 
+            (SNI codes, municipalities and legal forms)  
+            that are necessary for limiting the size of the API responses
+            are empty, and in that case fetches the info from the API and saves
+            the results into the DB.
+
+            Requires SCB credentials! 
+        """
         self.wrapper = SCBapi()
         self._init_collection(Schema.SNI, self._store_codes)
         self._init_collection(Schema.MUNICIPALITIES, self._store_municipalities)
@@ -274,13 +292,13 @@ class SCBAdapter(DBInterface):
         """
         match has_url.upper():
             case "ONLY":
-                query = {"branch_codes": sni_code, "url": {"$regex": r"^\\S+$"}}
+                query = {"branch_codes": sni_code, "url": {"$regex": r"^\S+$"}}
             case "NO":
                 query = {
                     "branch_codes": sni_code,
                     "$or":[
                         {"url": {"$exists": False}},
-                        {"url": {"$regex": r"^\\s*$"}}
+                        {"url": {"$regex": r"^\s*$"}}
                     ]
                 }
             case _: # BOTH is default
@@ -303,12 +321,12 @@ class SCBAdapter(DBInterface):
         """
         match has_url.upper():
             case "ONLY":
-                query = {"url": {"$regex": r"^\\S+$"}}
+                query = {"url": {"$regex": r"^\S+$"}}
             case "NO":
                 query = {
                     "$or":[
                         {"url": {"$exists": False}},
-                        {"url": {"$regex": r"^\\s*$"}}
+                        {"url": {"$regex": r"^\s*$"}}
                     ]
                 }
             case _: # BOTH is default

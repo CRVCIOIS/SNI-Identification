@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>5</zoom_level>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>580</x>
+      <y>600</y>
+      <w>15</w>
+      <h>85</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;150.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>580</x>
+      <y>690</y>
+      <w>15</w>
+      <h>115</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>10.0;210.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>470</x>
+      <y>485</y>
+      <w>230</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Preprocessing
+valign=top
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>580</x>
+      <y>535</y>
+      <w>15</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>495</x>
+      <y>500</y>
+      <w>180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Clean the scraped data:
+extracting relevant information using
+heuristic methods, HTML tags, etc"</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>730</x>
+      <y>490</y>
+      <w>235</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Miscellaneous fields exrtaction
+valign=top
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>710</x>
+      <y>155</y>
+      <w>10</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>type=initial
+group=group-2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>710</x>
+      <y>160</y>
+      <w>35</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Input:
+a URL
+group=group-2</panel_attributes>
+    <additional_attributes>10.0;260.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>760</x>
+      <y>505</y>
+      <w>180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>bg=red
+Extract simple fields (i.e. telephone number, e-mail)
+using HTML tags and regex</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>580</x>
+      <y>405</y>
+      <w>15</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;190.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>405</y>
+      <w>15</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;200.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>540</y>
+      <w>15</w>
+      <h>265</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;510.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>710</x>
+      <y>795</y>
+      <w>125</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Output:
+Branch code + miscellaneous fields</panel_attributes>
+    <additional_attributes>10.0;280.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLSyncBarHorizontal</id>
+    <coordinates>
+      <x>545</x>
+      <y>400</y>
+      <w>350</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>lw=5
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLSyncBarHorizontal</id>
+    <coordinates>
+      <x>535</x>
+      <y>795</y>
+      <w>350</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>lw=5
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>710</x>
+      <y>935</y>
+      <w>10</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>type=final</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>495</x>
+      <y>585</y>
+      <w>180</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Convert data to spaCy's binary format</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>495</x>
+      <y>675</y>
+      <w>180</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Evaluate the data with the pretrained spaCy model</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>600</x>
+      <y>275</y>
+      <w>235</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Scraping
+valign=top
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>630</x>
+      <y>290</y>
+      <w>180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>The website is scraped</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>710</x>
+      <y>340</y>
+      <w>15</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>485</x>
+      <y>185</y>
+      <w>145</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>bg=red
+Not fully implemented yet</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
